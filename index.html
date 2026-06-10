@@ -1,0 +1,4223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMG Targeted Development Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0A;
+  --surface: #141414;
+  --surface-2: #1E1E1E;
+  --surface-3: #252525;
+  --border: #2A2A2A;
+  --border-2: #383838;
+  --text: #FFFFFF;
+  --text-2: #939598;
+  --text-3: #5A5A5A;
+  --yellow: #FFC200;
+  --yellow-dim: rgba(255,194,0,0.12);
+  --yellow-hover: #FFD040;
+  --red: #FF4C4C;
+  --red-dim: rgba(255,76,76,0.1);
+  --green: #22C55E;
+  --green-dim: rgba(34,197,94,0.1);
+  --sidebar-w: 260px;
+  --header-h: 60px;
+  --nav-h: 72px;
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ─── */
+header {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-logo {
+  width: 32px;
+  height: 32px;
+  background: var(--yellow);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #000;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.header-sub {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 1px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dev-name-input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.dev-name-input:focus { border-color: var(--yellow); }
+.dev-name-input::placeholder { color: var(--text-3); }
+
+
+/* ─── LAYOUT ─── */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ─── SIDEBAR ─── */
+aside {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+  padding: 20px 0;
+}
+aside::-webkit-scrollbar { width: 4px; }
+aside::-webkit-scrollbar-track { background: transparent; }
+aside::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+.phase-group { margin-bottom: 8px; }
+.phase-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  padding: 0 20px;
+  margin-bottom: 6px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.phase-label:first-child { margin-top: 0; }
+.phase-badge {
+  font-size: 9px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+}
+.phase-badge.active { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+.phase-badge.locked { opacity: 0.5; }
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-left: 2px solid transparent;
+  position: relative;
+}
+.step-item:hover { background: var(--surface-2); }
+.step-item.active {
+  background: var(--yellow-dim);
+  border-left-color: var(--yellow);
+}
+.step-item.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.step-item.active .step-num {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: #000;
+}
+.step-item.done .step-num {
+  background: var(--green);
+  border-color: var(--green);
+  color: #000;
+}
+.step-item.done .step-num::after { content: '✓'; }
+.step-item.done .step-num span { display: none; }
+.step-text { font-size: 13px; color: var(--text-2); }
+.step-item.active .step-text { color: var(--text); font-weight: 500; }
+.step-item.done .step-text { color: var(--text-2); }
+
+.sidebar-divider {
+  margin: 12px 20px;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+.decision-gate-nav {
+  margin: 8px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.decision-gate-nav:hover { border-color: var(--yellow); }
+.decision-gate-nav.active { border-color: var(--yellow); background: var(--yellow-dim); }
+.decision-gate-nav p { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+.decision-gate-nav h4 { font-size: 13px; font-weight: 600; }
+
+/* ─── MAIN CONTENT ─── */
+main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+main::-webkit-scrollbar { width: 6px; }
+main::-webkit-scrollbar-track { background: transparent; }
+main::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+.step-panel { display: none; flex: 1; flex-direction: column; min-height: 100%; }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.step-panel.active {
+  display: flex;
+  animation: panelIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.step-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.step-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 6px;
+}
+.step-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 6px;
+  line-height: 1.5;
+  max-width: 600px;
+}
+.step-content {
+  padding: 28px 32px;
+  flex: 1;
+}
+
+/* ─── BOTTOM NAV ─── */
+.bottom-nav {
+  height: var(--nav-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  flex-shrink: 0;
+}
+.btn-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+.btn-prev {
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.btn-prev:hover { border-color: var(--border-2); color: var(--text); }
+.btn-next {
+  background: var(--yellow);
+  color: #000;
+  font-weight: 600;
+}
+.btn-next:hover { background: var(--yellow-hover); }
+.btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── MICRO-INTERACTIONS ─── */
+.btn-nav { transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s, border-color 0.15s; }
+.btn-nav:active { transform: scale(0.97); }
+input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(255,194,0,0.12); }
+.step-item:active { transform: translateX(2px); }
+.score-input:focus { box-shadow: 0 0 0 3px rgba(255,194,0,0.20); }
+
+.nav-step-info { font-size: 12px; color: var(--text-3); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.nav-dots { display: flex; gap: 5px; align-items: center; }
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-2);
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-dot.done { background: var(--green); }
+.nav-dot.active { background: var(--yellow); transform: scale(1.4); }
+.nav-dot.gate { border-radius: 2px; }
+
+/* ─── FORM ELEMENTS ─── */
+.form-group { margin-bottom: 20px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.form-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--yellow); }
+input::placeholder, textarea::placeholder { color: var(--text-3); }
+select { cursor: pointer; }
+select option { background: var(--surface-2); }
+textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex-shrink: 0;
+}
+
+/* ─── SCORE RING ─── */
+.score-ring-wrap {
+  display: flex; align-items: center; gap: 32px;
+  padding: 24px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); margin-top: 24px; flex-wrap: wrap;
+}
+.score-ring-svg-wrap {
+  position: relative; width: 140px; height: 140px; flex-shrink: 0;
+}
+.score-ring-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+.score-ring-bg { fill: none; stroke: var(--surface-3); stroke-width: 10; }
+.score-ring-fg {
+  fill: none; stroke: var(--yellow); stroke-width: 10; stroke-linecap: round;
+  stroke-dasharray: 345; stroke-dashoffset: 345;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.22,1,0.36,1), stroke 0.4s ease;
+}
+.score-ring-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-ring-num {
+  font-size: 36px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--yellow); transition: color 0.5s ease; line-height: 1;
+}
+.score-ring-denom { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.score-ring-meta { flex: 1; min-width: 180px; }
+.score-ring-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 6px;
+}
+.score-ring-pct { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.score-bar-track {
+  height: 6px; background: var(--surface-3); border-radius: 3px;
+  margin: 8px 0 14px; overflow: hidden; max-width: 320px;
+}
+.score-bar-fill {
+  height: 100%; background: var(--yellow); border-radius: 3px;
+  transition: width 0.9s cubic-bezier(0.22,1,0.36,1), background 0.4s; width: 0%;
+}
+.score-ring-thresh { font-size: 12px; color: var(--text-2); line-height: 1.4; max-width: 280px; }
+.score-ring-insight {
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  margin-top: 12px; padding: 10px 14px;
+  background: var(--surface-2); border-radius: var(--radius);
+  border-left: 3px solid var(--yellow); line-height: 1.45;
+  max-width: 320px; transition: border-color 0.4s;
+}
+@keyframes scoreRingPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.05); }
+}
+.score-ring-svg-wrap.milestone { animation: scoreRingPulse 0.4s ease; }
+
+/* ─── SCORECARD TABLE ROW COLORING ─── */
+.scorecard-table tr.score-strong td { background: rgba(34,197,94,0.04); }
+.scorecard-table tr.score-weak   td { background: rgba(255,76,76,0.04); }
+.weighted-score.score-high { color: var(--green); }
+.weighted-score.score-mid  { color: var(--yellow); }
+.weighted-score.score-low  { color: var(--red); }
+
+/* ─── SCORECARD COLLAPSIBLE ─── */
+.sr-card-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.sr-card-toggle .sr-sec-head { margin-bottom: 0; flex: 1; }
+.sr-toggle-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface-3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text-2); flex-shrink: 0;
+  transition: transform 0.2s, background 0.15s;
+}
+.sr-toggle-icon.open { transform: rotate(180deg); background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+.sr-card-body {
+  overflow: hidden; max-height: 2000px; opacity: 1; margin-top: 16px;
+  transition: max-height 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease, margin-top 0.25s ease;
+}
+.sr-card-body.collapsed { max-height: 0; opacity: 0; margin-top: 0; }
+
+/* ─── SCORECARD ─── */
+.scorecard-table { width: 100%; border-collapse: collapse; }
+.scorecard-table th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.scorecard-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.scorecard-table tr:last-child td { border-bottom: none; }
+.scorecard-table tr:hover td { background: var(--surface-2); }
+
+.factor-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.factor-ruler { font-size: 11px; color: var(--text-3); margin-top: 3px; line-height: 1.4; }
+.factor-desc { font-size: 12px; color: var(--text-2); line-height: 1.45; }
+.factor-desc-inline { display: none; margin-top: 3px; margin-bottom: 4px; }
+.factor-weight { display: none; }
+.score-input {
+  width: 60px !important;
+  text-align: center;
+  font-weight: 600;
+}
+.weighted-score {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--yellow);
+  text-align: center;
+}
+.notes-input { min-height: 36px !important; }
+
+.score-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  text-align: center;
+}
+.score-card-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.score-card-value { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+.score-card-value.yellow { color: var(--yellow); }
+.score-card-sub { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+
+.decision-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.decision-pill.priority { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+.decision-pill.secondary { background: rgba(255,200,0,0.06); color: #B38A00; border: 1px solid rgba(255,194,0,0.3); }
+.decision-pill.pass { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,76,76,0.3); }
+
+/* ─── DIAGNOSIS TABS ─── */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: var(--surface-2);
+  padding: 4px;
+  border-radius: var(--radius);
+  width: fit-content;
+}
+.tab-btn {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab-btn.active { background: var(--surface-3); color: var(--text); }
+.tab-btn:hover:not(.active) { color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ─── TRUST TRIGGER OUTPUT ─── */
+.tt-section {
+  margin-top: 28px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tt-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.tt-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--yellow);
+  margin-bottom: 3px;
+}
+.tt-subtitle { font-size: 0.82em; color: var(--text-2); }
+.tt-btn {
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.tt-btn:hover { opacity: 0.85; }
+.tt-output { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.tt-empty { font-size: 0.85em; color: var(--text-3); font-style: italic; padding: 4px 0; }
+.tt-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.tt-tag {
+  background: var(--surface-3);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 0.82em;
+  font-weight: 700;
+  color: var(--yellow);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.tt-rationale { font-size: 0.85em; color: var(--text-2); line-height: 1.5; }
+
+/* ─── CHIPS ─── */
+.chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.chip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 11px;
+  font-size: 0.77em;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+  line-height: 1.6;
+}
+.chip:hover { background: var(--yellow); color: #000; border-color: var(--yellow); }
+.chip--active { background: var(--yellow); color: #000; border-color: var(--yellow); }
+
+/* ─── OFFER MATRIX UPLOAD ─── */
+.om-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.om-upload-zone:hover, .om-upload-zone.om-drag-over {
+  border-color: var(--yellow);
+  background: var(--yellow-dim);
+}
+.om-upload-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+.om-upload-label { font-size: 15px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
+.om-upload-hint { font-size: 12px; color: var(--text-3); }
+.om-files-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+.om-file-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.om-file-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.om-file-name { font-size: 13px; font-weight: 600; color: var(--text-1); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.om-file-size { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+.om-file-remove { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 14px; padding: 0 4px; line-height: 1; }
+.om-file-remove:hover { color: var(--red, #ef4444); }
+.om-file-preview-img { width: 100%; display: block; max-height: 600px; object-fit: contain; background: #000; }
+.om-file-preview-pdf { width: 100%; height: 640px; display: block; border: none; }
+.om-file-card-doc { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+.om-file-card-doc .om-file-remove { margin-left: auto; }
+.om-file-icon {
+  background: var(--surface-3);
+  color: var(--yellow);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.om-file-info { flex: 1; min-width: 0; }
+.om-file-info .om-file-name { display: block; }
+.om-file-info .om-file-size { display: block; margin-top: 2px; }
+.om-file-download {
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+.om-file-download:hover { text-decoration: underline; }
+
+/* ─── DECISION GATE ─── */
+.gate-panel {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.gate-score-display {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.gate-score-big { font-size: 64px; font-weight: 700; letter-spacing: -0.04em; color: var(--yellow); line-height: 1; }
+.gate-score-label { font-size: 13px; color: var(--text-2); margin-top: 8px; }
+.gate-decision-auto { margin-top: 12px; }
+
+.gate-checklist { margin: 20px 0; }
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-cb {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--border-2);
+  cursor: pointer;
+  appearance: none;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s;
+}
+.checklist-cb:checked {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+.checklist-cb:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 1px;
+  width: 8px; height: 5px;
+  border-left: 2px solid #000;
+  border-bottom: 2px solid #000;
+  transform: rotate(-45deg);
+}
+.checklist-text { font-size: 13px; }
+.chk-auto-badge { margin-left: auto; font-size: 10px; font-weight: 600; color: var(--text-3); background: var(--surface-3); padding: 2px 6px; border-radius: 3px; letter-spacing: 0.04em; flex-shrink: 0; }
+.chk-error-badge { margin-left: auto; font-size: 10px; font-weight: 700; color: #ef4444; background: rgba(239,68,68,0.12); padding: 2px 6px; border-radius: 3px; letter-spacing: 0.04em; flex-shrink: 0; }
+.checklist-auto { cursor: default; }
+
+.attack-decision {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+.attack-btn {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.attack-btn:hover { border-color: var(--border-2); }
+.attack-btn.selected-attack { border-color: var(--yellow); background: var(--yellow-dim); }
+.attack-btn.selected-secondary { border-color: var(--yellow); background: rgba(255,194,0,0.06); }
+.attack-btn.selected-pass { border-color: var(--red); background: var(--red-dim); }
+.attack-btn-icon { font-size: 24px; margin-bottom: 8px; }
+.attack-btn-label { font-size: 13px; font-weight: 700; color: var(--text); }
+.attack-btn-desc { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
+
+/* ─── EVENT PLAN ─── */
+.phase-section { margin-bottom: 28px; }
+.phase-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.phase-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex-shrink: 0;
+}
+.phase-title-text { font-size: 14px; font-weight: 700; }
+.phase-sub { font-size: 12px; color: var(--text-3); }
+
+.event-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.event-table th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+.event-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.event-table tr:last-child td { border-bottom: none; }
+.event-input {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 6px !important;
+  font-size: 12px !important;
+  min-height: auto !important;
+}
+.event-input:focus {
+  background: var(--surface-3) !important;
+  border-radius: 4px !important;
+}
+.btn-add-row {
+  background: transparent;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius);
+  color: var(--text-3);
+  padding: 6px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  margin-top: 4px;
+}
+.btn-add-row:hover { border-color: var(--yellow); color: var(--yellow); }
+
+.formula-bar {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 20px;
+}
+.formula-bar strong { color: var(--yellow); }
+
+/* ─── ROI CALCULATOR ─── */
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.calc-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.output-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.output-row:last-child { border-bottom: none; }
+.output-label { font-size: 13px; color: var(--text-2); }
+.output-value { font-size: 14px; font-weight: 600; color: var(--text); }
+.output-value.highlight { color: var(--yellow); }
+.output-value.positive { color: var(--green); }
+.output-value.negative { color: var(--red); }
+
+.decision-banner {
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.decision-banner.good { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.3); }
+.decision-banner.bad { background: var(--red-dim); border: 1px solid rgba(255,76,76,0.3); }
+.decision-banner-icon { font-size: 20px; }
+.decision-banner-text { font-size: 14px; font-weight: 600; }
+.decision-banner.good .decision-banner-text { color: var(--green); }
+.decision-banner.bad .decision-banner-text { color: var(--red); }
+
+
+/* ─── POST MORTEM ─── */
+.pm-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.pm-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.pm-section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.pm-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.pm-dot.green { background: var(--green); }
+.pm-dot.red { background: var(--red); }
+.pm-dot.yellow { background: var(--yellow); }
+.pm-section-title { font-size: 14px; font-weight: 700; }
+.pm-field { margin-bottom: 12px; }
+.pm-field-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+
+/* ─── EVENT PROCUREMENT ─── */
+.ep-event-block {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.ep-event-header {
+  background: var(--surface-2);
+  padding: 11px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.ep-event-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.ep-event-body { padding: 16px 20px; }
+
+/* ─── LOCKED OVERLAY ─── */
+.locked-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  color: var(--text-3);
+  padding: 60px;
+}
+.locked-icon { font-size: 40px; opacity: 0.5; }
+.locked-title { font-size: 18px; font-weight: 700; color: var(--text-2); }
+.locked-desc { font-size: 14px; text-align: center; max-width: 320px; line-height: 1.6; }
+
+/* ─── SCROLLABLE STEPS ─── */
+.step-scroll { overflow-y: auto; flex: 1; }
+.step-scroll::-webkit-scrollbar { width: 4px; }
+.step-scroll::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+
+/* ─── UTILS ─── */
+.row-del-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.row-del-btn:hover { color: var(--red); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  aside { width: 200px; }
+  .pm-grid { grid-template-columns: 1fr; }
+.calc-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  aside { display: none; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  .score-summary { grid-template-columns: 1fr; }
+  .attack-decision { grid-template-columns: 1fr; }
+
+  /* header */
+  header { padding: 0 16px; }
+  .dev-name-input { display: none; }
+  .header-sub { display: none; }
+
+  /* content */
+  .step-header { padding: 20px 16px 16px; }
+  .step-title { font-size: 18px; }
+  .step-desc { font-size: 12px; }
+  .step-content { padding: 16px; }
+  .card { padding: 14px; }
+  .bottom-nav { padding: 0 16px; }
+  .btn-nav { padding: 9px 16px; font-size: 13px; }
+
+  /* home panel */
+  .home-cover { padding: 20px 16px; }
+  .home-title { font-size: 22px; }
+  .home-sheet-table td:first-child { width: auto; }
+  .btn-start { width: 100%; }
+
+  /* move description under factor name on mobile */
+  .col-desc { display: none; }
+  .factor-desc-inline { display: block; }
+}
+
+@media (max-width: 480px) {
+  .home-title { font-size: 20px; }
+  .home-purpose { font-size: 14px; }
+  .home-sheet-table td { padding: 10px 8px; font-size: 13px; }
+  .home-sheet-table th { padding: 6px 8px; }
+  .home-sheet-num { width: 20px; height: 20px; font-size: 10px; margin-right: 7px; }
+  .home-rules li { font-size: 13px; }
+  .btn-nav { padding: 8px 12px; font-size: 12px; }
+}
+
+/* ─── STATUS REPORT ─── */
+.sr-scoreboard {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.sr-score {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.sr-score::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--yellow);
+}
+.sr-score-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+}
+.sr-score-val {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--yellow);
+  line-height: 1;
+  margin-top: 6px;
+}
+.sr-score-sub {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 3px;
+  min-height: 14px;
+}
+.sr-progress {
+  height: 4px;
+  background: var(--surface-3);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.sr-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--yellow);
+  transition: width 0.4s ease;
+}
+.sr-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.sr-sec-num {
+  width: 32px;
+  height: 32px;
+  background: var(--yellow);
+  color: #000;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.sr-sec-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.sr-sec-hint {
+  font-size: 12px;
+  color: var(--text-2);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.sr-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.sr-chip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+.sr-chip-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.sr-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sr-chip-dot.hot { background: #FF4C4C; }
+.sr-chip-dot.warm { background: var(--yellow); }
+.sr-chip-dot.cold { background: #3FA7E0; }
+.sr-chip input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 6px 10px;
+}
+.sr-how-to {
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-top: 8px;
+  background: linear-gradient(180deg, rgba(255,194,0,0.04), transparent);
+}
+.sr-how-to-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--yellow);
+  margin-bottom: 8px;
+}
+.sr-how-to ol {
+  margin-left: 18px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.sr-how-to li { margin: 4px 0; }
+.sr-how-to b { color: var(--text); }
+.sr-score.green { border-top-color: var(--green); }
+.sr-score.green .sr-score-val { color: var(--green); }
+.sr-score.amber { border-top-color: var(--yellow); }
+.sr-score.amber .sr-score-val { color: var(--yellow); }
+.sr-score.red { border-top-color: var(--red); }
+.sr-score.red .sr-score-val { color: var(--red); }
+@keyframes numPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.sr-score-val.popping { animation: numPop 0.3s ease; }
+
+@media (max-width: 900px) {
+  .sr-scoreboard { grid-template-columns: repeat(2, 1fr); }
+  .sr-chips { grid-template-columns: 1fr; }
+}
+
+/* ─── HOME PANEL ─── */
+.home-cover {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  margin-bottom: 16px;
+}
+.home-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+.home-title {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.home-version {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 24px;
+}
+.home-purpose {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.6;
+  max-width: 600px;
+}
+.home-section { margin-bottom: 16px; }
+.home-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+.home-sheet-table { width: 100%; border-collapse: collapse; }
+.home-sheet-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.home-sheet-table td {
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.home-sheet-table tr:last-child td { border-bottom: none; }
+.home-sheet-table tr:hover td { background: var(--surface-2); }
+.home-sheet-table td:first-child { font-weight: 500; width: 230px; }
+.home-sheet-table td:last-child { color: var(--text-2); }
+.home-sheet-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.home-rules { list-style: none; padding: 0; }
+.home-rules li {
+  font-size: 14px;
+  color: var(--text-2);
+  padding: 10px 0 10px 22px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.home-rules li:last-child { border-bottom: none; }
+.home-rules li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--yellow);
+  font-weight: 700;
+}
+.home-cta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.btn-start {
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.btn-start:hover { background: var(--yellow-hover); }
+
+/* ─── HOME TABLE ENRICHMENT ─── */
+.home-phase-row td {
+  background: var(--surface-2) !important;
+  font-size: 10px !important; font-weight: 700 !important;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-3) !important; padding: 6px 12px !important; cursor: default !important;
+}
+.home-sheet-table tr:not(.home-phase-row):hover { background: var(--yellow-dim); }
+.home-sheet-table tr:not(.home-phase-row):hover td { color: var(--text); }
+.home-sheet-status {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 3px; letter-spacing: 0.04em; float: right;
+}
+.home-sheet-status.phase1 { background: rgba(255,194,0,0.12); color: var(--yellow); }
+.home-sheet-status.phase2 { background: rgba(63,167,224,0.12); color: #3FA7E0; }
+.home-sheet-status.phase3 { background: rgba(34,197,94,0.12); color: var(--green); }
+
+.home-nav-item {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-bottom: 12px;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.home-nav-item:hover { background: var(--surface-2); color: var(--text); }
+.home-nav-item.active { background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+
+/* ─── ALL DEVELOPMENTS PANEL ─── */
+.all-devs-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-shrink: 0;
+}
+.all-devs-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px; }
+.all-devs-desc { font-size: 13px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+.all-devs-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+.btn-new-dev {
+  background: var(--yellow); color: #000; border: none;
+  border-radius: var(--radius); padding: 10px 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.btn-new-dev:hover { background: var(--yellow-hover); }
+.btn-refresh-devs {
+  background: var(--surface-2); color: var(--text-2);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-refresh-devs:hover { border-color: var(--border-2); color: var(--text); }
+.all-devs-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+.all-devs-status { text-align: center; color: var(--text-3); font-size: 14px; padding: 60px 0; }
+.all-devs-empty { text-align: center; color: var(--text-3); padding: 60px 0; }
+.all-devs-empty p { font-size: 14px; margin-bottom: 16px; }
+.all-devs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.dev-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+  cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+}
+.dev-card:hover { border-color: var(--yellow); transform: translateY(-2px); }
+.dev-card-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 8px; margin-bottom: 10px;
+}
+.dev-card-name { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; flex: 1; }
+.dec-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+}
+.dec-badge.attack  { background: var(--green-dim);   color: var(--green);  border: 1px solid var(--green); }
+.dec-badge.secondary { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+.dec-badge.pass    { background: var(--red-dim);     color: var(--red);    border: 1px solid var(--red); }
+.dec-badge.pending { background: var(--surface-3);   color: var(--text-3); border: 1px solid var(--border-2); }
+.dev-card-score { font-size: 13px; color: var(--text-2); margin-bottom: 12px; }
+.dev-card-score strong { color: var(--yellow); }
+.dev-card-footer {
+  font-size: 11px; color: var(--text-3);
+  border-top: 1px solid var(--border); padding-top: 10px;
+}
+/* sidebar All Devs item */
+.all-devs-nav-item {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-3); padding: 7px 12px;
+  border-radius: var(--radius); cursor: pointer;
+  margin: 0 8px 12px; border: 1px solid var(--border);
+  transition: all 0.15s; display: flex; align-items: center; gap: 6px;
+  background: var(--surface-2);
+}
+.all-devs-nav-item:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
+.all-devs-nav-item.active { background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+
+/* ─── VIEW / EDIT BANNER ─── */
+#view-banner {
+  display: none; align-items: center; justify-content: space-between;
+  padding: 8px 24px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 12px;
+}
+#view-banner[data-mode="edit"] { background: rgba(255,194,0,0.07); border-bottom-color: var(--yellow); }
+.view-banner-left { font-size: 13px; color: var(--text-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.view-banner-left strong { color: var(--text); }
+#view-banner-updated { font-size: 12px; color: var(--text-3); }
+.view-banner-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.btn-banner {
+  border: none; border-radius: var(--radius); padding: 6px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-banner-back { background: transparent; color: var(--text-3); border: 1px solid var(--border); }
+.btn-banner-back:hover { color: var(--yellow); border-color: var(--yellow); }
+.btn-banner-edit { background: var(--surface-2); color: var(--text); border: 1px solid var(--border-2); }
+.btn-banner-edit:hover { border-color: var(--yellow); color: var(--yellow); }
+.btn-banner-save { background: var(--yellow); color: #000; }
+.btn-banner-save:hover { background: var(--yellow-hover); }
+.btn-banner-save:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-banner-discard { background: transparent; color: var(--text-2); border: 1px solid var(--border); }
+.btn-banner-discard:hover { color: var(--red); border-color: var(--red); }
+
+/* ─── READ MODE ─── */
+body.read-mode .step-panel input:not([type="button"]):not([type="submit"]),
+body.read-mode .step-panel select,
+body.read-mode .step-panel textarea {
+  pointer-events: none;
+  background: var(--surface-3) !important;
+  color: var(--text-2) !important;
+  border-color: var(--border) !important;
+  cursor: default;
+  box-shadow: none !important;
+}
+body.read-mode .btn-add-row { pointer-events: none; opacity: 0.25; }
+body.read-mode .row-del-btn { pointer-events: none; opacity: 0.25; }
+body.read-mode #btn-attack,
+body.read-mode #btn-secondary,
+body.read-mode #btn-pass { pointer-events: none; opacity: 0.6; }
+body.read-mode .tab-btn     { pointer-events: auto !important; }
+body.read-mode .step-item   { pointer-events: auto !important; }
+body.read-mode .btn-nav     { pointer-events: auto !important; }
+body.read-mode .decision-gate-nav { pointer-events: auto !important; }
+body.read-mode .home-nav-item     { pointer-events: auto !important; }
+body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <div class="header-brand">
+    <div class="header-logo">TM</div>
+    <div>
+      <div class="header-title">The Makeover Guys</div>
+      <div class="header-sub">Targeted Development Playbook v26.3</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <input type="text" class="dev-name-input" id="devNameGlobal" placeholder="Development name..." oninput="syncDevName()">
+  </div>
+</header>
+
+<!-- ─── VIEW / EDIT BANNER ─── -->
+<div id="view-banner">
+  <div class="view-banner-left">
+    <button class="btn-banner btn-banner-back" onclick="goTo('all')">← All Developments</button>
+    <span>Viewing: <strong id="view-banner-name"></strong></span>
+    <span id="view-banner-updated"></span>
+  </div>
+  <div class="view-banner-right">
+    <button class="btn-banner btn-banner-edit"    id="btn-edit-mode"  onclick="enterEditMode()">✎ Edit</button>
+    <button class="btn-banner btn-banner-save"    id="btn-save-cloud" onclick="saveToCloud()"  style="display:none;">Save to Cloud</button>
+    <button class="btn-banner btn-banner-discard" id="btn-discard"    onclick="discardChanges()" style="display:none;">Discard</button>
+  </div>
+</div>
+
+<div class="app-body">
+
+<!-- ─── SIDEBAR ─── -->
+<aside id="sidebar">
+  <div class="all-devs-nav-item" onclick="goTo('all')" id="nav-all">⊞ All Developments</div>
+  <div class="home-nav-item" onclick="goTo('home')" id="nav-home">▶ Start Here</div>
+  <div class="phase-group">
+    <div class="phase-label">
+      Phase 1 — Decide
+    </div>
+    <div class="step-item" onclick="goTo(1)" id="nav-1">
+      <div class="step-num"><span>1</span></div>
+      <div class="step-text">Scorecard</div>
+    </div>
+    <div class="step-item" onclick="goTo(2)" id="nav-2">
+      <div class="step-num"><span>2</span></div>
+      <div class="step-text">Diagnosis</div>
+    </div>
+  </div>
+
+  <div class="decision-gate-nav" onclick="goTo('gate')" id="nav-gate">
+    <h4>⚡ Decision Gate</h4>
+    <p>Attack or pass?</p>
+  </div>
+
+  <div class="phase-group">
+    <div class="phase-label">
+      Phase 2 — Plan
+    </div>
+    <div class="step-item" onclick="goTo(3)" id="nav-3">
+      <div class="step-num"><span>3</span></div>
+      <div class="step-text">Offer Matrix</div>
+    </div>
+    <div class="step-item" onclick="goTo(4)" id="nav-4">
+      <div class="step-num"><span>4</span></div>
+      <div class="step-text">Channel & Events</div>
+    </div>
+    <div class="step-item" onclick="goTo(5)" id="nav-5">
+      <div class="step-num"><span>5</span></div>
+      <div class="step-text">Show Unit ROI</div>
+    </div>
+  </div>
+
+  <hr class="sidebar-divider">
+
+  <div class="phase-group">
+    <div class="phase-label">Phase 3 — Review</div>
+    <div class="step-item" onclick="goTo(7)" id="nav-7">
+      <div class="step-num"><span>7</span></div>
+      <div class="step-text">Event Procurement</div>
+    </div>
+    <div class="step-item" onclick="goTo(8)" id="nav-8">
+      <div class="step-num"><span>8</span></div>
+      <div class="step-text">Status Report</div>
+    </div>
+    <div class="step-item" onclick="goTo(9)" id="nav-9">
+      <div class="step-num"><span>9</span></div>
+      <div class="step-text">Post-Mortem</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<main id="mainArea">
+
+<!-- ═══════════════════════════════════════════════
+  ALL DEVELOPMENTS
+════════════════════════════════════════════════ -->
+<div class="step-panel active" id="panel-all">
+  <div class="all-devs-header">
+    <div>
+      <div class="step-tag">TMG · 2026</div>
+      <div class="all-devs-title">All Developments</div>
+      <div class="all-devs-desc">Every targeted development your team has started. Click any card to view or continue filling in.</div>
+    </div>
+    <div class="all-devs-actions">
+      <button class="btn-refresh-devs" onclick="loadDevelopments()">↻ Refresh</button>
+      <button class="btn-new-dev" onclick="newDevelopment()">+ New Development</button>
+    </div>
+  </div>
+  <div class="all-devs-body">
+    <div id="all-devs-status" class="all-devs-status">Loading developments…</div>
+    <div id="all-devs-empty" class="all-devs-empty" style="display:none;">
+      <p>No developments yet. Start your first one.</p>
+      <button class="btn-new-dev" onclick="newDevelopment()">+ Start First Development</button>
+    </div>
+    <div id="all-devs-grid" class="all-devs-grid" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  HOME / OVERVIEW
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-home">
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <div class="home-cover">
+      <div class="home-eyebrow">TMG · Targeted Development · 2026</div>
+      <h1 class="home-title">Targeted Development<br>Operating System</h1>
+      <div class="home-version">Version 26.3</div>
+      <div class="home-purpose">Company-wide working file for selecting, planning, launching, converting, and reviewing targeted developments.</div>
+    </div>
+
+    <div class="card home-section">
+      <div class="home-section-label">Use in order</div>
+      <table class="home-sheet-table">
+        <thead>
+          <tr>
+            <th>Sheet</th>
+            <th>What it does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="home-phase-row"><td colspan="2">Phase 1 — Decide</td></tr>
+          <tr onclick="goTo(1)" style="cursor:pointer"><td><span class="home-sheet-num">1</span>Scorecard</td><td>Select the right development <span class="home-sheet-status phase1">Decide</span></td></tr>
+          <tr onclick="goTo(2)" style="cursor:pointer"><td><span class="home-sheet-num">2</span>Diagnosis</td><td>Map market, owner, competition, readiness <span class="home-sheet-status phase1">Decide</span></td></tr>
+          <tr onclick="goTo('gate')" style="cursor:pointer"><td colspan="2" style="font-weight:600;color:var(--yellow);padding:10px 12px;">⚡ Decision Gate — Attack or pass?</td></tr>
+          <tr class="home-phase-row"><td colspan="2">Phase 2 — Plan (unlocked after Attack decision)</td></tr>
+          <tr onclick="goTo(3)" style="cursor:pointer"><td><span class="home-sheet-num">3</span>Offer Matrix</td><td>Build the package and promo logic <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Channel &amp; Events</td><td>Plan owner access, events, and follow-up <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr onclick="goTo(5)" style="cursor:pointer"><td><span class="home-sheet-num">5</span>Show Unit Calculator</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr class="home-phase-row"><td colspan="2">Phase 3 — Review</td></tr>
+          <tr onclick="goTo(7)" style="cursor:pointer"><td><span class="home-sheet-num">7</span>Event Procurement</td><td>Condo-specific items &amp; GWP accountability <span class="home-sheet-status phase3">Review</span></td></tr>
+          <tr onclick="goTo(8)" style="cursor:pointer"><td><span class="home-sheet-num">8</span>Status Report</td><td>Live numbers, pipeline read, blockers &amp; asks <span class="home-sheet-status phase3">Review</span></td></tr>
+          <tr onclick="goTo(9)" style="cursor:pointer"><td><span class="home-sheet-num">9</span>Post-Mortem</td><td>Capture learning <span class="home-sheet-status phase3">Review</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card home-section">
+      <div class="home-section-label">Operating Rules</div>
+      <ul class="home-rules">
+        <li>Complete Scorecard before committing resources</li>
+        <li>Classify segment before building package</li>
+        <li>Lock target math before launch</li>
+        <li>No event without CTA and follow-up owner</li>
+        <li>No oversell beyond delivery capacity</li>
+        <li>Campaign closes only after post-mortem</li>
+      </ul>
+    </div>
+
+    <div class="home-cta">
+      <button class="btn-start" onclick="goTo(1)">Start Scorecard →</button>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 1: SCORECARD
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-1">
+  <div class="step-header">
+    <div class="step-tag">Phase 1 · Step 1 of 2</div>
+    <div class="step-title">Development Scorecard</div>
+    <div class="step-desc">Score each factor from 1–5. The weighted total determines whether this development is worth pursuing. Complete this before committing any resources.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Development Name</label>
+          <input type="text" id="s1-dev" placeholder="e.g. Parq Residences, KLCC" oninput="syncFromField(this,'devName')">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Review Date</label>
+          <input type="date" id="s1-date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Proposed Segment</label>
+          <select id="s1-segment">
+            <option value="">Select segment</option>
+            <option>Rental-Led / Investor-Led</option>
+            <option>Mainstream Own-Stay</option>
+            <option>Premium / Designer-Led</option>
+            <option>Mixed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimated VP Date</label>
+          <input type="date" id="s1-vp-date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Campaign Lead</label>
+          <input type="text" id="s1-lead" placeholder="Name of person leading this campaign">
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="scorecard-table">
+        <thead>
+          <tr>
+            <th style="width:20%">Factor</th>
+            <th style="width:24%" class="col-desc">What good looks like</th>
+            <th style="display:none;">Wt</th>
+            <th style="width:10%">Score (1–5)</th>
+            <th style="width:10%">Weighted</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="scorecard-body">
+          <!-- rows injected by JS -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="padding:14px 12px;"><strong style="font-size:13px;">Total Weighted Score</strong></td>
+            <td><div class="weighted-score" id="total-score" style="font-size:18px;">0</div></td>
+            <td><span id="score-note" style="font-size:12px;color:var(--text-3);">Score updates automatically</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="score-ring-wrap">
+      <div class="score-ring-svg-wrap" id="score-ring-svg-wrap">
+        <svg class="score-ring-svg" viewBox="0 0 120 120">
+          <circle class="score-ring-bg" cx="60" cy="60" r="55"/>
+          <circle class="score-ring-fg" id="score-ring-fg" cx="60" cy="60" r="55"/>
+        </svg>
+        <div class="score-ring-inner">
+          <div class="score-ring-num" id="sum-total">0</div>
+          <div class="score-ring-denom">/ 100</div>
+        </div>
+      </div>
+      <div class="score-ring-meta">
+        <div class="score-ring-label">Score</div>
+        <div class="score-ring-pct" id="sum-pct">0%</div>
+        <div class="score-bar-track"><div class="score-bar-fill" id="score-bar-fill"></div></div>
+        <div id="sum-decision"><span class="decision-pill pass">—</span></div>
+        <div class="score-ring-thresh" id="sum-threshold">Complete scoring above</div>
+        <div class="score-ring-insight" id="sum-insight" style="display:none;"></div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 2: DIAGNOSIS
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-2">
+  <div class="step-header">
+    <div class="step-tag">Phase 1 · Step 2 of 2</div>
+    <div class="step-title">Development Diagnosis</div>
+    <div class="step-desc">Map the market reality, owner profile, competitive landscape, and your internal readiness. Think: what should we sell, to whom, through who, at what timing?</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab(this,'market')">🏢 Market</button>
+      <button class="tab-btn" onclick="switchTab(this,'owner')">👤 Owner</button>
+      <button class="tab-btn" onclick="switchTab(this,'competition')">⚔️ Competition</button>
+      <button class="tab-btn" onclick="switchTab(this,'psychographic')">🧠 Psychographic map</button>
+    </div>
+
+    <!-- Market Tab -->
+    <div class="tab-panel active" id="tab-market">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Unit count</label>
+          <input type="text" id="m-units" placeholder="Or type your own..." data-chips="Below 200 units|200–500 units|500–1,000 units|1,000+ units|Multi-phase">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Main layouts</label>
+          <input type="text" id="m-layouts" placeholder="Or type your own..." data-chips="Studio|1-bed|2-bed|3-bed|4-bed+|Dual key">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price band</label>
+          <input type="text" id="m-price" placeholder="Or type your own..." data-chips="Below RM500k|RM500k – RM800k|RM800k – RM1.2m|RM1.2m – RM1.8m|RM1.8m+">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rental rate context</label>
+          <input type="text" id="m-rental" placeholder="Or type your own..." data-chips="Below RM1,500|RM1,500 – RM2,500|RM2,500 – RM3,500|RM3,500 – RM5,000|RM5,000+">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Market positioning</label>
+        <textarea id="m-mkt-pos" placeholder="Or type your own..." data-chips="Affordable investor product|Mass market own-stay|Transit-oriented project|Premium lifestyle residence|Low-density / exclusive|Luxury / branded address"></textarea>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--surface-2);border-radius:8px;font-size:0.85em;color:var(--text-2);font-style:italic;">
+        This section is basically thinking : Given this market reality, what should we sell, to whom, through who, and at what timing?
+      </div>
+    </div>
+
+    <!-- Owner Tab -->
+    <div class="tab-panel" id="tab-owner">
+      <div class="form-group">
+        <label class="form-label">Who they are</label>
+        <textarea id="o-who" placeholder="Or type your own..." data-chips="First-home buyer|Own-stay family|Rental investor|Airbnb / short-stay investor|Premium lifestyle owner|Overseas / outstation owner"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What they want</label>
+        <textarea id="o-want" placeholder="Or type your own..." data-chips="Rent-ready setup|Move-in ready home|Hassle-free full solution|Practical space planning|Stylish modern design|Premium personalized design|Clear budget control"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What they fear</label>
+        <textarea id="o-fear" placeholder="Or type your own..." data-chips="Overspending|Hidden cost|Poor workmanship|Project delay|Wrong design choice|Unreliable contractor|Poor rental ROI|Tenant damage"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What builds trust</label>
+        <textarea id="o-trust" placeholder="Or type your own..." data-chips="Clear pricing|Real past projects|Client reviews|Strong brand reputation|Designer credibility|Clear process & timeline|End-to-end convenience"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What delays action</label>
+        <textarea id="o-delay" placeholder="Or type your own..." data-chips="Still comparing options|Waiting for key handover|Discussing with spouse / family|Budget not confirmed|Package not clear|Afraid to commit too early|Busy with other priorities"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What triggers commitment</label>
+        <textarea id="o-trigger" placeholder="Or type your own..." data-chips="Clear package fit|Designer confidence|Show unit conviction|Decision-maker alignment|Budget confidence|ROI confidence|Limited-time advantage"></textarea>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--surface-2);border-radius:8px;font-size:0.85em;color:var(--text-2);font-style:italic;">
+        This section is basically thinking : Why would this owner buy, why would they hesitate, and what finally makes them move?
+      </div>
+    </div>
+
+    <!-- Competition Tab -->
+    <div class="tab-panel" id="tab-competition">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Key competitors</label>
+          <textarea id="c-who" placeholder="Or type your own..." data-chips="Interior design firms|Renovation contractors|Freelance designers|Developer panel vendors|Furniture package players|Online package providers"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Offer style</label>
+          <textarea id="c-offer" placeholder="Or type your own..." data-chips="Cheap fixed package|Custom design pitch|Promo-led closing|Furnishing bundle|One-stop renovation solution|Contractor-led execution|Rental ROI package"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price level</label>
+          <textarea id="c-price" placeholder="Or type your own..." data-chips="Much cheaper than TMG|Slightly cheaper than TMG|Same market price|Premium above TMG|Low entry, many add-ons"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weakness</label>
+          <textarea id="c-weak" placeholder="Or type your own..." data-chips="Too generic|Weak design quality|Hidden cost|Weak project management|Slow response|Weak brand trust|Cheap but low confidence|Nice design, weak practicality"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">TMG advantage</label>
+          <textarea id="c-adv" placeholder="Or type your own..." data-chips="Stronger brand trust|More completed units|Relevant case studies|Experience Centre advantage|Clearer process & timeline|End-to-end solution|Education-led selling|Better after-sales confidence"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Risk to watch out</label>
+          <textarea id="c-risk" placeholder="Or type your own..." data-chips="Heavy price undercut|Price-only comparison|Agent pushes other vendor|Developer panel lock-in|Package feels complicated|Weak urgency|Promo-heavy market"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--surface-2);border-radius:8px;font-size:0.85em;color:var(--text-2);font-style:italic;">
+        This section is basically thinking : Why should owners pick TMG over others, and what must we not underestimate?
+      </div>
+    </div>
+
+
+    <!-- Psychographic Map Tab -->
+    <div class="tab-panel" id="tab-psychographic">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Main aspiration</label>
+          <textarea id="p-aspiration" placeholder="Or type your own..." data-chips="Maximize rental yield|Get tenants quickly|Create a beautiful first home|Upgrade family lifestyle|Hassle-free ownership|Home that reflects identity"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Main pain point</label>
+          <textarea id="p-pain" placeholder="Or type your own..." data-chips="No time to manage renovation|Afraid of wrong decisions|Worried about overspending|Too many choices|Don't trust contractors|Need to rent out fast"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price sensitivity</label>
+          <textarea id="p-price" placeholder="Or type your own..." data-chips="Very price-sensitive|Budget-conscious|Value-conscious|Quality-first|Premium-minded"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Common objections</label>
+          <textarea id="p-objections" placeholder="Or type your own..." data-chips="Too expensive|Still want to compare|Not urgent yet|Need spouse / family approval|Worried about hidden cost|Not sure design is practical|Package doesn't fit"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Preferred channel</label>
+          <textarea id="p-channel" placeholder="Or type your own..." data-chips="WhatsApp|Agents|Social media ads|Educational events|Experience Centre|Developer / management office|Referrals"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Recommended strategy module</label>
+          <textarea id="p-strategy" placeholder="Or type your own..." data-chips="Rental-led / Investor-led|Own-stay lifestyle-led|Premium design-led|Convenience-led|Trust-led|Mixed strategy"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--surface-2);border-radius:8px;font-size:0.85em;color:var(--text-2);font-style:italic;">
+        This section is basically thinking : How do these owners think, what drives them, what stops them, and what strategy should we use because of that?
+      </div>
+    </div>
+
+    <!-- Trust Trigger Output -->
+    <div class="tt-section">
+      <div class="tt-header-row">
+        <div>
+          <div class="tt-title">How to Win This Owner</div>
+          <div class="tt-subtitle">Auto-generated from your diagnosis — the key moves that will convince this owner to choose TMG</div>
+        </div>
+        <button class="tt-btn" onclick="generateTrustTriggers()">Analyse →</button>
+      </div>
+      <div id="trust-trigger-output" class="tt-output">
+        <div class="tt-empty">Fill in the 4 diagnosis categories above, then click <strong>Analyse</strong> to generate your winning moves for this development.</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 3: OFFER MATRIX
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-3">
+  <div class="step-header">
+    <div class="step-tag">Phase 2 · Step 3</div>
+    <div class="step-title">Offer / Package Matrix</div>
+    <div class="step-desc">Upload your offer matrix — PPT, PDF, image, or any file format.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+    <div
+      id="om-upload-zone"
+      class="om-upload-zone"
+      onclick="document.getElementById('om-file-input').click()"
+      ondragover="omDragOver(event)"
+      ondragleave="omDragLeave(event)"
+      ondrop="omDrop(event)"
+    >
+      <div class="om-upload-icon">↑</div>
+      <div class="om-upload-label">Upload your Offer Matrix</div>
+      <div class="om-upload-hint">PPT, PDF, PNG, JPG or any file · Click or drag & drop</div>
+    </div>
+    <input type="file" id="om-file-input" accept="*/*" multiple style="display:none" onchange="omHandleFiles(this.files)">
+    <div id="om-files-list" class="om-files-list"></div>
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  DECISION GATE
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-gate">
+  <div class="step-header">
+    <div class="step-tag">Decision Gate</div>
+    <div class="step-title">Attack or Pass?</div>
+    <div class="step-desc">Review your scorecard, diagnosis, and offer matrix. Make the final call before committing campaign resources.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+    <div class="gate-panel">
+
+      <div class="gate-score-display">
+        <div class="gate-score-big" id="gate-score-val">—</div>
+        <div class="gate-score-label">Total Weighted Score (out of 100)</div>
+        <div class="gate-decision-auto" id="gate-auto-decision"></div>
+      </div>
+
+      <!-- TODO: next up — build the Show Unit Calculator feature -->
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon"></div>Gate 1 Checklist — before committing resources</div>
+        <div class="gate-checklist">
+          <div class="checklist-item">
+            <input type="checkbox" class="checklist-cb checklist-auto" id="chk1" disabled>
+            <label for="chk1" class="checklist-text">Scorecard is fully completed and scored</label>
+            <span class="chk-auto-badge">auto</span>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" class="checklist-cb checklist-auto" id="chk2" disabled>
+            <label for="chk2" class="checklist-text">Owner segment is clearly defined and usable</label>
+            <span class="chk-auto-badge">auto</span>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" class="checklist-cb checklist-auto" id="chk3" disabled>
+            <label for="chk3" class="checklist-text">Campaign lead is assigned</label>
+            <span class="chk-auto-badge">auto</span>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" class="checklist-cb checklist-auto" id="chk4" disabled>
+            <label for="chk4" class="checklist-text">Launch window is confirmed and realistic</label>
+            <span class="chk-auto-badge" id="chk4-auto-badge">auto</span>
+            <span class="chk-error-badge" id="chk4-error-badge" style="display:none;">✕ missed window</span>
+          </div>
+          <div class="checklist-item">
+            <input type="checkbox" class="checklist-cb checklist-auto" id="chk7" disabled>
+            <label for="chk7" class="checklist-text">Diagnosis completed (market, owner, competition, readiness)</label>
+            <span class="chk-auto-badge">auto</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="card-title-icon"></div>Final Decision</div>
+        <div class="attack-decision">
+          <div class="attack-btn" id="btn-attack" onclick="setDecision('attack')">
+            <div class="attack-btn-icon">⚡</div>
+            <div class="attack-btn-label">Priority Attack</div>
+            <div class="attack-btn-desc">Score ≥ 70. Full resources. Launch immediately.</div>
+          </div>
+          <div class="attack-btn" id="btn-secondary" onclick="setDecision('secondary')">
+            <div class="attack-btn-icon">🎯</div>
+            <div class="attack-btn-label">Secondary Attack</div>
+            <div class="attack-btn-desc">Score 50–69. Limited resources. Monitor and plan.</div>
+          </div>
+          <div class="attack-btn" id="btn-pass" onclick="setDecision('pass')">
+            <div class="attack-btn-icon">⏸</div>
+            <div class="attack-btn-label">Pass</div>
+            <div class="attack-btn-desc">Score &lt; 50 or not the right time. Do not pursue.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 4: CHANNEL + EVENTS
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-4">
+  <div class="step-header">
+    <div class="step-tag">Phase 2 · Step 4</div>
+    <div class="step-title">Channel + Event Plan</div>
+    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. No event without a CTA and a follow-up owner assigned.</div>
+  </div>
+  <div class="step-scroll" id="scroll-4">
+  <div class="step-content">
+    <div id="phase2-content-4">
+      <div class="formula-bar">
+        <strong>Formula:</strong> Reachable owners × response rate × RSVP rate × show rate × close rate = units sold
+      </div>
+
+      <div class="form-row" style="margin-bottom:20px;">
+        <div class="form-group">
+          <label class="form-label">Campaign Revenue Target (RM)</label>
+          <input type="number" id="e-rev-target" placeholder="e.g. 1,000,000" oninput="syncCalcFromEvents()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Average Ticket Size (RM)</label>
+          <input type="number" id="e-avg-ticket" placeholder="e.g. 20,000" oninput="syncCalcFromEvents()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Units to Close</label>
+          <div style="padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--yellow);" id="e-target-units">—</div>
+        </div>
+      </div>
+
+      <div id="events-container">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 5: SHOW UNIT ROI
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-5">
+  <div class="step-header">
+    <div class="step-tag">Phase 2 · Step 5</div>
+    <div class="step-title">Show Unit ROI Calculator</div>
+    <div class="step-desc">Establish projected revenue, investment required, and breakeven units. Go/No-Go rule: investment must be below projected units × RM 2,500 cost per sale (or below 4% × avg ticket × units if ticket size exceeds RM 120,000). Timing check: minimum 8 active weeks of selling window required after the show unit is ready — anything less is a No Go.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+    <div id="phase2-content-5">
+    <div class="calc-grid">
+
+      <!-- LEFT: INPUTS -->
+      <div>
+        <div class="calc-section-title">1 — Revenue Projection</div>
+        <div class="form-group">
+          <label class="form-label">Total Revenue Projected with Show Unit (RM)</label>
+          <input type="text" inputmode="numeric" id="c-su-rev" placeholder="500,000" oninput="fmtNumInput(this)">
+          <div class="form-hint">Total renovation revenue you expect to close because of the show unit</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Average Ticket Value (RM)</label>
+          <input type="text" inputmode="numeric" id="c-su-ticket" placeholder="25,000" oninput="fmtNumInput(this)">
+        </div>
+
+        <div class="calc-section-title" style="margin-top:24px;">2 — Show Unit Investment</div>
+        <div class="form-hint" style="margin-bottom:14px;">Fill in whichever cost structure applies. Multiple fields will be summed.</div>
+        <div class="form-group">
+          <label class="form-label">Subsidy / Upgrade to Owner (RM)</label>
+          <input type="text" inputmode="numeric" id="c-su-subsidy" placeholder="0" oninput="fmtNumInput(this)">
+          <div class="form-hint">Amount TMG subsidises the owner to upgrade their unit as show unit</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Rental (RM / month)</label>
+          <input type="text" inputmode="numeric" id="c-su-rent-pm" placeholder="0" oninput="fmtNumInput(this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rental Duration (months)</label>
+          <input type="text" inputmode="numeric" id="c-su-rent-months" placeholder="3" oninput="fmtNumInput(this)">
+          <div class="form-hint">Typically 3 – 6 months</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Makeover Amount (RM)</label>
+          <input type="text" inputmode="numeric" id="c-su-makeover" placeholder="0" oninput="fmtNumInput(this)">
+          <div class="form-hint">If TMG is bearing the full renovation cost</div>
+        </div>
+
+        <div class="calc-section-title" style="margin-top:24px;">3 — Timing Check</div>
+        <div class="form-hint" style="margin-bottom:14px;">The show unit uses a client's unit after VP. If renovation runs past the active selling window, no owners will visit — the investment is wasted.</div>
+        <div class="form-group">
+          <label class="form-label">VP / Handover Date</label>
+          <input type="date" id="c-su-vp-date" oninput="calcSU()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estimated Renovation Lead Time (weeks)</label>
+          <input type="text" inputmode="numeric" id="c-su-reno-weeks" placeholder="6" oninput="fmtNumInput(this)">
+          <div class="form-hint">How long to complete the show unit fit-out from VP date</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Active Selling Window (months from VP)</label>
+          <input type="text" inputmode="numeric" id="c-su-window-months" placeholder="4" oninput="fmtNumInput(this)">
+          <div class="form-hint">Owners typically decide within 3–6 months of VP</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: OUTPUTS -->
+      <div>
+        <div class="calc-section-title">Results</div>
+        <div class="output-row">
+          <span class="output-label">Projected Units to Close</span>
+          <span class="output-value" id="o-su-units">—</span>
+        </div>
+        <div class="output-row">
+          <span class="output-label">Total Show Unit Investment</span>
+          <span class="output-value highlight" id="o-su-invest">RM —</span>
+        </div>
+        <div class="output-row">
+          <span class="output-label">Units Needed to Cover Investment <span style="font-size:11px;color:var(--text-3);">investment ÷ (ticket × margin)</span></span>
+          <span class="output-value" id="o-su-be-units">—</span>
+        </div>
+        <div class="output-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px;">
+          <span class="output-label" style="font-weight:600;">Go/No-Go Threshold</span>
+          <span class="output-value highlight" id="o-su-invest-pct" style="font-size:18px;">—</span>
+        </div>
+        <div id="o-su-decision-banner"></div>
+
+        <div class="calc-section-title" style="margin-top:24px;">Timing</div>
+        <div class="output-row">
+          <span class="output-label">Show Unit Ready Date</span>
+          <span class="output-value" id="o-su-ready-date">—</span>
+        </div>
+        <div class="output-row">
+          <span class="output-label">Selling Window Closes</span>
+          <span class="output-value" id="o-su-window-close">—</span>
+        </div>
+        <div id="o-su-timing-banner"></div>
+      </div>
+
+    </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 7: POST EVENT — GWP TRACKER
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-7">
+  <div class="step-header">
+    <div class="step-tag">Phase 3 · Step 7 of 9</div>
+    <div class="step-title">Event Procurement Planner</div>
+    <div class="step-desc">One development, many events. Condo-specific items are ordered once at the development level. GWP is planned per event since each event has its own closing target. BUM owns everything here.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <!-- SECTION 1: CONDO-SPECIFIC ITEMS (development-level) -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;">Section 1 — Condo-Specific Item Requirements</span>
+          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">DEVELOPMENT LEVEL</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Items pre-ordered because this condo has special constraints — specific fridge dimensions, hood/hob specs, clearance requirements, etc. Ordered once per campaign, not per event.</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="event-table" id="condo-item-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Why Required (Constraint)</th>
+              <th>Required Spec / Model</th>
+              <th>Units to Stock</th>
+              <th>Unit Cost (RM)</th>
+              <th>Total Cost (RM)</th>
+              <th>Supplier / Vendor</th>
+              <th>Order Date</th>
+              <th>Lead Time (days)</th>
+              <th>Expected Delivery</th>
+              <th>Delivery Method</th>
+              <th>Actual Delivery</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="condo-item-body"></tbody>
+        </table>
+      </div>
+      <div style="padding:8px 16px 14px;">
+        <button class="btn-add-row" onclick="addCondoItemRow()">+ Add Item</button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: GWP PER EVENT -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;">Section 2 — GWP by Event</span>
+          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">PER EVENT</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Each event has its own GWP order — different closing targets, different quantities. Add one block per event.</div>
+      </div>
+      <div style="padding:16px 20px;" id="ep-events-container"></div>
+      <div style="padding:0 20px 16px;">
+        <button class="btn-add-row" onclick="addEventBlock()">+ Add Event</button>
+      </div>
+    </div>
+
+    <!-- ACCOUNTABILITY CHECKLIST -->
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon"></div>BUM Accountability Checklist</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Condo-Specific Items</div>
+      <div class="gate-checklist" style="margin-bottom:20px;">
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk-c1">
+          <label for="pe-chk-c1" class="checklist-text">All condo constraints identified and documented (dimensions, specs, installation rules)</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk-c2">
+          <label for="pe-chk-c2" class="checklist-text">Required spec / model confirmed with product team before ordering</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk-c3">
+          <label for="pe-chk-c3" class="checklist-text">Purchase request submitted to procurement team with full specs</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk-c4">
+          <label for="pe-chk-c4" class="checklist-text">Items received, checked against spec, and cleared for use before first event</label>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">GWP — per event</div>
+      <div class="gate-checklist">
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk1">
+          <label for="pe-chk1" class="checklist-text">GWP units and buffer confirmed for each event before ordering</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk2">
+          <label for="pe-chk2" class="checklist-text">Purchase request submitted to procurement team per event</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk3">
+          <label for="pe-chk3" class="checklist-text">Delivery confirmed to arrive before each event day</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk4">
+          <label for="pe-chk4" class="checklist-text">GWP received, checked, and counted before each event</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk5">
+          <label for="pe-chk5" class="checklist-text">GWP distributed — count matches signed contracts at every event</label>
+        </div>
+        <div class="checklist-item">
+          <input type="checkbox" class="checklist-cb" id="pe-chk6">
+          <label for="pe-chk6" class="checklist-text">Surplus / unused GWP returned and documented after each event</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">BUM Notes / Issues</label>
+      <textarea id="pe-notes" placeholder="Any issues with procurement, delivery delays, spec mismatches, shortfall, or surplus across any event? Document here."></textarea>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 8: POST MORTEM
+════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════
+  STEP 8: STATUS REPORT
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-8">
+  <div class="step-header">
+    <div class="step-tag">Phase 3 · Step 8 of 9</div>
+    <div class="step-title">Status Report</div>
+    <div class="step-desc">Where the numbers stand right now. Number first, story second, one blocker. Run it in the room in 5 minutes.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <!-- META -->
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Reporting Period</label>
+          <input type="text" id="sr-period" placeholder="e.g. Week 3 / 1–7 Jun 2026">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prepared By</label>
+          <input type="text" id="sr-prepared" placeholder="Name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="sr-date">
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE SCOREBOARD -->
+    <div class="sr-scoreboard">
+      <div class="sr-score">
+        <div class="sr-score-label">Total Leads</div>
+        <div class="sr-score-val" id="sr-sb-leads">0</div>
+        <div class="sr-score-sub">all sources</div>
+      </div>
+      <div class="sr-score">
+        <div class="sr-score-label">Converted</div>
+        <div class="sr-score-val" id="sr-sb-conv">0</div>
+        <div class="sr-score-sub" id="sr-sb-rate">0% conversion</div>
+      </div>
+      <div class="sr-score" id="sr-tile-units">
+        <div class="sr-score-label">Units vs Target</div>
+        <div class="sr-score-val" id="sr-sb-units">0</div>
+        <div class="sr-score-sub" id="sr-sb-units-sub">of 0 units</div>
+        <div class="sr-progress"><span id="sr-sb-units-bar"></span></div>
+      </div>
+      <div class="sr-score" id="sr-tile-rev">
+        <div class="sr-score-label">Revenue vs Target</div>
+        <div class="sr-score-val" id="sr-sb-rev">0%</div>
+        <div class="sr-score-sub" id="sr-sb-rev-sub">RM 0 of RM 0</div>
+        <div class="sr-progress"><span id="sr-sb-rev-bar"></span></div>
+      </div>
+      <div class="sr-score" id="sr-tile-vp">
+        <div class="sr-score-label">VP Window Left</div>
+        <div class="sr-score-val" id="sr-sb-vp">—</div>
+        <div class="sr-score-sub">days to handover</div>
+      </div>
+    </div>
+
+    <!-- 1. LEAD & PIPELINE -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">1</div>
+          <div>
+            <div class="sr-sec-title">Lead &amp; Pipeline Numbers</div>
+            <div class="sr-sec-hint">Where the pipeline stands and which way it's moving.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Total Leads to Date</label>
+          <input type="number" id="sr-leads" min="0" placeholder="0" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Leads This Period</label>
+          <input type="number" id="sr-leads-new" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Vs Last Period (+/−)</label>
+          <input type="text" id="sr-leads-vs" placeholder="e.g. +12">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Lead Sources (breakdown)</label>
+        <textarea id="sr-sources" placeholder="e.g. Event 40 · Walk-in 18 · Referral 11 · Online 25"></textarea>
+      </div>
+      <div class="sr-chips">
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot — deposit stage</div>
+          <input type="number" id="sr-hot" min="0" placeholder="0">
+        </div>
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm — needs a nudge</div>
+          <input type="number" id="sr-warm" min="0" placeholder="0">
+        </div>
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold / dormant</div>
+          <input type="number" id="sr-cold" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Named Hot Leads &amp; Next Step</label>
+        <textarea id="sr-named-hot" placeholder="Who's closest to closing, and what moves them over the line"></textarea>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 2. CONVERSION & REVENUE -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">2</div>
+          <div>
+            <div class="sr-sec-title">Conversion &amp; Revenue vs Target</div>
+            <div class="sr-sec-hint">Actuals against the goal — and the gap that's left.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Units Converted (Signed)</label>
+          <input type="number" id="sr-conv-units" min="0" placeholder="0" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Units</label>
+          <input type="number" id="sr-target-units" min="0" placeholder="0" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Avg Package Value (RM)</label>
+          <input type="number" id="sr-avg-pkg" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">Revenue Closed (RM)</label>
+          <input type="number" id="sr-rev-actual" min="0" placeholder="0" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Revenue (RM)</label>
+          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcSR()">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Gap Remaining &amp; Read on It</label>
+        <textarea id="sr-gap" placeholder="How far from target, and are we trending to close the gap in time?"></textarea>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 3. EVENT -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">3</div>
+          <div>
+            <div class="sr-sec-title">Event Performance</div>
+            <div class="sr-sec-hint">Is the event actually earning its keep at closing?</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Attendance vs Expected</label>
+          <input type="text" id="sr-attendance" placeholder="e.g. 85 / 100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Leads Captured</label>
+          <input type="number" id="sr-event-leads" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deals Closed via Event</label>
+          <input type="number" id="sr-event-closed" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">What's Working in the Room</label>
+          <textarea id="sr-ev-working"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">What's Falling Flat</label>
+          <textarea id="sr-ev-flat"></textarea>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Cost vs Return</label>
+        <select id="sr-ev-cost" style="max-width:240px;">
+          <option value="">— select —</option>
+          <option>Earning its keep</option>
+          <option>Breaking even</option>
+          <option>Not worth it yet</option>
+        </select>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 4. PACKAGE APPEAL -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">4</div>
+          <div>
+            <div class="sr-sec-title">Package Appeal</div>
+            <div class="sr-sec-hint">What customers gravitate to — and what makes them hesitate.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Most Popular Tier &amp; Why</label>
+          <textarea id="sr-pkg-popular"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Most Common Objection</label>
+          <textarea id="sr-pkg-objection"></textarea>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">What Customers Ask to Add / Remove / Change</label>
+          <textarea id="sr-pkg-change"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pricing or Term That's a Sticking Point</label>
+          <textarea id="sr-pkg-sticking"></textarea>
+        </div>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 5. SHOW UNIT -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">5</div>
+          <div>
+            <div class="sr-sec-title">Show Unit Status</div>
+            <div class="sr-sec-hint">Renovation progress and whether it's helping close.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Renovation Stage</label>
+          <input type="text" id="sr-su-stage" placeholder="e.g. Tiling / Carpentry">
+        </div>
+        <div class="form-group">
+          <label class="form-label">% Complete</label>
+          <input type="number" id="sr-su-pct" min="0" max="100" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected Ready Date</label>
+          <input type="date" id="sr-su-ready">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Delays — Cause &amp; Recovery Plan</label>
+        <textarea id="sr-su-delays"></textarea>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Is It Helping Close?</label>
+        <select id="sr-su-helping" style="max-width:300px;">
+          <option value="">— select —</option>
+          <option>Yes — converts faster after viewing</option>
+          <option>Some impact</option>
+          <option>Too early to tell</option>
+          <option>Not yet a factor</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Customer Feedback on the Walk-Through</label>
+        <textarea id="sr-su-feedback"></textarea>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 6. VP WINDOW -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">6</div>
+          <div>
+            <div class="sr-sec-title">Vacant Possession (VP) Window</div>
+            <div class="sr-sec-hint">How much runway is left before the window shuts.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">VP Handover Date</label>
+          <input type="date" id="sr-vp-date" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Days of Runway Left</label>
+          <input type="text" id="sr-vp-manual" placeholder="auto / override" oninput="calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deals That Must Close in Window</label>
+          <input type="number" id="sr-vp-deals" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">What Must Happen Before It Shuts</label>
+          <textarea id="sr-vp-must"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Risk If We Miss It + Plan to Avoid</label>
+          <textarea id="sr-vp-risk"></textarea>
+        </div>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 7. BLOCKERS -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">7</div>
+          <div>
+            <div class="sr-sec-title">Blockers &amp; Asks</div>
+            <div class="sr-sec-hint">The honest "what's slowing us down" — and what you need.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-group">
+        <label class="form-label">Top 1–3 Blockers Right Now</label>
+        <textarea id="sr-blockers" placeholder="1. …&#10;2. …&#10;3. …" style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">What I Need from the Team / Leadership to Move Faster</label>
+        <textarea id="sr-asks"></textarea>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- HOW TO RUN IT -->
+    <div class="sr-how-to">
+      <div class="sr-how-to-title">How to Run It in the Room</div>
+      <ol>
+        <li><b>Number first.</b> State your figure before the story — keeps it comparable across everyone.</li>
+        <li><b>One sentence on the why.</b> What's behind the number, good or bad.</li>
+        <li><b>One blocker.</b> The single biggest thing in your way, plus what you need.</li>
+      </ol>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<div class="step-panel" id="panel-9">
+  <div class="step-header">
+    <div class="step-tag">Phase 3 · Step 9 of 9</div>
+    <div class="step-title">Post-Mortem</div>
+    <div class="step-desc">Campaign closes only after post-mortem. Capture what happened honestly. Build the institutional memory that makes the next campaign smarter.</div>
+  </div>
+  <div class="step-scroll">
+  <div class="step-content">
+
+    <div class="form-row" style="margin-bottom:20px;">
+      <div class="form-group">
+        <label class="form-label">Campaign Duration</label>
+        <input type="text" id="pm-duration" placeholder="e.g. 3 months, Feb–Apr 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Final Revenue Achieved (RM)</label>
+        <input type="number" id="pm-revenue" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Final Units Closed</label>
+        <input type="number" id="pm-units" placeholder="0">
+      </div>
+    </div>
+
+    <div class="pm-grid">
+
+      <div class="pm-section">
+        <div class="pm-section-header">
+          <div class="pm-dot green"></div>
+          <div class="pm-section-title">What Was Right</div>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Right Assumptions</div>
+          <textarea id="pm-r-assump" placeholder="What did we predict correctly about the market, owners, or competition?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Best Channel</div>
+          <textarea id="pm-r-channel" placeholder="Which channel drove the most quality leads?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Best Message</div>
+          <textarea id="pm-r-msg" placeholder="Which message / hook resonated most strongly?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Best Package</div>
+          <textarea id="pm-r-pkg" placeholder="Which tier / offer drove the most conversions?"></textarea>
+        </div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-section-header">
+          <div class="pm-dot red"></div>
+          <div class="pm-section-title">What Was Wrong</div>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Wrong Assumptions</div>
+          <textarea id="pm-w-assump" placeholder="What did we get wrong? What surprised us?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Weakest Channel</div>
+          <textarea id="pm-w-channel" placeholder="Which channel underperformed or wasted resources?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Weakest Message</div>
+          <textarea id="pm-w-msg" placeholder="Which message fell flat or caused confusion?"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Biggest Bottleneck</div>
+          <textarea id="pm-w-bottle" placeholder="What slowed us down or killed conversions?"></textarea>
+        </div>
+      </div>
+
+      <div class="pm-section">
+        <div class="pm-section-header">
+          <div class="pm-dot yellow"></div>
+          <div class="pm-section-title">Next Play</div>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">What to Repeat</div>
+          <textarea id="pm-n-repeat" placeholder="Specific things to carry forward into the next campaign"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">What to Stop</div>
+          <textarea id="pm-n-stop" placeholder="Specific things to cut — no more resources on these"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">What to Start Next</div>
+          <textarea id="pm-n-start" placeholder="New experiments or approaches to try next time"></textarea>
+        </div>
+        <div class="pm-field">
+          <div class="pm-field-label">Score This Campaign (1–10)</div>
+          <input type="number" id="pm-score" min="1" max="10" placeholder="1–10">
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- ─── BOTTOM NAV ─── -->
+<div class="bottom-nav">
+  <button class="btn-nav btn-prev" id="btnPrev" onclick="navPrev()">← Back</button>
+  <div class="nav-step-info" id="navInfo">
+    <span id="navInfoText">Overview</span>
+    <div class="nav-dots" id="navDots"></div>
+  </div>
+  <button class="btn-nav btn-next" id="btnNext" onclick="navNext()">Continue →</button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────────────────────
+const STEPS = ['all', 'home', 1, 2, 'gate', 3, 4, 5, 7, 8, 9];
+let currentStep = 'all';
+let decisionMade = null; // 'attack' | 'secondary' | 'pass' | null
+let state = {};
+let currentDevId = null;       // UUID of open development, null if new
+let isEditMode = false;
+let currentDevUpdatedAt = null;
+
+// ─────────────────────────────────────────────────────────────
+//  SCORECARD DATA
+// ─────────────────────────────────────────────────────────────
+const SCORECARD_FACTORS = [
+  { name: 'Reachable Volume',     desc: 'Enough addressable owners to support target',      ruler: '1 = <100 units · 5 = >1,000 units' },
+  { name: 'Owner Accessibility',  desc: 'Channels or partners can reach owners',             ruler: '1 = <10%; 5 = >80% reachable via channels' },
+  { name: 'Segment Clarity',      desc: 'Owner profile is clear and usable',                 ruler: '1 = owner type unclear/mixed · 5 = clear profile, easy to design strategy' },
+  { name: 'Revenue Potential',    desc: 'Average ticket and volume are attractive',          ruler: '1 = RM25k avg & low volume · 5 = RM150k avg & high volume' },
+  { name: 'Speed to Monetization',desc: 'Timing supports fast conversion',                   ruler: '1 = VP 12+ months away · 5 = VP in <2 months' },
+  { name: 'Competition Situation',desc: 'TMG has room to win',                               ruler: '1 = crowded, strong competitor dominance · 5 = weak/fragmented, clear opening for TMG' },
+  { name: 'Event Practicality',   desc: 'On-site / EC activation is feasible',              ruler: '1 = hard to run events, poor access · 5 = events highly feasible, strong EC activation' },
+  { name: 'Delivery Readiness',   desc: 'Internal team can fulfill likely volume',           ruler: '1 = delivery likely to struggle badly · 5 = strong readiness, enough bandwidth' },
+  { name: 'Margin Profile',       desc: 'Offer can be sold profitably',                      ruler: '1 = likely heavy discounting/high complexity · 5 = healthy margin, manageable scope' },
+  { name: 'Strategic Fit',        desc: 'Strong fit for brand and capability',               ruler: '1 = weak fit, outside our strength · 5 = strong fit for brand, packages, operating model' },
+];
+
+// ─────────────────────────────────────────────────────────────
+//  OFFER MATRIX DATA
+// ─────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────
+//  EVENT PHASES
+// ─────────────────────────────────────────────────────────────
+const EVENT_PHASES = [
+  { id: 'pre-vp', label: 'Pre-VP', sub: '2 months prior to handover' },
+  { id: 'vp', label: 'VP', sub: '1–3 months' },
+  { id: 'post-vp', label: 'Post-VP', sub: '3–6 months' },
+];
+const EVENT_TYPES = [
+  'Educational physical talk',
+  'Online Webinar',
+  'Show unit walkthrough',
+  'On-site booth',
+  'Invite to EC event',
+  'Off-site event',
+];
+const CHANNELS = [
+  'Agent / Agency', 'VP insert', 'Management office', 'Coldcall list',
+  'Referral database', 'WhatsApp blasting', 'Social ads', 'Partnership',
+  'Influencer', 'Ketua kampung',
+];
+
+// ─────────────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────────────
+function generateTrustTriggers() {
+  const v = id => (document.getElementById(id)?.value || '').toLowerCase();
+  const d = {
+    mUnits:      v('m-units'),
+    mLayouts:    v('m-layouts'),
+    mPrice:      v('m-price'),
+    mRental:     v('m-rental'),
+    mMktPos:     v('m-mkt-pos'),
+    oWho:        v('o-who'),
+    oWant:       v('o-want'),
+    oFear:       v('o-fear'),
+    oTrust:      v('o-trust'),
+    pAspiration: v('p-aspiration'),
+    pPain:       v('p-pain'),
+    pPrice:      v('p-price'),
+    pObjections: v('p-objections'),
+    pStrategy:   v('p-strategy'),
+    cAdv:        v('c-adv'),
+    cRisk:       v('c-risk'),
+  };
+  const all = Object.values(d).join(' ');
+  const out = document.getElementById('trust-trigger-output');
+
+  if (all.trim().length < 15) {
+    out.innerHTML = '<div class="tt-empty">Fill in the 4 diagnosis categories above, then click <strong>Analyse</strong> to generate recommended trust triggers for this development.</div>';
+    return;
+  }
+
+  const rules = [
+    {
+      trigger: 'Clear fixed pricing',
+      rationale: 'Owners fear hidden costs. A transparent, locked price removes the #1 barrier to commitment.',
+      fields: ['oFear', 'pPrice', 'pObjections', 'cRisk'],
+      keywords: [
+        'hidden cost', 'hidden charge', 'hidden fee',
+        'overspend', 'over budget', 'exceed budget',
+        'price.sensitiv', 'price.conscious', 'price.first',
+        'too expensive', 'too costly', 'costly',
+        'extra charge', 'additional cost', 'unexpected cost', 'unexpected charge',
+        'compare.*price', 'price.*compare', 'compare on price',
+        'cost overrun', 'surcharge', 'markup',
+        'clear pric', 'transparent pric', 'fix.*pric', 'lock.*pric',
+        'budget control', 'budget.conscious',
+        'undercut', 'price cut', 'cheap.*option', 'cheapest',
+        'affordable', 'value.conscious', 'know.*cost', 'cost.*upfront',
+      ],
+    },
+    {
+      trigger: 'Rental yield logic',
+      rationale: 'Investor-heavy market needs ROI proof, not just design. Yield data and tenancy track record close deals.',
+      fields: ['mMktPos', 'mLayouts', 'mRental', 'oWho', 'pStrategy', 'oWant', 'pAspiration'],
+      keywords: [
+        'invest', 'yield', 'roi', 'return on',
+        'passive income', 'rental income', 'rental yield',
+        'cash flow', 'rent out', 'buy to let',
+        'airbnb', 'short.stay', 'short stay',
+        'landlord', 'tenancy', 'tenant',
+        'rental.led', 'investor.led', 'investor product',
+        'studio', 'maximize.*rental', 'get.*tenant',
+        'rent.ready', 'vacancy', 'occupancy',
+        'poor.*roi', 'poor.*rental', 'rental.*damage',
+        'maximise', 'maximize',
+      ],
+    },
+    {
+      trigger: 'Strong before/after proof',
+      rationale: 'Owners who fear bad workmanship or wrong design need visual evidence that the outcome is real and repeatable.',
+      fields: ['oFear', 'pPain', 'cRisk', 'cAdv', 'oTrust'],
+      keywords: [
+        'workmanship', 'wrong design', 'design choice',
+        'cheat', 'scam', 'fraud',
+        'bad quality', 'poor quality', 'poor workmanship',
+        'trust.*contractor', 'dont trust', 'unreliable',
+        'portfolio', 'past work', 'past project', 'completed unit',
+        'track record', 'case stud', 'before.*after',
+        'disappoint', 'regret', 'gone wrong',
+        'proof', 'evidence', 'real project', 'client review',
+        'relevant case', 'more completed',
+        'shoddy', 'low quality', 'quality.*issue',
+      ],
+    },
+    {
+      trigger: 'Fast completion timeline',
+      rationale: 'Delay anxiety and urgency to rent out quickly both point to timeline as a key trust signal.',
+      fields: ['oFear', 'oWant', 'pPain', 'cAdv', 'oTrust'],
+      keywords: [
+        'delay', 'project delay', 'renovation delay',
+        'urgent', 'urgency', 'time.sensitiv', 'time constraint',
+        'timeline', 'clear.*timeline', 'clear.*process',
+        'no time', 'no time to manage',
+        'handover', 'key handover', 'moving in', 'move.in',
+        'fast track', 'asap', 'expedit', 'rush',
+        'overrun', 'deadline', 'quick.*turnaround', 'turnaround',
+        'rent.ready', 'move.in ready',
+        'on time', 'within.*week', 'fast.*complet',
+        'slow.*complet', 'late.*handover', 'drag',
+      ],
+    },
+    {
+      trigger: 'Designer credibility',
+      rationale: 'Premium and own-stay buyers need to believe the design outcome will genuinely reflect their identity.',
+      fields: ['mMktPos', 'mLayouts', 'pStrategy', 'pAspiration', 'oWho'],
+      keywords: [
+        'premium', 'luxury', 'luxuri',
+        'designer', 'design.led', 'designer.led',
+        'identity', 'reflect.*home', 'home.*reflect',
+        'beauti', 'lifestyle', 'aesthetic',
+        'curated', 'high.end', 'prestige', 'prestigious',
+        'own.stay', 'ownstay', 'own stay',
+        'dream home', 'personaliz', 'personalis',
+        'unique', 'bespoke', 'exclusive',
+        'premium lifestyle', 'low.density',
+        '2.bed', '3.bed', '4.bed',
+        'lifestyle.led', 'branded address',
+        'showroom', 'show unit',
+        'family.*home', 'upgrade.*lifestyle',
+        'reflect.*identity', 'reflect.*style',
+      ],
+    },
+    {
+      trigger: 'Good testimonial / review base',
+      rationale: 'When trust is the primary barrier, peer proof from real owners in similar developments is the fastest shortcut.',
+      fields: ['oFear', 'oTrust', 'pObjections', 'cAdv'],
+      keywords: [
+        'testimonial', 'review', 'rating',
+        'referral', 'recommend', 'word of mouth',
+        'cheat', 'scam', 'been burnt', 'bad experience',
+        'reputation', 'credib', 'legit',
+        'verify', 'proof', 'evidence',
+        'experience centre', 'show unit conviction',
+        'past client', 'satisfied', 'happy.*owner',
+        'social proof', 'peer proof',
+        'who are you', 'never heard', 'heard of',
+        'trust issue', 'trust barrier',
+        'client.*review', 'strong brand', 'real.*past',
+      ],
+    },
+    {
+      trigger: 'Full end-to-end convenience',
+      rationale: 'Busy owners or those with no time to manage renovation are won by removing all friction from the process.',
+      fields: ['oWant', 'pPain', 'pAspiration', 'mMktPos', 'oWho'],
+      keywords: [
+        'hassle', 'hassle.free',
+        'no time', 'busy', 'occupied',
+        'turnkey', 'one.stop', 'one stop',
+        'end.to.end', 'end to end',
+        'full service', 'full solution',
+        'hands.off', 'hands off',
+        'manage everything', 'single point',
+        'just want', 'do it for', 'done for',
+        'overseas', 'outstation', 'abroad', 'cant be there', 'cannot be there',
+        'conveni', 'fuss free', 'stress free',
+        'transit', 'effortless', 'easy.*process',
+        'not.*there', 'far away', 'remote.*owner',
+      ],
+    },
+    {
+      trigger: 'Well-known brand reputation',
+      rationale: 'In competitive markets where agents drive referrals, the TMG brand name lowers perceived risk before the first conversation.',
+      fields: ['cRisk', 'cAdv', 'pObjections', 'mMktPos'],
+      keywords: [
+        'brand', 'brand name', 'brand trust', 'brand reputation',
+        'reputation', 'well.known', 'well known',
+        'established', 'market leader', 'proven',
+        'competitor', 'competition', 'competit',
+        'agent', 'saturated', 'crowded',
+        'compare', 'comparison',
+        'developer panel', 'panel vendor', 'panel lock',
+        'promo', 'price.*undercut', 'heavy.*undercut',
+        'never heard', 'heard of', 'trusted',
+        'credib', 'recogni',
+      ],
+    },
+  ];
+
+  function scoreRule(rule) {
+    const text = rule.fields.map(f => d[f] || '').join(' ');
+    return rule.keywords.filter(kw => new RegExp(kw).test(text)).length;
+  }
+
+  const scored = rules
+    .map(r => ({ ...r, score: scoreRule(r) }))
+    .sort((a, b) => b.score - a.score);
+
+  const matched = scored.filter(r => r.score > 0);
+
+  if (matched.length === 0) {
+    out.innerHTML = '<div class="tt-empty">No strong signals detected yet. Try adding more specific detail to <em>Owner Fears</em>, <em>Pain Points</em>, <em>Market Position</em>, or <em>Objections</em> — the more specific you are, the more targeted the triggers.</div>';
+    return;
+  }
+
+  out.innerHTML = matched.map(r => `
+    <div class="tt-card">
+      <div class="tt-tag">${r.trigger}</div>
+      <div class="tt-rationale">${r.rationale}</div>
+    </div>
+  `).join('');
+}
+
+function syncChipStates() {
+  document.querySelectorAll('.chip-group').forEach(group => {
+    const field = group.nextElementSibling;
+    if (!field) return;
+    const val = field.value.toLowerCase();
+    group.querySelectorAll('.chip').forEach(btn => {
+      btn.classList.toggle('chip--active', val.includes(btn.textContent.toLowerCase()));
+    });
+  });
+}
+
+function initChips() {
+  document.querySelectorAll('[data-chips]').forEach(field => {
+    const chips = field.getAttribute('data-chips').split('|');
+    const group = document.createElement('div');
+    group.className = 'chip-group';
+    chips.forEach(text => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip';
+      btn.textContent = text;
+      btn.onclick = () => {
+        if (btn.classList.contains('chip--active')) {
+          btn.classList.remove('chip--active');
+          const escaped = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          field.value = field.value
+            .replace(new RegExp(',?\\s*' + escaped, 'gi'), '')
+            .replace(/^,\s*/, '').trim();
+        } else {
+          btn.classList.add('chip--active');
+          const cur = field.value.trim();
+          field.value = cur ? cur + ', ' + text : text;
+        }
+        field.dispatchEvent(new Event('input'));
+      };
+      group.appendChild(btn);
+    });
+    field.parentNode.insertBefore(group, field);
+  });
+}
+
+function init() {
+  buildScorecardTable();
+  buildEventsContainer();
+  addCondoItemRow();
+  addEventBlock();
+  loadAll();
+  updateScorecard();
+  calcSU();
+  buildNavDots();
+  goTo('all');
+  updatePhaseAccess();
+  initChips();
+  syncChipStates();
+  // re-sync gate checklist whenever any field changes (covers diagnosis fields not hooked to updateScorecard)
+  document.addEventListener('input', syncGateChecklist);
+  document.addEventListener('change', syncGateChecklist);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  BUILD SCORECARD TABLE
+// ─────────────────────────────────────────────────────────────
+function buildScorecardTable() {
+  const tbody = document.getElementById('scorecard-body');
+  tbody.innerHTML = SCORECARD_FACTORS.map((f, i) => `
+    <tr>
+      <td>
+        <div class="factor-name">${f.name}</div>
+        <div class="factor-desc factor-desc-inline">${f.desc}</div>
+        <div class="factor-ruler">${f.ruler}</div>
+      </td>
+      <td class="col-desc">
+        <div class="factor-desc">${f.desc}</div>
+      </td>
+      <td class="factor-weight">2</td>
+      <td>
+        <input type="number" class="score-input" id="sc-score-${i}" min="1" max="5" placeholder="—" oninput="updateScorecard()">
+      </td>
+      <td>
+        <div class="weighted-score" id="sc-weighted-${i}">—</div>
+      </td>
+      <td>
+        <textarea class="notes-input" id="sc-notes-${i}" placeholder="Notes…"></textarea>
+      </td>
+    </tr>
+  `).join('');
+
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SCORECARD CALCULATION
+// ─────────────────────────────────────────────────────────────
+let _prevScoreTotal = -1;
+function updateScorecard() {
+  let total = 0;
+  let filledCount = 0;
+  SCORECARD_FACTORS.forEach((_, i) => {
+    const scoreEl = document.getElementById(`sc-score-${i}`);
+    const score = parseFloat(scoreEl?.value) || 0;
+    const weighted = score * 2;
+    const wEl = document.getElementById(`sc-weighted-${i}`);
+    if (wEl) {
+      wEl.textContent = score > 0 ? weighted : '—';
+      wEl.className = 'weighted-score' + (score >= 4 ? ' score-high' : score >= 3 ? ' score-mid' : score > 0 ? ' score-low' : '');
+    }
+    const row = scoreEl?.closest('tr');
+    if (row) {
+      row.classList.remove('score-strong', 'score-weak');
+      if (score >= 4) row.classList.add('score-strong');
+      else if (score <= 2 && score > 0) row.classList.add('score-weak');
+    }
+    total += weighted;
+    if (score > 0) filledCount++;
+  });
+
+  document.getElementById('total-score').textContent = total;
+  document.getElementById('sum-total').textContent = total;
+  document.getElementById('sum-pct').textContent = `${total}%`;
+  document.getElementById('gate-score-val').textContent = total;
+
+  // animated ring
+  const circumference = 2 * Math.PI * 55;
+  const ring = document.getElementById('score-ring-fg');
+  const bar  = document.getElementById('score-bar-fill');
+  const wrap = document.getElementById('score-ring-svg-wrap');
+  const numEl = document.getElementById('sum-total');
+  if (ring) {
+    const pct = Math.min(total / 100, 1);
+    ring.style.strokeDasharray  = circumference;
+    ring.style.strokeDashoffset = circumference - pct * circumference;
+    const col = total >= 70 ? 'var(--green)' : total >= 50 ? 'var(--yellow)' : total > 0 ? 'var(--red)' : 'var(--surface-3)';
+    ring.style.stroke = col;
+    if (numEl) numEl.style.color = total >= 70 ? 'var(--green)' : total >= 50 ? 'var(--yellow)' : total > 0 ? 'var(--red)' : 'var(--text-2)';
+    if (bar) { bar.style.width = (pct * 100) + '%'; bar.style.background = col; }
+  }
+  const crossed = ((_prevScoreTotal < 70 && total >= 70) || (_prevScoreTotal < 50 && total >= 50 && total < 70) || (_prevScoreTotal >= 70 && total < 70));
+  if (crossed && wrap) { wrap.classList.remove('milestone'); void wrap.offsetWidth; wrap.classList.add('milestone'); }
+  _prevScoreTotal = total;
+
+  const decEl    = document.getElementById('sum-decision');
+  const threshEl = document.getElementById('sum-threshold');
+  const insightEl= document.getElementById('sum-insight');
+  const gateAuto = document.getElementById('gate-auto-decision');
+  let pill = '', gateText = '', insight = '';
+
+  if (filledCount < SCORECARD_FACTORS.length) {
+    pill      = `<span class="decision-pill pass" style="font-size:12px;">Score incomplete</span>`;
+    gateText  = `<span class="decision-pill pass" style="font-size:13px;">Complete scoring first</span>`;
+    threshEl.textContent = `${filledCount}/${SCORECARD_FACTORS.length} factors scored`;
+    if (insightEl) insightEl.style.display = 'none';
+  } else if (total >= 70) {
+    pill      = `<span class="decision-pill priority">Priority Attack</span>`;
+    gateText  = `<span class="decision-pill priority">Recommended: Priority Attack</span>`;
+    threshEl.textContent = 'Strong candidate — threshold ≥ 70';
+    insight   = 'Strong signal. Move fast — competitors may be circling the same development.';
+  } else if (total >= 50) {
+    pill      = `<span class="decision-pill secondary">Secondary Attack</span>`;
+    gateText  = `<span class="decision-pill secondary">Recommended: Secondary Attack</span>`;
+    threshEl.textContent = 'Moderate candidate — threshold 50–69';
+    insight   = 'Borderline. Check VP timing and delivery capacity before committing full resources.';
+  } else {
+    pill      = `<span class="decision-pill pass">Do Not Prioritize</span>`;
+    gateText  = `<span class="decision-pill pass">Recommended: Pass</span>`;
+    threshEl.textContent = 'Weak candidate — threshold < 50';
+    insight   = 'Weak signal. Redirect time to a higher-scoring development rather than forcing this one.';
+  }
+  decEl.innerHTML = pill;
+  gateAuto.innerHTML = gateText;
+  if (insightEl && filledCount === SCORECARD_FACTORS.length) {
+    insightEl.textContent = insight;
+    insightEl.style.display = 'block';
+    insightEl.style.borderLeftColor = total >= 70 ? 'var(--green)' : total >= 50 ? 'var(--yellow)' : 'var(--red)';
+  }
+
+  syncGateChecklist();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  GATE CHECKLIST AUTO-VALIDATION
+// ─────────────────────────────────────────────────────────────
+function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+
+function syncGateChecklist() {
+  // chk1: all scorecard factors scored
+  const scoreInputs = [...document.querySelectorAll('.score-input')];
+  setChk('chk1', scoreInputs.length > 0 && scoreInputs.every(el => el.value && parseInt(el.value) >= 1));
+
+  // chk2: segment selected AND owner "who they are" filled
+  setChk('chk2', val('s1-segment') !== '' && val('o-who') !== '');
+
+  // chk3: campaign lead name entered
+  setChk('chk3', val('s1-lead') !== '');
+
+  // chk4: VP date set AND review date is not 2+ months past VP date
+  const vpDateStr = val('s1-vp-date');
+  let chk4Ok = vpDateStr !== '';
+  let chk4Missed = false;
+  if (chk4Ok) {
+    const reviewDateStr = val('s1-date');
+    if (reviewDateStr) {
+      const vpDate     = new Date(vpDateStr);
+      const reviewDate = new Date(reviewDateStr);
+      const cutoff     = new Date(vpDate);
+      cutoff.setMonth(cutoff.getMonth() + 2);
+      if (reviewDate >= cutoff) { chk4Ok = false; chk4Missed = true; }
+    }
+  }
+  setChk('chk4', chk4Ok);
+  const chk4Auto  = document.getElementById('chk4-auto-badge');
+  const chk4Error = document.getElementById('chk4-error-badge');
+  if (chk4Auto)  chk4Auto.style.display  = chk4Missed ? 'none'   : '';
+  if (chk4Error) chk4Error.style.display = chk4Missed ? 'inline' : 'none';
+
+  // chk7: at least one field filled in each of the 4 diagnosis tabs
+  const marketDone = ['m-units','m-price','m-mkt-pos'].some(id => val(id));
+  const ownerDone  = ['o-who','o-want'].some(id => val(id));
+  const compDone   = ['c-who','c-offer'].some(id => val(id));
+  const psychoDone = ['p-aspiration','p-pain'].some(id => val(id));
+  setChk('chk7', marketDone && ownerDone && compDone && psychoDone);
+}
+
+function setChk(id, checked) {
+  const el = document.getElementById(id);
+  if (el) el.checked = checked;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  OFFER MATRIX FILE UPLOAD
+// ─────────────────────────────────────────────────────────────
+let omDB = null;
+let omCurrentFiles = [];
+
+function omOpenDB() {
+  return new Promise((resolve, reject) => {
+    if (omDB) return resolve(omDB);
+    const req = indexedDB.open('tmg-om-files', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('files', { keyPath: 'key' });
+    req.onsuccess = e => { omDB = e.target.result; resolve(omDB); };
+    req.onerror = reject;
+  });
+}
+
+async function omPersist(devId) {
+  if (!devId) return;
+  const db = await omOpenDB();
+  const tx = db.transaction('files', 'readwrite');
+  tx.objectStore('files').put({ key: `om_${devId}`, files: omCurrentFiles });
+}
+
+async function omLoadForDev(devId) {
+  if (!devId) { omCurrentFiles = []; omRender(); return; }
+  const db = await omOpenDB();
+  const rec = await new Promise(res => {
+    const req = db.transaction('files').objectStore('files').get(`om_${devId}`);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => res(null);
+  });
+  omCurrentFiles = rec?.files || [];
+  omRender();
+}
+
+async function omHandleFiles(fileList) {
+  for (const file of fileList) {
+    const dataUrl = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+    omCurrentFiles.push({ name: file.name, type: file.type, size: file.size, dataUrl });
+  }
+  omRender();
+  omPersist(currentDevId);
+  // reset input so the same file can be re-selected
+  document.getElementById('om-file-input').value = '';
+}
+
+function omRemove(index) {
+  omCurrentFiles.splice(index, 1);
+  omRender();
+  omPersist(currentDevId);
+}
+
+function omDragOver(e) {
+  e.preventDefault();
+  document.getElementById('om-upload-zone').classList.add('om-drag-over');
+}
+function omDragLeave() {
+  document.getElementById('om-upload-zone').classList.remove('om-drag-over');
+}
+function omDrop(e) {
+  e.preventDefault();
+  document.getElementById('om-upload-zone').classList.remove('om-drag-over');
+  omHandleFiles(e.dataTransfer.files);
+}
+
+function omRender() {
+  const list = document.getElementById('om-files-list');
+  if (!list) return;
+  if (!omCurrentFiles.length) { list.innerHTML = ''; return; }
+  list.innerHTML = omCurrentFiles.map((f, i) => {
+    const sizeStr = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.round(f.size / 1024) + ' KB';
+    const isImage = f.type.startsWith('image/');
+    const isPdf   = f.type === 'application/pdf';
+    const header  = `<div class="om-file-header">
+      <span class="om-file-name">${f.name}</span>
+      <span class="om-file-size">${sizeStr}</span>
+      <button class="om-file-remove" onclick="omRemove(${i})">✕</button>
+    </div>`;
+    if (isImage) {
+      return `<div class="om-file-card">${header}<img src="${f.dataUrl}" class="om-file-preview-img"></div>`;
+    } else if (isPdf) {
+      return `<div class="om-file-card">${header}<embed src="${f.dataUrl}" type="application/pdf" class="om-file-preview-pdf"></div>`;
+    } else {
+      const ext = f.name.split('.').pop().toUpperCase();
+      return `<div class="om-file-card om-file-card-doc">
+        <div class="om-file-icon">${ext}</div>
+        <div class="om-file-info"><span class="om-file-name">${f.name}</span><span class="om-file-size">${sizeStr}</span></div>
+        <a href="${f.dataUrl}" download="${f.name}" class="om-file-download">↓ Download</a>
+        <button class="om-file-remove" onclick="omRemove(${i})">✕</button>
+      </div>`;
+    }
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+//  BUILD EVENTS
+// ─────────────────────────────────────────────────────────────
+function buildEventsContainer() {
+  const container = document.getElementById('events-container');
+  container.innerHTML = EVENT_PHASES.map(phase => `
+    <div class="phase-section" id="events-phase-${phase.id}">
+      <div class="phase-header-bar">
+        <div class="phase-dot"></div>
+        <div>
+          <div class="phase-title-text">${phase.label}</div>
+          <div class="phase-sub">${phase.sub}</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>Event Type</th>
+              <th>Date</th>
+              <th>Venue</th>
+              <th>Channel</th>
+              <th>Event CTA</th>
+              <th>Target RSVPs</th>
+              <th>Actual RSVP</th>
+              <th>Attendance</th>
+              <th>Consultations</th>
+              <th>Closed</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="events-body-${phase.id}">
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-add-row" onclick="addEventRow('${phase.id}')">+ Add Event</button>
+    </div>
+  `).join('');
+
+  // seed one row per phase
+  EVENT_PHASES.forEach(phase => addEventRow(phase.id));
+}
+
+function addEventRow(phaseId) {
+  const tbody = document.getElementById(`events-body-${phaseId}`);
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>
+      <select class="event-input" style="min-width:160px;">
+        <option value="">Select type</option>
+        ${EVENT_TYPES.map(e => `<option>${e}</option>`).join('')}
+      </select>
+    </td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><input type="text" class="event-input" placeholder="Venue" style="min-width:120px;"></td>
+    <td>
+      <select class="event-input" style="min-width:150px;">
+        <option value="">Channel</option>
+        ${CHANNELS.map(c => `<option>${c}</option>`).join('')}
+      </select>
+    </td>
+    <td><input type="text" class="event-input" placeholder="CTA" style="min-width:120px;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:90px;text-align:center;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
+    <td><button class="row-del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SHOW UNIT CALCULATOR
+// ─────────────────────────────────────────────────────────────
+function fmtNumInput(el) {
+  const raw = el.value.replace(/[^0-9]/g, '');
+  el.value = raw === '' ? '' : parseInt(raw, 10).toLocaleString('en-MY');
+  calcSU();
+}
+
+function parseSUNum(id) {
+  return parseFloat((document.getElementById(id)?.value || '').replace(/,/g, '')) || 0;
+}
+
+function calcSU() {
+  const rev = parseSUNum('c-su-rev');
+  const ticket = parseSUNum('c-su-ticket');
+  const subsidy = parseSUNum('c-su-subsidy');
+  const rentPm = parseSUNum('c-su-rent-pm');
+  const rentMonths = parseSUNum('c-su-rent-months');
+  const makeover = parseSUNum('c-su-makeover');
+  const totalInvest = subsidy + (rentPm * rentMonths) + makeover;
+
+  const projUnits = (ticket > 0 && rev > 0) ? rev / ticket : 0;
+  const beUnits = (ticket > 0 && totalInvest > 0) ? totalInvest / (ticket * 0.30) : 0;
+
+  // Go/No-Go threshold: units × RM 2,500 cost per sale; if ticket > RM 120k use 5% × ticket × units instead
+  const highTicket = ticket > 120000;
+  const threshold = projUnits > 0 ? (highTicket ? 0.04 * ticket * projUnits : 2500 * projUnits) : 0;
+  const thresholdRule = highTicket ? `${Math.ceil(projUnits)} units × 4% of avg ticket` : `${Math.ceil(projUnits)} units × RM 2,500 cost per sale`;
+
+  const fmt = n => `RM ${n.toLocaleString('en-MY', {minimumFractionDigits:0, maximumFractionDigits:0})}`;
+
+  document.getElementById('o-su-units').textContent = projUnits > 0 ? `${Math.ceil(projUnits)} units` : '—';
+  document.getElementById('o-su-invest').textContent = totalInvest > 0 ? fmt(totalInvest) : 'RM —';
+  document.getElementById('o-su-be-units').textContent = beUnits > 0 ? `${Math.ceil(beUnits)} units` : '—';
+  document.getElementById('o-su-invest-pct').textContent = threshold > 0 ? fmt(threshold) : '—';
+
+  const banner = document.getElementById('o-su-decision-banner');
+  if (totalInvest === 0 || projUnits === 0) {
+    banner.innerHTML = '';
+  } else if (totalInvest <= threshold) {
+    banner.innerHTML = `<div class="decision-banner good"><div class="decision-banner-icon">✅</div><div class="decision-banner-text">Go — investment ${fmt(totalInvest)} is within the threshold of ${fmt(threshold)} (${thresholdRule}).</div></div>`;
+  } else {
+    banner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — investment ${fmt(totalInvest)} exceeds the threshold of ${fmt(threshold)} (${thresholdRule}).</div></div>`;
+  }
+
+  // Timing check
+  const vpDateStr = document.getElementById('c-su-vp-date')?.value;
+  const renoWeeks = parseSUNum('c-su-reno-weeks');
+  const windowMonths = parseSUNum('c-su-window-months');
+  const timingBanner = document.getElementById('o-su-timing-banner');
+
+  if (!vpDateStr) {
+    document.getElementById('o-su-ready-date').textContent = '—';
+    document.getElementById('o-su-window-close').textContent = '—';
+    timingBanner.innerHTML = '';
+    return;
+  }
+
+  const vpDate = new Date(vpDateStr);
+  const readyDate = new Date(vpDate.getTime() + renoWeeks * 7 * 24 * 60 * 60 * 1000);
+  const windowClose = new Date(vpDate);
+  if (windowMonths > 0) windowClose.setMonth(windowClose.getMonth() + windowMonths);
+
+  const fmtDate = d => d.toLocaleDateString('en-MY', {day:'numeric', month:'short', year:'numeric'});
+  document.getElementById('o-su-ready-date').textContent = renoWeeks > 0 ? fmtDate(readyDate) : '—';
+  document.getElementById('o-su-window-close').textContent = windowMonths > 0 ? fmtDate(windowClose) : '—';
+
+  if (renoWeeks > 0 && windowMonths > 0) {
+    const daysAvailable = Math.round((windowClose - readyDate) / (24 * 60 * 60 * 1000));
+    const weeksAvailable = Math.round(daysAvailable / 7);
+    if (daysAvailable <= 0) {
+      timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — show unit will only be ready ${Math.abs(weeksAvailable)} week(s) after the selling window closes. Owners will have already decided.</div></div>`;
+    } else if (weeksAvailable < 8) {
+      timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — only ${weeksAvailable} active week(s) remaining when show unit is ready. Minimum 8 weeks required.</div></div>`;
+    } else {
+      timingBanner.innerHTML = `<div class="decision-banner good"><div class="decision-banner-icon">✅</div><div class="decision-banner-text">Good timing — ${weeksAvailable} active weeks of selling window remaining after show unit is ready.</div></div>`;
+    }
+  } else {
+    timingBanner.innerHTML = '';
+  }
+}
+
+function syncCalcFromEvents() {
+  const rev = parseFloat(document.getElementById('e-rev-target')?.value) || 0;
+  const ticket = parseFloat(document.getElementById('e-avg-ticket')?.value) || 0;
+  const targetUnits = ticket > 0 ? Math.ceil(rev / ticket) : '—';
+  document.getElementById('e-target-units').textContent = typeof targetUnits === 'number' ? `${targetUnits} units` : '—';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  DECISION GATE
+// ─────────────────────────────────────────────────────────────
+function setDecision(choice) {
+  decisionMade = choice;
+  ['attack','secondary','pass'].forEach(d => {
+    const btn = document.getElementById(`btn-${d}`);
+    btn.className = 'attack-btn';
+    if (d === choice) btn.className += ` selected-${d}`;
+  });
+  updatePhaseAccess();
+  updateNavUI();
+}
+
+function updatePhaseAccess() {}
+
+// ─────────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────────
+function goTo(step) {
+  currentStep = step;
+  STEPS.forEach(s => {
+    const id = s === 'gate' ? 'panel-gate' : `panel-${s}`;
+    document.getElementById(id)?.classList.remove('active');
+    const navId = s === 'gate' ? 'nav-gate' : `nav-${s}`;
+    document.getElementById(navId)?.classList.remove('active');
+  });
+  const activeId = step === 'gate' ? 'panel-gate' : `panel-${step}`;
+  document.getElementById(activeId)?.classList.add('active');
+  const activeNavId = step === 'gate' ? 'nav-gate' : `nav-${step}`;
+  document.getElementById(activeNavId)?.classList.add('active');
+  if (step === 'all') {
+    document.getElementById('view-banner').style.display = 'none';
+    document.body.classList.remove('read-mode');
+    currentDevId = null;
+    isEditMode = false;
+    loadDevelopments();
+  }
+  updateNavUI();
+  document.getElementById('mainArea').scrollTop = 0;
+}
+
+function goToSheet(step) {
+  goTo(step);
+}
+
+function navNext() {
+  const idx = STEPS.indexOf(currentStep);
+  if (idx < STEPS.length - 1) goTo(STEPS[idx + 1]);
+}
+
+function navPrev() {
+  const idx = STEPS.indexOf(currentStep);
+  if (idx > 0) goTo(STEPS[idx - 1]);
+}
+
+function buildNavDots() {
+  const container = document.getElementById('navDots');
+  if (!container) return;
+  container.innerHTML = STEPS.map(s => {
+    const isGate = s === 'gate';
+    return `<div class="nav-dot${isGate ? ' gate' : ''}" data-step="${s}"></div>`;
+  }).join('');
+}
+
+function updateNavUI() {
+  const idx = STEPS.indexOf(currentStep);
+  const total = STEPS.length;
+  const btnPrev   = document.getElementById('btnPrev');
+  const btnNext   = document.getElementById('btnNext');
+  const infoText  = document.getElementById('navInfoText') || document.getElementById('navInfo');
+  const bottomNav = document.querySelector('.bottom-nav');
+
+  if (currentStep === 'all') {
+    if (bottomNav) bottomNav.style.display = 'none';
+    return;
+  }
+  if (bottomNav) bottomNav.style.display = '';
+
+  btnPrev.style.visibility = idx <= 1 ? 'hidden' : 'visible';
+
+  if (currentStep === 'home') {
+    infoText.textContent = 'Overview';
+  } else if (currentStep === 'gate') {
+    infoText.textContent = 'Decision Gate';
+  } else {
+    infoText.textContent = `Step ${idx - 1} of ${total - 2}`;
+  }
+
+  document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+    dot.classList.remove('active', 'done');
+    if (i === idx) dot.classList.add('active');
+    else if (i < idx) dot.classList.add('done');
+  });
+
+  if (idx === total - 1) {
+    btnNext.textContent = '✓ Complete';
+    btnNext.style.background = 'var(--green)';
+    btnNext.onclick = () => alert('Playbook complete! Remember to Save Progress.');
+  } else {
+    btnNext.textContent = 'Continue →';
+    btnNext.style.background = 'var(--yellow)';
+    btnNext.style.color = '#000';
+    btnNext.onclick = navNext;
+  }
+
+  btnNext.disabled = false;
+  btnNext.title = '';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  TAB SWITCHING (DIAGNOSIS)
+// ─────────────────────────────────────────────────────────────
+function switchTab(btn, tabId) {
+  btn.closest('.step-content, .step-scroll').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['market','owner','competition','psychographic'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById(`tab-${tabId}`)?.classList.add('active');
+}
+
+// ─────────────────────────────────────────────────────────────
+//  DEV NAME SYNC
+// ─────────────────────────────────────────────────────────────
+function syncDevName() {
+  const val = document.getElementById('devNameGlobal').value;
+  const s1Dev = document.getElementById('s1-dev');
+  if (s1Dev && s1Dev !== document.activeElement) s1Dev.value = val;
+}
+function syncFromField(el, key) {
+  if (key === 'devName') {
+    document.getElementById('devNameGlobal').value = el.value;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SAVE / LOAD
+// ─────────────────────────────────────────────────────────────
+function collectState() {
+  const s = {};
+  document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+    if (el.type === 'checkbox') s[el.id] = el.checked;
+    else s[el.id] = el.value;
+  });
+  s['__decision__'] = decisionMade;
+  s['__step__'] = currentStep;
+  return s;
+}
+
+function saveAll() {
+  const s = collectState();
+  localStorage.setItem('tmg-playbook-v2', JSON.stringify(s));
+}
+
+function loadAll() {
+  const raw = localStorage.getItem('tmg-playbook-v2');
+  if (!raw) return;
+  try {
+    const s = JSON.parse(raw);
+    Object.entries(s).forEach(([id, val]) => {
+      if (id.startsWith('__')) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.type === 'checkbox') el.checked = val;
+      else el.value = val;
+    });
+    decisionMade = s['__decision__'] || null;
+    if (decisionMade) {
+      ['attack','secondary','pass'].forEach(d => {
+        const btn = document.getElementById(`btn-${d}`);
+        if (btn) btn.className = 'attack-btn';
+        if (d === decisionMade && btn) btn.className += ` selected-${d}`;
+      });
+    }
+    const savedStep = s['__step__'];
+    if (savedStep) {
+      const stepVal = isNaN(savedStep) ? savedStep : Number(savedStep);
+      if (STEPS.includes(stepVal)) goTo(stepVal);
+    }
+  } catch(e) { console.warn('Load error', e); }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  EVENT PROCUREMENT TABLES
+// ─────────────────────────────────────────────────────────────
+const PROC_STATUSES = ['Pending Order', 'Ordered', 'In Transit', 'Delivered', 'Distributed'];
+let epEventCounter = 0;
+
+function addCondoItemRow() {
+  const tbody = document.getElementById('condo-item-body');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" class="event-input" placeholder="e.g. Refrigerator" style="min-width:140px;"></td>
+    <td><input type="text" class="event-input" placeholder="e.g. Kitchen opening only 600mm wide" style="min-width:200px;"></td>
+    <td><input type="text" class="event-input" placeholder="e.g. Max 595mm width, 185cm height" style="min-width:180px;"></td>
+    <td><input type="number" class="event-input ci-units" placeholder="0" style="width:80px;text-align:center;" oninput="calcCondoItemRow(this)"></td>
+    <td><input type="number" class="event-input ci-unit-cost" placeholder="0" style="width:90px;text-align:center;" oninput="calcCondoItemRow(this)"></td>
+    <td><div class="event-input ci-total-cost" style="font-weight:700;color:var(--yellow);text-align:center;padding:6px 8px;">—</div></td>
+    <td><input type="text" class="event-input" placeholder="Vendor name" style="min-width:120px;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><input type="text" class="event-input" placeholder="e.g. courier, self-collect" style="min-width:120px;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><select class="event-input" style="min-width:130px;">${PROC_STATUSES.map(s => `<option>${s}</option>`).join('')}</select></td>
+    <td><button class="row-del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function calcCondoItemRow(el) {
+  const row = el.closest('tr');
+  const units = parseFloat(row.querySelector('.ci-units').value) || 0;
+  const cost = parseFloat(row.querySelector('.ci-unit-cost').value) || 0;
+  const total = units * cost;
+  row.querySelector('.ci-total-cost').textContent = total > 0 ? `RM ${total.toLocaleString('en-MY')}` : '—';
+}
+
+function addEventBlock() {
+  epEventCounter++;
+  const n = epEventCounter;
+  const container = document.getElementById('ep-events-container');
+  const block = document.createElement('div');
+  block.className = 'ep-event-block';
+  block.id = `ep-event-${n}`;
+  block.innerHTML = `
+    <div class="ep-event-header">
+      <span class="ep-event-num">Event ${n}</span>
+      <button class="row-del-btn" onclick="this.closest('.ep-event-block').remove()" title="Remove event">✕</button>
+    </div>
+    <div class="ep-event-body">
+      <div class="form-row" style="margin-bottom:14px;">
+        <div class="form-group">
+          <label class="form-label">Event Name</label>
+          <input type="text" class="ep-name-${n}" placeholder="e.g. Launch Night, Owner Briefing #2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Event Date</label>
+          <input type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected Closings</label>
+          <input type="number" placeholder="e.g. 15">
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="event-table">
+          <thead>
+            <tr>
+              <th>GWP Item</th>
+              <th>Units Required</th>
+              <th>Buffer Units</th>
+              <th>Total to Order</th>
+              <th>Unit Cost (RM)</th>
+              <th>Total Cost (RM)</th>
+              <th>Supplier / Vendor</th>
+              <th>Order Date</th>
+              <th>Lead Time (days)</th>
+              <th>Expected Delivery</th>
+              <th>Delivery Method</th>
+              <th>Actual Delivery</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="ep-gwp-body-${n}"></tbody>
+        </table>
+      </div>
+      <button class="btn-add-row" style="margin-top:6px;" onclick="addGWPRowToEvent('ep-gwp-body-${n}')">+ Add GWP Item</button>
+    </div>
+  `;
+  container.appendChild(block);
+  addGWPRowToEvent(`ep-gwp-body-${n}`);
+}
+
+function addGWPRowToEvent(tbodyId) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" class="event-input" placeholder="e.g. Nespresso machine" style="min-width:160px;"></td>
+    <td><input type="number" class="event-input gwp-units-req" placeholder="0" style="width:80px;text-align:center;" oninput="calcGWPRow(this)"></td>
+    <td><input type="number" class="event-input gwp-buffer" placeholder="0" style="width:70px;text-align:center;" oninput="calcGWPRow(this)"></td>
+    <td><div class="event-input gwp-total-order" style="font-weight:700;color:var(--yellow);text-align:center;padding:6px 8px;">—</div></td>
+    <td><input type="number" class="event-input gwp-unit-cost" placeholder="0" style="width:90px;text-align:center;" oninput="calcGWPRow(this)"></td>
+    <td><div class="event-input gwp-total-cost" style="font-weight:700;color:var(--yellow);text-align:center;padding:6px 8px;">—</div></td>
+    <td><input type="text" class="event-input" placeholder="Vendor name" style="min-width:120px;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><input type="text" class="event-input" placeholder="e.g. courier, self-collect" style="min-width:130px;"></td>
+    <td><input type="date" class="event-input" style="min-width:130px;"></td>
+    <td><select class="event-input" style="min-width:130px;">${PROC_STATUSES.map(s => `<option>${s}</option>`).join('')}</select></td>
+    <td><button class="row-del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function calcGWPRow(el) {
+  const row = el.closest('tr');
+  const req = parseFloat(row.querySelector('.gwp-units-req').value) || 0;
+  const buf = parseFloat(row.querySelector('.gwp-buffer').value) || 0;
+  const cost = parseFloat(row.querySelector('.gwp-unit-cost').value) || 0;
+  const total = req + buf;
+  row.querySelector('.gwp-total-order').textContent = total > 0 ? total : '—';
+  const totalCost = total * cost;
+  row.querySelector('.gwp-total-cost').textContent = totalCost > 0 ? `RM ${totalCost.toLocaleString('en-MY')}` : '—';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  STATUS REPORT SCOREBOARD
+// ─────────────────────────────────────────────────────────────
+function srMoney(n) {
+  n = Number(n) || 0;
+  if (n >= 1e6) return 'RM ' + (n / 1e6).toFixed(2) + 'm';
+  if (n >= 1e3) return 'RM ' + (n / 1e3).toFixed(0) + 'k';
+  return 'RM ' + n.toLocaleString();
+}
+function srSetTile(tileId, pct) {
+  const tile = document.getElementById(tileId);
+  if (!tile) return;
+  tile.classList.remove('green', 'amber', 'red');
+  if (pct >= 80) tile.classList.add('green');
+  else if (pct >= 50) tile.classList.add('amber');
+  else if (pct > 0) tile.classList.add('red');
+}
+function srPopVal(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.classList.remove('popping');
+  void el.offsetWidth;
+  el.classList.add('popping');
+}
+function calcSR() {
+  const leads       = +document.getElementById('sr-leads').value       || 0;
+  const convUnits   = +document.getElementById('sr-conv-units').value   || 0;
+  const targetUnits = +document.getElementById('sr-target-units').value || 0;
+  const revActual   = +document.getElementById('sr-rev-actual').value   || 0;
+  const revTarget   = +document.getElementById('sr-rev-target').value   || 0;
+
+  const leadsEl = document.getElementById('sr-sb-leads');
+  if (leadsEl) leadsEl.textContent = leads;
+
+  const convEl = document.getElementById('sr-sb-conv');
+  if (convEl) { convEl.textContent = convUnits; srPopVal('sr-sb-conv'); }
+  const rate = leads ? Math.round(convUnits / leads * 100) : 0;
+  const rateEl = document.getElementById('sr-sb-rate');
+  if (rateEl) rateEl.textContent = rate + '% conversion';
+
+  const unitsEl = document.getElementById('sr-sb-units');
+  if (unitsEl) { unitsEl.textContent = convUnits; srPopVal('sr-sb-units'); }
+  const unitsSubEl = document.getElementById('sr-sb-units-sub');
+  if (unitsSubEl) unitsSubEl.textContent = 'of ' + targetUnits + ' units';
+  const up = targetUnits ? Math.min(100, convUnits / targetUnits * 100) : 0;
+  const unitsBar = document.getElementById('sr-sb-units-bar');
+  if (unitsBar) {
+    unitsBar.style.width = up + '%';
+    unitsBar.style.background = up >= 80 ? 'var(--green)' : up >= 50 ? 'var(--yellow)' : up > 0 ? 'var(--red)' : 'var(--yellow)';
+  }
+  srSetTile('sr-tile-units', up);
+
+  const rp = revTarget ? Math.min(100, revActual / revTarget * 100) : 0;
+  const revEl = document.getElementById('sr-sb-rev');
+  if (revEl) { revEl.textContent = Math.round(rp) + '%'; srPopVal('sr-sb-rev'); }
+  const revSubEl = document.getElementById('sr-sb-rev-sub');
+  if (revSubEl) revSubEl.textContent = srMoney(revActual) + ' of ' + srMoney(revTarget);
+  const revBar = document.getElementById('sr-sb-rev-bar');
+  if (revBar) {
+    revBar.style.width = rp + '%';
+    revBar.style.background = rp >= 80 ? 'var(--green)' : rp >= 50 ? 'var(--yellow)' : rp > 0 ? 'var(--red)' : 'var(--yellow)';
+  }
+  srSetTile('sr-tile-rev', rp);
+
+  const manual = document.getElementById('sr-vp-manual').value.trim();
+  const vpDate = document.getElementById('sr-vp-date').value;
+  let vpText = '—', vpDays = null;
+  if (manual) { vpText = manual; vpDays = parseInt(manual); }
+  else if (vpDate) {
+    const diff = Math.ceil((new Date(vpDate) - new Date()) / (1000 * 60 * 60 * 24));
+    vpText = diff; vpDays = diff;
+  }
+  const vpEl = document.getElementById('sr-sb-vp');
+  if (vpEl) vpEl.textContent = vpText;
+  const vpTile = document.getElementById('sr-tile-vp');
+  if (vpTile && vpDays !== null) {
+    vpTile.classList.remove('green', 'amber', 'red');
+    if (vpDays > 60) vpTile.classList.add('green');
+    else if (vpDays > 21) vpTile.classList.add('amber');
+    else vpTile.classList.add('red');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  STATUS REPORT SECTION TOGGLE
+// ─────────────────────────────────────────────────────────────
+function srToggle(toggleEl) {
+  const body = toggleEl.nextElementSibling;
+  const icon = toggleEl.querySelector('.sr-toggle-icon');
+  if (!body) return;
+  const isOpen = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', isOpen);
+  icon.classList.toggle('open', !isOpen);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SUPABASE CONFIG
+// ─────────────────────────────────────────────────────────────
+const SUPA_URL = 'https://ofpdzdgywovlkxawgmqo.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mcGR6ZGd5d292bGt4YXdnbXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNzY5ODEsImV4cCI6MjA5NjY1Mjk4MX0.NvR_0Ci35wDplBSBUokGZghGPJ-k0FgQGE7xRQPanKw';
+
+async function supaFetch(path, opts = {}) {
+  const { prefer, ...rest } = opts;
+  const res = await fetch(`${SUPA_URL}/rest/v1/${path}`, {
+    ...rest,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': prefer || 'return=representation',
+      ...(rest.headers || {}),
+    },
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Supabase ${res.status}: ${txt}`);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  LOAD ALL DEVELOPMENTS (for the list panel)
+// ─────────────────────────────────────────────────────────────
+async function loadDevelopments() {
+  const statusEl = document.getElementById('all-devs-status');
+  const emptyEl  = document.getElementById('all-devs-empty');
+  const gridEl   = document.getElementById('all-devs-grid');
+  if (!statusEl) return;
+  statusEl.style.display = 'block';
+  statusEl.textContent   = 'Loading developments…';
+  emptyEl.style.display  = 'none';
+  gridEl.style.display   = 'none';
+  try {
+    const devs = await supaFetch(
+      'developments?select=id,development_name,decision,scorecard_pct,updated_at,created_at&order=updated_at.desc'
+    );
+    statusEl.style.display = 'none';
+    if (!devs || devs.length === 0) {
+      emptyEl.style.display = 'block';
+      return;
+    }
+    gridEl.style.display = 'grid';
+    gridEl.innerHTML = devs.map(renderDevCard).join('');
+  } catch(e) {
+    statusEl.textContent = '⚠ Could not load developments. Check your internet connection.';
+    console.error(e);
+  }
+}
+
+function renderDevCard(dev) {
+  const name = dev.development_name?.trim() || 'Untitled Development';
+  const pct  = dev.scorecard_pct ? Math.round(dev.scorecard_pct) + '%' : '—';
+  const dec  = dev.decision;
+  const badge = dec === 'attack'    ? `<span class="dec-badge attack">ATTACK</span>` :
+                dec === 'secondary' ? `<span class="dec-badge secondary">SECONDARY</span>` :
+                dec === 'pass'      ? `<span class="dec-badge pass">PASS</span>` :
+                                     `<span class="dec-badge pending">IN PROGRESS</span>`;
+  const updated = dev.updated_at ? 'Updated ' + timeAgo(new Date(dev.updated_at)) : '';
+  return `
+    <div class="dev-card" onclick="openDevelopment('${escHtml(dev.id)}')">
+      <div class="dev-card-top">
+        <div class="dev-card-name">${escHtml(name)}</div>
+        ${badge}
+      </div>
+      <div class="dev-card-score">Scorecard: <strong>${pct}</strong></div>
+      <div class="dev-card-footer">${updated}</div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  OPEN AN EXISTING DEVELOPMENT
+// ─────────────────────────────────────────────────────────────
+async function openDevelopment(id) {
+  const statusEl = document.getElementById('all-devs-status');
+  const gridEl   = document.getElementById('all-devs-grid');
+  const emptyEl  = document.getElementById('all-devs-empty');
+  if (statusEl) { statusEl.style.display = 'block'; statusEl.textContent = 'Loading…'; }
+  if (gridEl)   gridEl.style.display = 'none';
+  if (emptyEl)  emptyEl.style.display = 'none';
+  try {
+    const results = await supaFetch(`developments?id=eq.${id}&select=*`);
+    const dev = results && results[0];
+    if (!dev) throw new Error('Not found');
+    currentDevId        = dev.id;
+    currentDevUpdatedAt = dev.updated_at ? new Date(dev.updated_at) : null;
+    isEditMode          = false;
+    clearFormState();
+    applyFormState(dev.state || {});
+    setReadMode(true);
+    updateViewBanner();
+    omLoadForDev(dev.id);
+    goTo('home');
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '⚠ Could not load this development.';
+    console.error(e);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  NEW DEVELOPMENT
+// ─────────────────────────────────────────────────────────────
+function newDevelopment() {
+  currentDevId        = null;
+  currentDevUpdatedAt = null;
+  isEditMode          = true;
+  clearFormState();
+  omCurrentFiles = []; omRender();
+  document.body.classList.remove('read-mode');
+  document.getElementById('view-banner').style.display = 'none';
+  goTo('home');
+  // After goTo('home'), show the banner in "new + unsaved" state
+  const banner = document.getElementById('view-banner');
+  banner.style.display = 'flex';
+  banner.dataset.mode  = 'new';
+  document.getElementById('view-banner-name').textContent    = 'New Development';
+  document.getElementById('view-banner-updated').textContent  = 'Not yet saved to cloud';
+  document.getElementById('btn-edit-mode').style.display  = 'none';
+  document.getElementById('btn-save-cloud').style.display = 'inline-flex';
+  document.getElementById('btn-discard').style.display    = 'inline-flex';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  EDIT / READ MODE
+// ─────────────────────────────────────────────────────────────
+function setReadMode(enabled) {
+  document.body.classList.toggle('read-mode', enabled);
+  isEditMode = !enabled;
+}
+
+function enterEditMode() {
+  setReadMode(false);
+  updateViewBanner();
+}
+
+function updateViewBanner() {
+  const banner   = document.getElementById('view-banner');
+  const nameEl   = document.getElementById('view-banner-name');
+  const updatedEl= document.getElementById('view-banner-updated');
+  const btnEdit  = document.getElementById('btn-edit-mode');
+  const btnSave  = document.getElementById('btn-save-cloud');
+  const btnDisc  = document.getElementById('btn-discard');
+  if (!currentDevId) return;
+  banner.style.display = 'flex';
+  nameEl.textContent   = document.getElementById('devNameGlobal')?.value || 'Untitled';
+  if (isEditMode) {
+    banner.dataset.mode         = 'edit';
+    btnEdit.style.display       = 'none';
+    btnSave.style.display       = 'inline-flex';
+    btnDisc.style.display       = 'inline-flex';
+    updatedEl.textContent       = '';
+  } else {
+    banner.dataset.mode         = 'view';
+    btnEdit.style.display       = 'inline-flex';
+    btnSave.style.display       = 'none';
+    btnDisc.style.display       = 'none';
+    updatedEl.textContent       = currentDevUpdatedAt ? 'Updated ' + timeAgo(currentDevUpdatedAt) : '';
+  }
+}
+
+async function discardChanges() {
+  if (!currentDevId) {
+    goTo('all');
+    return;
+  }
+  await openDevelopment(currentDevId);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SAVE TO CLOUD
+// ─────────────────────────────────────────────────────────────
+async function saveToCloud() {
+  const btnSave = document.getElementById('btn-save-cloud');
+  btnSave.textContent = 'Saving…';
+  btnSave.disabled    = true;
+  const s       = collectState();
+  const devName = (document.getElementById('devNameGlobal')?.value || '').trim();
+  const pctText = document.getElementById('sum-pct')?.textContent || '0';
+  const scorePct = parseInt(pctText) || 0;
+  const payload = {
+    development_name: devName || 'Untitled',
+    decision:         decisionMade || null,
+    scorecard_pct:    scorePct,
+    state:            s,
+    updated_at:       new Date().toISOString(),
+  };
+  try {
+    if (currentDevId) {
+      await supaFetch(`developments?id=eq.${currentDevId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+        prefer: 'return=minimal',
+      });
+    } else {
+      const result = await supaFetch('developments', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      currentDevId = result?.[0]?.id || null;
+    }
+    currentDevUpdatedAt = new Date();
+    btnSave.textContent = '✓ Saved';
+    setTimeout(() => {
+      btnSave.textContent = 'Save to Cloud';
+      btnSave.disabled    = false;
+      setReadMode(true);
+      updateViewBanner();
+    }, 1400);
+  } catch(e) {
+    btnSave.textContent = 'Save to Cloud';
+    btnSave.disabled    = false;
+    alert('Save failed — check your internet connection and try again.\n\n' + e.message);
+    console.error(e);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  FORM STATE HELPERS
+// ─────────────────────────────────────────────────────────────
+function clearFormState() {
+  document.querySelectorAll('input[id], select[id], textarea[id]').forEach(el => {
+    if (el.type === 'checkbox') el.checked = false;
+    else el.value = '';
+  });
+  decisionMade = null;
+  ['attack','secondary','pass'].forEach(d => {
+    const btn = document.getElementById(`btn-${d}`);
+    if (btn) btn.className = 'attack-btn';
+  });
+  updateScorecard();
+  calcSU();
+}
+
+function applyFormState(s) {
+  Object.entries(s).forEach(([id, val]) => {
+    if (id.startsWith('__')) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = val;
+    else el.value = val;
+  });
+  decisionMade = s['__decision__'] || null;
+  if (decisionMade) {
+    ['attack','secondary','pass'].forEach(d => {
+      const btn = document.getElementById(`btn-${d}`);
+      if (btn) btn.className = 'attack-btn';
+      if (d === decisionMade && btn) btn.className += ` selected-${d}`;
+    });
+  }
+  updateScorecard();
+  calcSU();
+  updatePhaseAccess();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  UTILITY
+// ─────────────────────────────────────────────────────────────
+function timeAgo(date) {
+  const secs = Math.round((new Date() - date) / 1000);
+  if (secs < 60)    return 'just now';
+  if (secs < 3600)  return Math.floor(secs / 60) + 'm ago';
+  if (secs < 86400) return Math.floor(secs / 3600) + 'h ago';
+  if (secs < 604800) return Math.floor(secs / 86400) + 'd ago';
+  return date.toLocaleDateString('en-MY', { day: 'numeric', month: 'short' });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// auto-save every 60s
+setInterval(saveAll, 60000);
+
+// ─────────────────────────────────────────────────────────────
+//  KICK OFF
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
