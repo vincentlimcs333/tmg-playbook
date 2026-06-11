@@ -843,12 +843,12 @@ input[type="number"] { -moz-appearance: textfield; }
   border-radius: var(--radius-lg);
   border: 2px solid var(--border);
   background: var(--surface-2);
-  cursor: pointer;
+  cursor: default;
   text-align: center;
   transition: all 0.2s;
   font-family: 'DM Sans', sans-serif;
 }
-.attack-btn:hover { border-color: var(--border-2); }
+.attack-btn:hover { border-color: var(--border); }
 .attack-btn.selected-attack { border-color: var(--yellow); background: var(--yellow-dim); }
 .attack-btn.selected-secondary { border-color: var(--yellow); background: rgba(255,194,0,0.06); }
 .attack-btn.selected-pass { border-color: var(--red); background: var(--red-dim); }
@@ -2143,19 +2143,19 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
 
       <div class="card">
-        <div class="card-title"><div class="card-title-icon"></div>Final Decision</div>
+        <div class="card-title"><div class="card-title-icon"></div>Final Decision <span style="font-size:11px;font-weight:400;color:var(--text-3);margin-left:8px;">auto-set by score</span></div>
         <div class="attack-decision">
-          <div class="attack-btn" id="btn-attack" onclick="setDecision('attack')">
+          <div class="attack-btn" id="btn-attack">
             <div class="attack-btn-icon">⚡</div>
             <div class="attack-btn-label">Priority Attack</div>
             <div class="attack-btn-desc">Score ≥ 70. Full resources. Launch immediately.</div>
           </div>
-          <div class="attack-btn" id="btn-secondary" onclick="setDecision('secondary')">
+          <div class="attack-btn" id="btn-secondary">
             <div class="attack-btn-icon">🎯</div>
             <div class="attack-btn-label">Secondary Attack</div>
             <div class="attack-btn-desc">Score 50–69. Limited resources. Monitor and plan.</div>
           </div>
-          <div class="attack-btn" id="btn-pass" onclick="setDecision('pass')">
+          <div class="attack-btn" id="btn-pass">
             <div class="attack-btn-icon">⏸</div>
             <div class="attack-btn-label">Pass</div>
             <div class="attack-btn-desc">Score &lt; 50 or not the right time. Do not pursue.</div>
@@ -2214,7 +2214,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   <div class="step-header">
     <div class="step-tag">Phase 2 · Step 5</div>
     <div class="step-title">Show Unit ROI Calculator</div>
-    <div class="step-desc">Establish projected revenue, investment required, and breakeven units. Go/No-Go rule: investment must be below projected units × RM 2,500 cost per sale (or below 4% × avg ticket × units if ticket size exceeds RM 120,000). Timing check: minimum 8 active weeks of selling window required after the show unit is ready — anything less is a No Go.</div>
+    <div class="step-desc">Establish projected revenue, investment required, and breakeven units. Go/No-Go rule: investment must be below projected units × RM 2,500 cost per sale (or below 4% × avg ticket × units if ticket size exceeds RM 120,000). Timing check: enter the estimated VP end date — the system adds a 2-month defect buffer and calculates how many active selling weeks remain after the show unit is ready. Minimum 8 weeks required.</div>
   </div>
   <div class="step-scroll">
   <div class="step-content">
@@ -2257,7 +2257,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         </div>
 
         <div class="calc-section-title" style="margin-top:24px;">3 — Timing Check</div>
-        <div class="form-hint" style="margin-bottom:14px;">The show unit uses a client's unit after VP. If renovation runs past the active selling window, no owners will visit — the investment is wasted.</div>
+        <div class="form-hint" style="margin-bottom:14px;">The show unit runs from renovation completion until owners stop deciding. We add 2 months to the VP end date as a defect period buffer — owners typically still visit during this window.</div>
         <div class="form-group">
           <label class="form-label">Renovation Start Date</label>
           <input type="date" id="c-su-vp-date" oninput="calcSU()">
@@ -2269,9 +2269,9 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <div class="form-hint">How many weeks to complete the fit-out from start date</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Active Selling Window (weeks)</label>
-          <input type="text" inputmode="numeric" id="c-su-window-months" placeholder="16" oninput="fmtNumInput(this)">
-          <div class="form-hint">How many weeks owners are actively deciding after the show unit opens</div>
+          <label class="form-label">Estimated VP End Date</label>
+          <input type="date" id="c-su-vp-end" oninput="calcSU()">
+          <div class="form-hint">Official estimated end of Vacant Possession — the system adds 2 months defect buffer automatically</div>
         </div>
       </div>
 
@@ -2302,8 +2302,12 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <span class="output-value" id="o-su-ready-date">—</span>
         </div>
         <div class="output-row">
-          <span class="output-label">Selling Window Closes</span>
+          <span class="output-label">Selling Period Ends <span style="font-size:11px;color:var(--text-3);">VP end + 2-month defect buffer</span></span>
           <span class="output-value" id="o-su-window-close">—</span>
+        </div>
+        <div class="output-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px;">
+          <span class="output-label" style="font-weight:600;">Active Selling Window</span>
+          <span class="output-value highlight" id="o-su-active-weeks" style="font-size:18px;">—</span>
         </div>
         <div id="o-su-timing-banner"></div>
       </div>
@@ -3310,6 +3314,12 @@ function updateScorecard() {
     insightEl.style.borderLeftColor = total >= 70 ? 'var(--green)' : total >= 50 ? 'var(--yellow)' : 'var(--red)';
   }
 
+  // Auto-select decision box based on score
+  if (filledCount === SCORECARD_FACTORS.length) {
+    const autoDecision = total >= 70 ? 'attack' : total >= 50 ? 'secondary' : 'pass';
+    if (decisionMade !== autoDecision) setDecision(autoDecision);
+  }
+
   syncGateChecklist();
 }
 
@@ -3597,39 +3607,49 @@ function calcSU() {
   }
 
   // Timing check
-  const vpDateStr = document.getElementById('c-su-vp-date')?.value;
-  const renoWeeks = parseSUNum('c-su-reno-weeks');
-  const windowWeeks = parseSUNum('c-su-window-months');
+  const vpStartStr = document.getElementById('c-su-vp-date')?.value;
+  const vpEndStr   = document.getElementById('c-su-vp-end')?.value;
+  const renoWeeks  = parseSUNum('c-su-reno-weeks');
   const timingBanner = document.getElementById('o-su-timing-banner');
+  const fmtDate = d => d.toLocaleDateString('en-MY', {day:'numeric', month:'short', year:'numeric'});
+  const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
-  if (!vpDateStr) {
+  if (!vpStartStr) {
     document.getElementById('o-su-ready-date').textContent = '—';
     document.getElementById('o-su-window-close').textContent = '—';
+    document.getElementById('o-su-active-weeks').textContent = '—';
     timingBanner.innerHTML = '';
     return;
   }
 
-  const vpDate = new Date(vpDateStr);
-  const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
-  const readyDate = new Date(vpDate.getTime() + renoWeeks * MS_PER_WEEK);
-  const windowClose = new Date(readyDate.getTime() + windowWeeks * MS_PER_WEEK);
+  const vpStart   = new Date(vpStartStr);
+  const readyDate = renoWeeks > 0 ? new Date(vpStart.getTime() + renoWeeks * MS_PER_WEEK) : vpStart;
+  document.getElementById('o-su-ready-date').textContent = fmtDate(readyDate);
 
-  const fmtDate = d => d.toLocaleDateString('en-MY', {day:'numeric', month:'short', year:'numeric'});
-  document.getElementById('o-su-ready-date').textContent = renoWeeks > 0 ? fmtDate(readyDate) : '—';
-  document.getElementById('o-su-window-close').textContent = windowWeeks > 0 ? fmtDate(windowClose) : '—';
-
-  if (renoWeeks > 0 && windowWeeks > 0) {
-    const daysAvailable = Math.round((windowClose - readyDate) / (24 * 60 * 60 * 1000));
-    const weeksAvailable = Math.round(daysAvailable / 7);
-    if (daysAvailable <= 0) {
-      timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — show unit will only be ready ${Math.abs(weeksAvailable)} week(s) after the selling window closes. Owners will have already decided.</div></div>`;
-    } else if (weeksAvailable < 8) {
-      timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — only ${weeksAvailable} active week(s) remaining when show unit is ready. Minimum 8 weeks required.</div></div>`;
-    } else {
-      timingBanner.innerHTML = `<div class="decision-banner good"><div class="decision-banner-icon">✅</div><div class="decision-banner-text">Good timing — ${weeksAvailable} active weeks of selling window remaining after show unit is ready.</div></div>`;
-    }
-  } else {
+  if (!vpEndStr) {
+    document.getElementById('o-su-window-close').textContent = '—';
+    document.getElementById('o-su-active-weeks').textContent = '—';
     timingBanner.innerHTML = '';
+    return;
+  }
+
+  // Effective selling end = VP End + 2 months defect buffer
+  const vpEnd = new Date(vpEndStr);
+  const sellingEnd = new Date(vpEnd);
+  sellingEnd.setMonth(sellingEnd.getMonth() + 2);
+
+  document.getElementById('o-su-window-close').textContent = fmtDate(sellingEnd);
+
+  const daysAvailable  = Math.round((sellingEnd - readyDate) / (24 * 60 * 60 * 1000));
+  const weeksAvailable = Math.round(daysAvailable / 7);
+  document.getElementById('o-su-active-weeks').textContent = daysAvailable > 0 ? `${weeksAvailable} weeks` : '—';
+
+  if (daysAvailable <= 0) {
+    timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — show unit will only be ready ${Math.abs(weeksAvailable)} week(s) after the selling period ends. Owners will have already decided.</div></div>`;
+  } else if (weeksAvailable < 8) {
+    timingBanner.innerHTML = `<div class="decision-banner bad"><div class="decision-banner-icon">⚠️</div><div class="decision-banner-text">No Go — only ${weeksAvailable} active week(s) after show unit is ready. Minimum 8 weeks required.</div></div>`;
+  } else {
+    timingBanner.innerHTML = `<div class="decision-banner good"><div class="decision-banner-icon">✅</div><div class="decision-banner-text">Good timing — ${weeksAvailable} active weeks available after show unit is ready (includes 2-month defect buffer).</div></div>`;
   }
 }
 
@@ -4153,14 +4173,12 @@ function renderDevCard(dev) {
         ${revPct !== null ? `<div class="dcm-sub">${revPct}% of target</div>` : ''}
       </div>`);
     }
-    if (unitsTarget || unitsDone) {
-      const unitPct = unitsTarget ? Math.round(unitsDone / unitsTarget * 100) : null;
-      stats.push(`<div class="dcm-stat">
-        <div class="dcm-label">Units</div>
-        <div class="dcm-val">${unitsDone}<span class="dcm-of">${unitsTarget ? ' / ' + unitsTarget : ''}</span></div>
-        ${unitPct !== null ? `<div class="dcm-sub">${unitPct}% of target</div>` : ''}
-      </div>`);
-    }
+    const unitPct = unitsTarget ? Math.round(unitsDone / unitsTarget * 100) : null;
+    stats.push(`<div class="dcm-stat">
+      <div class="dcm-label">Units</div>
+      <div class="dcm-val">${unitsDone}<span class="dcm-of"> / ${unitsTarget || '—'}</span></div>
+      ${unitPct !== null ? `<div class="dcm-sub">${unitPct}% of target</div>` : '<div class="dcm-sub">set target in SR</div>'}
+    </div>`);
     if (leads) {
       stats.push(`<div class="dcm-stat">
         <div class="dcm-label">LDL</div>
@@ -4168,10 +4186,11 @@ function renderDevCard(dev) {
         <div class="dcm-sub">leads</div>
       </div>`);
     }
-    if (leads && unitsDone) {
+    if (leads) {
+      const convRate = Math.round(unitsDone / leads * 100);
       stats.push(`<div class="dcm-stat">
         <div class="dcm-label">Conv.</div>
-        <div class="dcm-val">${Math.round(unitsDone / leads * 100)}%</div>
+        <div class="dcm-val">${convRate}%</div>
         <div class="dcm-sub">${unitsDone} closed</div>
       </div>`);
     }
@@ -4372,10 +4391,6 @@ function clearFormState() {
     else el.value = '';
   });
   decisionMade = null;
-  ['attack','secondary','pass'].forEach(d => {
-    const btn = document.getElementById(`btn-${d}`);
-    if (btn) btn.className = 'attack-btn';
-  });
   updateScorecard();
   calcSU();
 }
@@ -4388,14 +4403,7 @@ function applyFormState(s) {
     if (el.type === 'checkbox') el.checked = val;
     else el.value = val;
   });
-  decisionMade = s['__decision__'] || null;
-  if (decisionMade) {
-    ['attack','secondary','pass'].forEach(d => {
-      const btn = document.getElementById(`btn-${d}`);
-      if (btn) btn.className = 'attack-btn';
-      if (d === decisionMade && btn) btn.className += ` selected-${d}`;
-    });
-  }
+  decisionMade = null;
   updateScorecard();
   calcSU();
   updatePhaseAccess();
