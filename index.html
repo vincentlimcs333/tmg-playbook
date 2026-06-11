@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TMG Targeted Development Playbook</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TMG Playbook">
+<meta name="theme-color" content="#FFC200">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -31,6 +36,34 @@
   --radius: 8px;
   --radius-lg: 12px;
 }
+
+body.light {
+  --bg: #F4F4F5;
+  --surface: #FFFFFF;
+  --surface-2: #EBEBEC;
+  --surface-3: #E0E0E2;
+  --border: #D4D4D8;
+  --border-2: #C0C0C5;
+  --text: #0A0A0A;
+  --text-2: #52525B;
+  --text-3: #A1A1AA;
+  --yellow-dim: rgba(255,194,0,0.18);
+  --red-dim: rgba(255,76,76,0.12);
+  --green-dim: rgba(34,197,94,0.12);
+}
+
+/* theme toggle */
+.theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer; font-size: 16px; line-height: 1;
+  color: var(--text-2); flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+.theme-toggle:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1602,7 +1635,8 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="header-sub">Targeted Development Playbook v26.3</div>
     </div>
   </div>
-  <div class="header-right">
+  <div class="header-right" style="display:flex;align-items:center;gap:10px;">
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light / dark mode">☀</button>
     <input type="text" class="dev-name-input" id="devNameGlobal" placeholder="Development name..." oninput="syncDevName()">
   </div>
 </header>
@@ -4117,7 +4151,8 @@ function renderDevCard(dev) {
                 dec === 'secondary' ? `<span class="dec-badge secondary">SECONDARY</span>` :
                 dec === 'pass'      ? `<span class="dec-badge pass">PASS</span>` :
                                      `<span class="dec-badge pending">IN PROGRESS</span>`;
-  const updated  = dev.updated_at ? 'Updated ' + timeAgo(new Date(dev.updated_at)) : '';
+  const _d = dev.updated_at ? new Date(dev.updated_at) : null;
+  const updated  = _d ? `Updated ${timeAgo(_d)} · ${formatExactTime(_d)}` : '';
   const editor   = dev.last_edited_by ? ` by <strong>${escHtml(dev.last_edited_by)}</strong>` : '';
   return `
     <div class="dev-card" onclick="openDevelopment('${escHtml(dev.id)}')">
@@ -4234,7 +4269,7 @@ function updateViewBanner() {
     btnEdit.style.display      = 'inline-flex';
     btnSave.style.display      = 'none';
     btnDisc.style.display      = 'none';
-    updatedEl.textContent      = currentDevUpdatedAt ? 'Updated ' + timeAgo(currentDevUpdatedAt) : '';
+    updatedEl.textContent      = currentDevUpdatedAt ? `Updated ${timeAgo(currentDevUpdatedAt)} · ${formatExactTime(currentDevUpdatedAt)}` : '';
     if (currentDevEditor) {
       editorEl.innerHTML       = `by <strong>${escHtml(currentDevEditor)}</strong>`;
       editorEl.style.display   = 'inline';
@@ -4353,12 +4388,103 @@ function timeAgo(date) {
   return date.toLocaleDateString('en-MY', { day: 'numeric', month: 'short' });
 }
 
+function formatExactTime(date) {
+  const now = new Date();
+  const sameYear = date.getFullYear() === now.getFullYear();
+  const datePart = date.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: sameYear ? undefined : 'numeric' });
+  const timePart = date.toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return `${datePart}, ${timePart}`;
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // auto-save every 60s
 setInterval(saveAll, 60000);
+
+// ─────────────────────────────────────────────────────────────
+//  PWA
+// ─────────────────────────────────────────────────────────────
+function setupPWA() {
+  function makeIcon(size) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    const r = size * 0.22;
+    ctx.beginPath();
+    ctx.moveTo(r, 0); ctx.lineTo(size - r, 0);
+    ctx.arcTo(size, 0, size, r, r);
+    ctx.lineTo(size, size - r);
+    ctx.arcTo(size, size, size - r, size, r);
+    ctx.lineTo(r, size);
+    ctx.arcTo(0, size, 0, size - r, r);
+    ctx.lineTo(0, r);
+    ctx.arcTo(0, 0, r, 0, r);
+    ctx.closePath();
+    ctx.fillStyle = '#FFC200';
+    ctx.fill();
+    ctx.fillStyle = '#000000';
+    ctx.font = `bold ${Math.round(size * 0.36)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('TM', size / 2, size / 2);
+    return c.toDataURL('image/png');
+  }
+
+  const icon192 = makeIcon(192);
+  const icon512 = makeIcon(512);
+
+  // iOS apple-touch-icon
+  const appleIcon = document.createElement('link');
+  appleIcon.rel = 'apple-touch-icon';
+  appleIcon.href = icon192;
+  document.head.appendChild(appleIcon);
+
+  // Manifest
+  const manifest = {
+    name: 'TMG Targeted Development Playbook',
+    short_name: 'TMG Playbook',
+    description: 'Targeted Development Operating System by The Makeover Guys',
+    start_url: '/tmg-playbook/',
+    scope: '/tmg-playbook/',
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    background_color: '#0A0A0A',
+    theme_color: '#FFC200',
+    icons: [
+      { src: icon192, sizes: '192x192', type: 'image/png' },
+      { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable any' }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  const mLink = document.createElement('link');
+  mLink.rel = 'manifest';
+  mLink.href = URL.createObjectURL(blob);
+  document.head.appendChild(mLink);
+
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/tmg-playbook/sw.js', { scope: '/tmg-playbook/' })
+      .catch(e => console.warn('SW:', e));
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  THEME
+// ─────────────────────────────────────────────────────────────
+function applyTheme(mode) {
+  const isLight = mode === 'light';
+  document.body.classList.toggle('light', isLight);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = isLight ? '☾' : '☀';
+}
+
+function toggleTheme() {
+  const next = document.body.classList.contains('light') ? 'dark' : 'light';
+  localStorage.setItem('tmg-theme', next);
+  applyTheme(next);
+}
 
 // ─────────────────────────────────────────────────────────────
 //  EDITOR NAME
@@ -4394,6 +4520,8 @@ function changeEditorName() {
 //  KICK OFF
 // ─────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
+  setupPWA();
+  applyTheme(localStorage.getItem('tmg-theme') || 'dark');
   init();
   if (!getEditorName()) showEditorNameModal();
 });
