@@ -1005,7 +1005,7 @@ input[type="number"] { -moz-appearance: textfield; }
 .pm-field { margin-bottom: 12px; }
 .pm-field-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
 
-/* ─── EVENT PROCUREMENT ─── */
+/* ─── PROCUREMENT ─── */
 .ep-event-block {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1497,6 +1497,10 @@ input[type="number"] { -moz-appearance: textfield; }
 .dec-badge.secondary { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
 .dec-badge.pass    { background: var(--red-dim);     color: var(--red);    border: 1px solid var(--red); }
 .dec-badge.pending { background: var(--surface-3);   color: var(--text-3); border: 1px solid var(--border-2); }
+.dec-badge.step-p1 { background: rgba(255,194,0,0.12);  color: var(--yellow); border: 1px solid rgba(255,194,0,0.35); }
+.dec-badge.step-p2 { background: rgba(63,167,224,0.12); color: #3FA7E0;       border: 1px solid rgba(63,167,224,0.35); }
+.dec-badge.step-p3 { background: rgba(34,197,94,0.12);  color: var(--green);  border: 1px solid rgba(34,197,94,0.35); }
+.dec-badge.step-p4 { background: rgba(168,85,247,0.12); color: #A855F7;       border: 1px solid rgba(168,85,247,0.35); }
 .dev-card-score { font-size: 13px; color: var(--text-2); margin-bottom: 0; }
 .dev-card-score strong { color: var(--yellow); }
 .dev-card-metrics {
@@ -1648,7 +1652,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   </div>
   <div class="header-right" style="display:flex;align-items:center;gap:10px;">
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light / dark mode">☀</button>
-    <input type="text" class="dev-name-input" id="devNameGlobal" placeholder="Development name..." oninput="syncDevName()">
   </div>
 </header>
 
@@ -1702,11 +1705,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     </div>
     <div class="step-item" onclick="goTo(4)" id="nav-4">
       <div class="step-num"><span>4</span></div>
-      <div class="step-text">Channel & Events</div>
+      <div class="step-text">Show Unit ROI</div>
     </div>
     <div class="step-item" onclick="goTo(5)" id="nav-5">
       <div class="step-num"><span>5</span></div>
-      <div class="step-text">Show Unit ROI</div>
+      <div class="step-text">Channel & Events</div>
     </div>
   </div>
 
@@ -1789,8 +1792,8 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <tr onclick="goTo('gate')" style="cursor:pointer"><td colspan="2" style="font-weight:600;color:var(--yellow);padding:10px 12px;">⚡ Decision Gate — Attack or pass?</td></tr>
           <tr class="home-phase-row"><td colspan="2">Phase 2 — Plan (unlocked after Attack decision)</td></tr>
           <tr onclick="goTo(3)" style="cursor:pointer"><td><span class="home-sheet-num">3</span>Offer Matrix</td><td>Build the package and promo logic <span class="home-sheet-status phase2">Plan</span></td></tr>
-          <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Channel &amp; Events</td><td>Plan owner access, events, and follow-up <span class="home-sheet-status phase2">Plan</span></td></tr>
-          <tr onclick="goTo(5)" style="cursor:pointer"><td><span class="home-sheet-num">5</span>Show Unit Calculator</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Show Unit Calculator</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr onclick="goTo(5)" style="cursor:pointer"><td><span class="home-sheet-num">5</span>Channel &amp; Events</td><td>Plan owner access, events, and follow-up <span class="home-sheet-status phase2">Plan</span></td></tr>
           <tr class="home-phase-row"><td colspan="2">Phase 3 — Review</td></tr>
           <tr onclick="goTo(7)" style="cursor:pointer"><td><span class="home-sheet-num">7</span>Procurement</td><td>Condo-specific items &amp; GWP accountability <span class="home-sheet-status phase3">Review</span></td></tr>
           <tr onclick="goTo(8)" style="cursor:pointer"><td><span class="home-sheet-num">8</span>Status Report</td><td>Live numbers, pipeline read, blockers &amp; asks <span class="home-sheet-status phase3">Review</span></td></tr>
@@ -2174,50 +2177,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 </div>
 
 <!-- ═══════════════════════════════════════════════
-  STEP 4: CHANNEL + EVENTS
+  STEP 4: SHOW UNIT ROI
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-4">
   <div class="step-header">
     <div class="step-tag">Phase 2 · Step 4</div>
-    <div class="step-title">Channel + Event Plan</div>
-    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. Every event closes on the spot — track RSVPs, attendance, and hot leads.</div>
-  </div>
-  <div class="step-scroll" id="scroll-4">
-  <div class="step-content">
-    <div id="phase2-content-4">
-      <div class="formula-bar">
-        <strong>Formula:</strong> Reachable owners × response rate × RSVP rate × show rate × close rate = units sold
-      </div>
-
-      <div class="form-row" style="margin-bottom:20px;">
-        <div class="form-group">
-          <label class="form-label">Campaign Revenue Target (RM)</label>
-          <input type="text" inputmode="numeric" id="e-rev-target" placeholder="e.g. 1,000,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Average Ticket Size (RM)</label>
-          <input type="text" inputmode="numeric" id="e-avg-ticket" placeholder="e.g. 20,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Target Units to Close</label>
-          <div style="padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--yellow);" id="e-target-units">—</div>
-        </div>
-      </div>
-
-      <div id="events-container">
-        <!-- injected by JS -->
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════
-  STEP 5: SHOW UNIT ROI
-════════════════════════════════════════════════ -->
-<div class="step-panel" id="panel-5">
-  <div class="step-header">
-    <div class="step-tag">Phase 2 · Step 5</div>
     <div class="step-title">Show Unit ROI Calculator</div>
     <div class="step-desc">Establish projected revenue, investment required, and breakeven units. Go/No-Go rule: investment must be below projected units × RM 2,500 cost per sale (or below 4% × avg ticket × units if ticket size exceeds RM 120,000). Timing check: enter the estimated VP end date — the system adds a 2-month defect buffer and calculates how many active selling weeks remain after the show unit is ready. Minimum 8 weeks required.</div>
   </div>
@@ -2318,6 +2282,45 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
 
     </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+  STEP 5: CHANNEL + EVENTS
+════════════════════════════════════════════════ -->
+<div class="step-panel" id="panel-5">
+  <div class="step-header">
+    <div class="step-tag">Phase 2 · Step 5</div>
+    <div class="step-title">Channel + Event Plan</div>
+    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. Every event closes on the spot — track RSVPs, attendance, and hot leads.</div>
+  </div>
+  <div class="step-scroll" id="scroll-4">
+  <div class="step-content">
+    <div id="phase2-content-4">
+      <div class="formula-bar">
+        <strong>Formula:</strong> Reachable owners × response rate × RSVP rate × show rate × close rate = units sold
+      </div>
+
+      <div class="form-row" style="margin-bottom:20px;">
+        <div class="form-group">
+          <label class="form-label">Campaign Revenue Target (RM)</label>
+          <input type="text" inputmode="numeric" id="e-rev-target" placeholder="e.g. 1,000,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Average Ticket Size (RM)</label>
+          <input type="text" inputmode="numeric" id="e-avg-ticket" placeholder="e.g. 20,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Units to Close</label>
+          <div style="padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:600;color:var(--yellow);" id="e-target-units">—</div>
+        </div>
+      </div>
+
+      <div id="events-container">
+        <!-- injected by JS -->
+      </div>
     </div>
   </div>
   </div>
@@ -2454,99 +2457,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
     </div>
 
-    <!-- 1. LEAD & PIPELINE -->
+    <!-- 1. SHOW UNIT -->
     <div class="card">
       <div class="sr-card-toggle" onclick="srToggle(this)">
         <div class="sr-sec-head">
           <div class="sr-sec-num">1</div>
-          <div>
-            <div class="sr-sec-title">Lead &amp; Pipeline Numbers</div>
-            <div class="sr-sec-hint">Where the pipeline stands and which way it's moving.</div>
-          </div>
-        </div>
-        <div class="sr-toggle-icon open">▾</div>
-      </div>
-      <div class="sr-card-body">
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label">Offline</label>
-          <input type="text" inputmode="numeric" id="sr-sources-offline" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Online</label>
-          <input type="text" inputmode="numeric" id="sr-sources-online" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
-        </div>
-      </div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label">Total LDL</label>
-          <input type="number" id="sr-leads" min="0" placeholder="0" readonly style="opacity:0.6;cursor:default;">
-        </div>
-      </div>
-      <div class="sr-chips">
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot</div>
-          <input type="number" id="sr-hot" min="0" placeholder="0">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm</div>
-          <input type="number" id="sr-warm" min="0" placeholder="0">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold</div>
-          <input type="number" id="sr-cold" min="0" placeholder="0">
-        </div>
-      </div>
-      </div><!-- /.sr-card-body -->
-    </div>
-
-    <!-- 2. CONVERSION & REVENUE -->
-    <div class="card">
-      <div class="sr-card-toggle" onclick="srToggle(this)">
-        <div class="sr-sec-head">
-          <div class="sr-sec-num">2</div>
-          <div>
-            <div class="sr-sec-title">Conversion &amp; Revenue vs Target</div>
-            <div class="sr-sec-hint">Actuals against the goal — and the gap that's left.</div>
-          </div>
-        </div>
-        <div class="sr-toggle-icon open">▾</div>
-      </div>
-      <div class="sr-card-body">
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label">Target Revenue (RM)</label>
-          <input type="text" inputmode="numeric" id="sr-rev-target" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
-        </div>
-      </div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label">Actual Avg Ticket Size (RM)</label>
-          <input type="text" inputmode="numeric" id="sr-avg-pkg" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Target Units</label>
-          <input type="number" id="sr-target-units" placeholder="—" readonly style="opacity:0.6;cursor:default;">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Revenue Closed (RM)</label>
-          <input type="text" inputmode="numeric" id="sr-rev-actual" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Units Closed</label>
-          <input type="text" inputmode="numeric" id="sr-conv-units" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
-        </div>
-      </div>
-      </div><!-- /.sr-card-body -->
-    </div>
-
-    <!-- 3. SHOW UNIT -->
-    <div class="card">
-      <div class="sr-card-toggle" onclick="srToggle(this)">
-        <div class="sr-sec-head">
-          <div class="sr-sec-num">3</div>
           <div>
             <div class="sr-sec-title">Show Unit Status</div>
             <div class="sr-sec-hint">Renovation progress and whether it's helping close.</div>
@@ -2587,6 +2502,94 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div><!-- /.sr-card-body -->
     </div>
 
+    <!-- 2. LEAD & PIPELINE -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">2</div>
+          <div>
+            <div class="sr-sec-title">Lead &amp; Pipeline Numbers</div>
+            <div class="sr-sec-hint">Key in offline and online leads — total LDL auto-sums.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row" style="margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label">Offline</label>
+          <input type="text" inputmode="numeric" id="sr-sources-offline" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Online</label>
+          <input type="text" inputmode="numeric" id="sr-sources-online" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label">Total LDL <span class="sr-sync-badge">↻ auto</span></label>
+          <input type="number" id="sr-leads" min="0" placeholder="0" readonly style="opacity:0.6;cursor:default;">
+        </div>
+      </div>
+      <div class="sr-chips">
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot</div>
+          <input type="number" id="sr-hot" min="0" placeholder="0">
+        </div>
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm</div>
+          <input type="number" id="sr-warm" min="0" placeholder="0">
+        </div>
+        <div class="sr-chip">
+          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold</div>
+          <input type="number" id="sr-cold" min="0" placeholder="0">
+        </div>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 3. CONVERSION & REVENUE -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">3</div>
+          <div>
+            <div class="sr-sec-title">Conversion &amp; Revenue vs Target</div>
+            <div class="sr-sec-hint">Actuals against the goal — target units auto-calculated from revenue ÷ avg ticket.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row" style="margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label">Target Revenue (RM)</label>
+          <input type="text" inputmode="numeric" id="sr-rev-target" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label">Actual Avg Ticket Size (RM)</label>
+          <input type="text" inputmode="numeric" id="sr-avg-pkg" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Units <span class="sr-sync-badge">↻ auto</span></label>
+          <input type="number" id="sr-target-units" placeholder="—" readonly style="opacity:0.6;cursor:default;">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Revenue Closed (RM)</label>
+          <input type="text" inputmode="numeric" id="sr-rev-actual" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Units Closed</label>
+          <input type="text" inputmode="numeric" id="sr-conv-units" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
+        </div>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
     <!-- 4. EVENT -->
     <div class="card">
       <div class="sr-card-toggle" onclick="srToggle(this)">
@@ -2602,15 +2605,15 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="sr-card-body">
       <div class="form-row-3">
         <div class="form-group">
-          <label class="form-label">Attendance vs Target RSVPs <span class="sr-sync-badge">↻ Step 4</span></label>
+          <label class="form-label">Attendance vs Target RSVPs <span class="sr-sync-badge">↻ Step 5</span></label>
           <div class="sr-sync-val" id="sr-attendance">—</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Hot Leads <span class="sr-sync-badge">↻ Step 4</span></label>
+          <label class="form-label">Hot Leads <span class="sr-sync-badge">↻ Step 5</span></label>
           <div class="sr-sync-val" id="sr-event-leads">—</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Deals Closed via Event <span class="sr-sync-badge">↻ Step 4</span></label>
+          <label class="form-label">Deals Closed via Event <span class="sr-sync-badge">↻ Step 5</span></label>
           <div class="sr-sync-val" id="sr-event-closed">—</div>
         </div>
       </div>
@@ -2673,12 +2676,18 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <input type="date" id="sr-vp-date" oninput="calcSR()">
         </div>
         <div class="form-group">
-          <label class="form-label">Days of Runway Left</label>
+          <label class="form-label">Days of Runway Left <span class="sr-sync-badge">↻ auto</span></label>
           <input type="text" id="sr-vp-manual" placeholder="—" readonly style="opacity:0.6;cursor:default;">
+          <div style="font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.6;">
+            &lt;200 units → VP + 30 days<br>
+            200–500 units → VP + 60 days<br>
+            500+ units → VP + 90 days
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Deals That Must Close in Window</label>
+          <label class="form-label">Deals That Must Close in Window <span class="sr-sync-badge">↻ auto</span></label>
           <input type="text" id="sr-vp-deals" placeholder="—" readonly style="opacity:0.6;cursor:default;">
+          <div style="font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.6;">Target units − units already closed</div>
         </div>
       </div>
       <div class="form-group" style="margin-top:12px;">
@@ -3771,16 +3780,7 @@ function switchTab(btn, tabId) {
 // ─────────────────────────────────────────────────────────────
 //  DEV NAME SYNC
 // ─────────────────────────────────────────────────────────────
-function syncDevName() {
-  const val = document.getElementById('devNameGlobal').value;
-  const s1Dev = document.getElementById('s1-dev');
-  if (s1Dev && s1Dev !== document.activeElement) s1Dev.value = val;
-}
-function syncFromField(el, key) {
-  if (key === 'devName') {
-    document.getElementById('devNameGlobal').value = el.value;
-  }
-}
+function syncFromField(el, key) {}
 
 // ─────────────────────────────────────────────────────────────
 //  SAVE / LOAD
@@ -4175,19 +4175,32 @@ async function loadDevelopments() {
   }
 }
 
+function getProgressStep(st) {
+  const has = (...keys) => keys.some(k => (st[k] || '').toString().trim().length > 0);
+  if (has('pm-duration','pm-revenue','pm-units','pm-r-assump','pm-w-assump','pm-r-channel'))
+    return [9, 'Post-Mortem', 'step-p4'];
+  if (has('sr-prepared','sr-date','sr-sb-leads','sr-tile-units','sr-tile-rev'))
+    return [8, 'Status Report', 'step-p3'];
+  if (has('e-rev-target','e-avg-ticket'))
+    return [5, 'Channel & Events', 'step-p2'];
+  if (has('c-su-rev','c-su-ticket','c-su-subsidy','c-su-rent-pm','c-su-makeover'))
+    return [4, 'Show Unit ROI', 'step-p2'];
+  if (st['__decision__'])
+    return [3, 'Offer Matrix', 'step-p2'];
+  if (has('m-units','m-layouts','m-price','o-who','c-who','p-price','p-objections'))
+    return [2, 'Diagnosis', 'step-p1'];
+  return [1, 'Scorecard', 'step-p1'];
+}
+
 function renderDevCard(dev) {
   const name = dev.development_name?.trim() || 'Untitled Development';
   const pct  = dev.scorecard_pct ? Math.round(dev.scorecard_pct) + '%' : '—';
-  const dec  = dev.decision;
-  const badge = dec === 'attack'    ? `<span class="dec-badge attack">ATTACK</span>` :
-                dec === 'secondary' ? `<span class="dec-badge secondary">SECONDARY</span>` :
-                dec === 'pass'      ? `<span class="dec-badge pass">PASS</span>` :
-                                     `<span class="dec-badge pending">IN PROGRESS</span>`;
+  const st          = dev.state || {};
+  const [stepNum, stepLabel, stepClass] = getProgressStep(st);
+  const badge = `<span class="dec-badge ${stepClass}">Step ${stepNum} · ${stepLabel}</span>`;
   const _d = dev.updated_at ? new Date(dev.updated_at) : null;
   const updated  = _d ? `Updated ${timeAgo(_d)} · ${formatExactTime(_d)}` : '';
   const editor   = dev.last_edited_by ? ` by <strong>${escHtml(dev.last_edited_by)}</strong>` : '';
-
-  const st          = dev.state || {};
   const revTarget   = parseComma(st['sr-rev-target']);
   const revActual   = parseComma(st['sr-rev-actual']);
   const unitsTarget = parseComma(st['sr-target-units']);
@@ -4333,7 +4346,7 @@ function updateViewBanner() {
   const btnDisc   = document.getElementById('btn-discard');
   if (!currentDevId) return;
   banner.style.display = 'flex';
-  nameEl.textContent   = document.getElementById('devNameGlobal')?.value || 'Untitled';
+  nameEl.textContent   = document.getElementById('s1-dev')?.value || 'Untitled';
   if (isEditMode) {
     banner.dataset.mode        = 'edit';
     btnEdit.style.display      = 'none';
@@ -4373,7 +4386,7 @@ async function saveToCloud() {
   btnSave.textContent = 'Saving…';
   btnSave.disabled    = true;
   const s       = collectState();
-  const devName = (document.getElementById('devNameGlobal')?.value || '').trim();
+  const devName = (document.getElementById('s1-dev')?.value || '').trim();
   const pctText = document.getElementById('sum-pct')?.textContent || '0';
   const scorePct = parseInt(pctText) || 0;
   const payload = {
