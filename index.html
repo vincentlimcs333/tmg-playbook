@@ -589,7 +589,12 @@ input[type="date"]::-webkit-date-and-time-value { text-align: left; }
   padding: 4px;
   border-radius: var(--radius);
   width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.tab-bar::-webkit-scrollbar { display: none; }
 .tab-btn {
   padding: 7px 16px;
   border: none;
@@ -1105,7 +1110,14 @@ input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 
   /* move description under factor name on mobile */
   .col-desc { display: none; }
+  .col-notes { display: none; }
   .factor-desc-inline { display: block; }
+
+  /* center score ring on mobile */
+  .score-ring-wrap { justify-content: center; }
+  .score-ring-meta { text-align: center; min-width: unset; width: 100%; }
+  .score-bar-track { margin-left: auto; margin-right: auto; }
+  .score-ring-thresh, .score-ring-insight { margin-left: auto; margin-right: auto; }
 }
 
 @media (max-width: 480px) {
@@ -1883,7 +1895,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
             <th style="display:none;">Wt</th>
             <th style="width:10%">Score (1–5)</th>
             <th style="width:10%">Weighted</th>
-            <th>Notes</th>
+            <th class="col-notes">Notes</th>
           </tr>
         </thead>
         <tbody id="scorecard-body">
@@ -1893,7 +1905,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <tr>
             <td colspan="4" style="padding:14px 12px;"><strong style="font-size:13px;">Total Weighted Score</strong></td>
             <td><div class="weighted-score" id="total-score" style="font-size:18px;">0</div></td>
-            <td></td>
+            <td class="col-notes"></td>
           </tr>
         </tfoot>
       </table>
@@ -3215,7 +3227,7 @@ function buildScorecardTable() {
       <td>
         <div class="weighted-score" id="sc-weighted-${i}">—</div>
       </td>
-      <td>
+      <td class="col-notes">
         <textarea class="notes-input" id="sc-notes-${i}" placeholder="Notes…"></textarea>
       </td>
     </tr>
