@@ -637,6 +637,32 @@ input[type="number"] { -moz-appearance: textfield; }
   margin-top: 1px;
 }
 .tt-rationale { font-size: 0.85em; color: var(--text-2); line-height: 1.5; }
+.diag-nudge {
+  margin-top: 4px;
+  padding: 12px 16px;
+  background: rgba(255,194,0,0.07);
+  border: 1px solid rgba(255,194,0,0.22);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.diag-nudge-icon { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+.diag-nudge-text { font-size: 12px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5; }
+.diag-nudge-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.diag-nudge-tab-btn {
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: 20px;
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.diag-nudge-tab-btn:hover { background: rgba(255,194,0,0.15); border-color: var(--yellow); }
 
 /* ─── CHIPS ─── */
 .chip-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
@@ -3054,6 +3080,36 @@ function generateTrustTriggers() {
       <div class="tt-rationale">${r.rationale}</div>
     </div>
   `).join('');
+  appendDiagNudge();
+}
+
+function goToTab(tabId) {
+  const panel = document.getElementById('panel-2');
+  if (!panel) return;
+  const btn = [...panel.querySelectorAll('.tab-btn')].find(b => b.getAttribute('onclick')?.includes(`'${tabId}'`));
+  if (btn) { switchTab(btn, tabId); btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+}
+
+function appendDiagNudge() {
+  const hasData = id => (document.getElementById(id)?.value || '').trim().length > 0;
+  const tabs = [
+    { id: 'owner',         label: '👤 Owner',            fields: ['o-who', 'o-want'] },
+    { id: 'competition',   label: '⚔️ Competition',      fields: ['c-who', 'c-offer'] },
+    { id: 'psychographic', label: '🧠 Psychographic map', fields: ['p-aspiration', 'p-pain'] },
+  ];
+  const missing = tabs.filter(t => !t.fields.some(f => hasData(f)));
+  if (missing.length === 0) return;
+  const out = document.getElementById('trust-trigger-output');
+  const nudge = document.createElement('div');
+  nudge.className = 'diag-nudge';
+  nudge.innerHTML = `
+    <div class="diag-nudge-icon">💡</div>
+    <div>
+      <div class="diag-nudge-text">Your analysis will be stronger once you fill in the remaining ${missing.length === 1 ? 'section' : missing.length + ' sections'} below.</div>
+      <div class="diag-nudge-tabs">${missing.map(t => `<button class="diag-nudge-tab-btn" onclick="goToTab('${t.id}')">${t.label}</button>`).join('')}</div>
+    </div>
+  `;
+  out.appendChild(nudge);
 }
 
 function syncChipStates() {
