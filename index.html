@@ -843,6 +843,16 @@ input[type="number"] { -moz-appearance: textfield; }
   background: var(--surface-3) !important;
   border-radius: 4px !important;
 }
+.event-multichannel { position: relative; min-width: 160px; }
+.mc-tags { display: flex; flex-wrap: wrap; gap: 3px; min-height: 22px; align-items: center; padding: 2px 0; }
+.mc-tag { background: var(--yellow); color: #000; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.mc-trigger { background: transparent; border: none; color: var(--text-3); font-size: 11px; cursor: pointer; padding: 1px 4px; font-family: 'DM Sans', sans-serif; }
+.mc-trigger:hover { color: var(--yellow); }
+.mc-dropdown { display: none; position: absolute; top: 100%; left: 0; z-index: 200; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius); padding: 4px 0; min-width: 190px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.mc-dropdown.open { display: block; }
+.mc-option { display: flex; align-items: center; gap: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--text); }
+.mc-option:hover { background: var(--surface-3); }
+.mc-option input[type="checkbox"] { accent-color: var(--yellow); cursor: pointer; }
 .btn-add-row {
   background: transparent;
   border: 1px dashed var(--border-2);
@@ -2039,7 +2049,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   <div class="step-header">
     <div class="step-tag">Phase 2 · Step 4</div>
     <div class="step-title">Channel + Event Plan</div>
-    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. No event without a CTA and a follow-up owner assigned.</div>
+    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. Every event closes on the spot — track RSVPs, attendance, and hot leads.</div>
   </div>
   <div class="step-scroll" id="scroll-4">
   <div class="step-content">
@@ -3100,6 +3110,11 @@ function init() {
   // re-sync gate checklist whenever any field changes (covers diagnosis fields not hooked to updateScorecard)
   document.addEventListener('input', syncGateChecklist);
   document.addEventListener('change', syncGateChecklist);
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.event-multichannel')) {
+      document.querySelectorAll('.mc-dropdown.open').forEach(d => d.classList.remove('open'));
+    }
+  });
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -3390,11 +3405,10 @@ function buildEventsContainer() {
               <th>Date</th>
               <th>Venue</th>
               <th>Channel</th>
-              <th>Event CTA</th>
               <th>Target RSVPs</th>
               <th>Actual RSVP</th>
               <th>Attendance</th>
-              <th>Consultations</th>
+              <th>Hot Leads</th>
               <th>Closed</th>
               <th></th>
             </tr>
@@ -3424,20 +3438,38 @@ function addEventRow(phaseId) {
     <td><input type="date" class="event-input" style="min-width:130px;"></td>
     <td><input type="text" class="event-input" placeholder="Venue" style="min-width:120px;"></td>
     <td>
-      <select class="event-input" style="min-width:150px;">
-        <option value="">Channel</option>
-        ${CHANNELS.map(c => `<option>${c}</option>`).join('')}
-      </select>
+      <div class="event-multichannel">
+        <div class="mc-tags"><span style="color:var(--text-3);font-size:11px;">Select…</span></div>
+        <button class="mc-trigger" onclick="toggleMC(this)" type="button">+ Add</button>
+        <div class="mc-dropdown">
+          ${CHANNELS.map(c => `<label class="mc-option"><input type="checkbox" onchange="mcChange(this)" value="${c}"> ${c}</label>`).join('')}
+        </div>
+      </div>
     </td>
-    <td><input type="text" class="event-input" placeholder="CTA" style="min-width:120px;"></td>
     <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
     <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
     <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:90px;text-align:center;"></td>
+    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
     <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
     <td><button class="row-del-btn" onclick="this.closest('tr').remove()">✕</button></td>
   `;
   tbody.appendChild(row);
+}
+
+function toggleMC(btn) {
+  const dd = btn.nextElementSibling;
+  const isOpen = dd.classList.contains('open');
+  document.querySelectorAll('.mc-dropdown.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) dd.classList.add('open');
+}
+
+function mcChange(cb) {
+  const mc = cb.closest('.event-multichannel');
+  const tags = mc.querySelector('.mc-tags');
+  const selected = [...mc.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
+  tags.innerHTML = selected.length
+    ? selected.map(s => `<span class="mc-tag">${s}</span>`).join('')
+    : '<span style="color:var(--text-3);font-size:11px;">Select…</span>';
 }
 
 // ─────────────────────────────────────────────────────────────
