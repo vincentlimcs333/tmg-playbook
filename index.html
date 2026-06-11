@@ -1201,6 +1201,19 @@ input[type="number"] { -moz-appearance: textfield; }
 .sr-chip-dot.hot { background: #FF4C4C; }
 .sr-chip-dot.warm { background: var(--yellow); }
 .sr-chip-dot.cold { background: #3FA7E0; }
+.sr-sync-badge {
+  font-size: 10px; font-weight: 600; color: var(--yellow);
+  background: rgba(255,194,0,0.1); border: 1px solid rgba(255,194,0,0.25);
+  border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: middle;
+}
+.sr-sync-val {
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px; font-weight: 600; color: var(--yellow);
+  min-height: 44px; display: flex; align-items: center;
+}
 .sr-chip input {
   width: 100%;
   background: var(--surface);
@@ -1455,7 +1468,16 @@ input[type="number"] { -moz-appearance: textfield; }
 .dev-card-footer {
   font-size: 11px; color: var(--text-3);
   border-top: 1px solid var(--border); padding-top: 10px;
+  display: flex; align-items: center; justify-content: space-between;
 }
+.dev-card-del {
+  background: transparent; border: none; cursor: pointer;
+  color: var(--text-3); font-size: 13px; padding: 2px 4px;
+  border-radius: 4px; line-height: 1; opacity: 0.4;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+.dev-card:hover .dev-card-del { opacity: 1; }
+.dev-card-del:hover { color: var(--red) !important; background: var(--red-dim); opacity: 1; }
 /* sidebar All Devs item */
 .all-devs-nav-item {
   font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
@@ -2182,7 +2204,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="form-group">
           <label class="form-label">Active Selling Window (weeks)</label>
           <input type="text" inputmode="numeric" id="c-su-window-months" placeholder="16" oninput="fmtNumInput(this)">
-          <div class="form-hint">Owners typically decide within 12–24 weeks of VP</div>
+          <div class="form-hint">How many weeks owners are actively deciding after the show unit opens</div>
         </div>
       </div>
 
@@ -2232,7 +2254,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   <div class="step-header">
     <div class="step-tag">Phase 3 · Step 7 of 9</div>
     <div class="step-title">Event Procurement Planner</div>
-    <div class="step-desc">One development, many events. Condo-specific items are ordered once at the development level. GWP is planned per event since each event has its own closing target. BUM owns everything here.</div>
+    <div class="step-desc">One development, many events. Condo-specific items are ordered once at the development level. GWP is planned per event since each event has its own closing target.</div>
   </div>
   <div class="step-scroll">
   <div class="step-content">
@@ -2242,7 +2264,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
-          <span style="font-size:13px;font-weight:600;">Section 1 — Condo-Specific Item Requirements</span>
+          <span style="font-size:13px;font-weight:600;">Condo-Specific Item Requirements</span>
           <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">DEVELOPMENT LEVEL</span>
         </div>
         <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Items pre-ordered because this condo has special constraints — specific fridge dimensions, hood/hob specs, clearance requirements, etc. Ordered once per campaign, not per event.</div>
@@ -2280,7 +2302,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
-          <span style="font-size:13px;font-weight:600;">Section 2 — GWP by Event</span>
+          <span style="font-size:13px;font-weight:600;">GWP by Event</span>
           <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">PER EVENT</span>
         </div>
         <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Each event has its own GWP order — different closing targets, different quantities. Add one block per event.</div>
@@ -2291,61 +2313,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
     </div>
 
-    <!-- ACCOUNTABILITY CHECKLIST -->
-    <div class="card">
-      <div class="card-title"><div class="card-title-icon"></div>BUM Accountability Checklist</div>
-      <div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Condo-Specific Items</div>
-      <div class="gate-checklist" style="margin-bottom:20px;">
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk-c1">
-          <label for="pe-chk-c1" class="checklist-text">All condo constraints identified and documented (dimensions, specs, installation rules)</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk-c2">
-          <label for="pe-chk-c2" class="checklist-text">Required spec / model confirmed with product team before ordering</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk-c3">
-          <label for="pe-chk-c3" class="checklist-text">Purchase request submitted to procurement team with full specs</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk-c4">
-          <label for="pe-chk-c4" class="checklist-text">Items received, checked against spec, and cleared for use before first event</label>
-        </div>
-      </div>
-      <div style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">GWP — per event</div>
-      <div class="gate-checklist">
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk1">
-          <label for="pe-chk1" class="checklist-text">GWP units and buffer confirmed for each event before ordering</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk2">
-          <label for="pe-chk2" class="checklist-text">Purchase request submitted to procurement team per event</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk3">
-          <label for="pe-chk3" class="checklist-text">Delivery confirmed to arrive before each event day</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk4">
-          <label for="pe-chk4" class="checklist-text">GWP received, checked, and counted before each event</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk5">
-          <label for="pe-chk5" class="checklist-text">GWP distributed — count matches signed contracts at every event</label>
-        </div>
-        <div class="checklist-item">
-          <input type="checkbox" class="checklist-cb" id="pe-chk6">
-          <label for="pe-chk6" class="checklist-text">Surplus / unused GWP returned and documented after each event</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">BUM Notes / Issues</label>
-      <textarea id="pe-notes" placeholder="Any issues with procurement, delivery delays, spec mismatches, shortfall, or surplus across any event? Document here."></textarea>
-    </div>
 
   </div>
   </div>
@@ -2370,10 +2337,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <div class="card">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Reporting Period</label>
-          <input type="text" id="sr-period" placeholder="e.g. Week 3 / 1–7 Jun 2026">
-        </div>
-        <div class="form-group">
           <label class="form-label">Prepared By</label>
           <input type="text" id="sr-prepared" placeholder="Name">
         </div>
@@ -2387,7 +2350,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <!-- LIVE SCOREBOARD -->
     <div class="sr-scoreboard">
       <div class="sr-score">
-        <div class="sr-score-label">Total Leads</div>
+        <div class="sr-score-label">Total LDL</div>
         <div class="sr-score-val" id="sr-sb-leads">0</div>
         <div class="sr-score-sub">all sources</div>
       </div>
@@ -2428,41 +2391,35 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="sr-toggle-icon open">▾</div>
       </div>
       <div class="sr-card-body">
-      <div class="form-row-3">
+      <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label">Total Leads to Date</label>
+          <label class="form-label">Total LDL</label>
           <input type="number" id="sr-leads" min="0" placeholder="0" oninput="calcSR()">
         </div>
-        <div class="form-group">
-          <label class="form-label">New Leads This Period</label>
-          <input type="number" id="sr-leads-new" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Vs Last Period (+/−)</label>
-          <input type="text" id="sr-leads-vs" placeholder="e.g. +12">
-        </div>
       </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Lead Sources (breakdown)</label>
-        <textarea id="sr-sources" placeholder="e.g. Event 40 · Walk-in 18 · Referral 11 · Online 25"></textarea>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div class="form-group">
+          <label class="form-label">Offline</label>
+          <input type="number" id="sr-sources-offline" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Online</label>
+          <input type="number" id="sr-sources-online" min="0" placeholder="0">
+        </div>
       </div>
       <div class="sr-chips">
         <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot — deposit stage</div>
+          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot</div>
           <input type="number" id="sr-hot" min="0" placeholder="0">
         </div>
         <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm — needs a nudge</div>
+          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm</div>
           <input type="number" id="sr-warm" min="0" placeholder="0">
         </div>
         <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold / dormant</div>
+          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold</div>
           <input type="number" id="sr-cold" min="0" placeholder="0">
         </div>
-      </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Named Hot Leads &amp; Next Step</label>
-        <textarea id="sr-named-hot" placeholder="Who's closest to closing, and what moves them over the line"></textarea>
       </div>
       </div><!-- /.sr-card-body -->
     </div>
@@ -2480,127 +2437,40 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="sr-toggle-icon open">▾</div>
       </div>
       <div class="sr-card-body">
-      <div class="form-row-3">
+      <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label">Units Converted (Signed)</label>
-          <input type="number" id="sr-conv-units" min="0" placeholder="0" oninput="calcSR()">
+          <label class="form-label">Target Revenue (RM)</label>
+          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcSR()">
         </div>
         <div class="form-group">
           <label class="form-label">Target Units</label>
           <input type="number" id="sr-target-units" min="0" placeholder="0" oninput="calcSR()">
         </div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label">Avg Package Value (RM)</label>
+          <label class="form-label">Actual Avg Ticket Size (RM)</label>
           <input type="number" id="sr-avg-pkg" min="0" placeholder="0">
         </div>
       </div>
-      <div class="form-row" style="margin-top:12px;">
+      <div class="form-row">
         <div class="form-group">
           <label class="form-label">Revenue Closed (RM)</label>
           <input type="number" id="sr-rev-actual" min="0" placeholder="0" oninput="calcSR()">
         </div>
         <div class="form-group">
-          <label class="form-label">Target Revenue (RM)</label>
-          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcSR()">
+          <label class="form-label">Units Closed</label>
+          <input type="number" id="sr-conv-units" min="0" placeholder="0" oninput="calcSR()">
         </div>
-      </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Gap Remaining &amp; Read on It</label>
-        <textarea id="sr-gap" placeholder="How far from target, and are we trending to close the gap in time?"></textarea>
       </div>
       </div><!-- /.sr-card-body -->
     </div>
 
-    <!-- 3. EVENT -->
+    <!-- 3. SHOW UNIT -->
     <div class="card">
       <div class="sr-card-toggle" onclick="srToggle(this)">
         <div class="sr-sec-head">
           <div class="sr-sec-num">3</div>
-          <div>
-            <div class="sr-sec-title">Event Performance</div>
-            <div class="sr-sec-hint">Is the event actually earning its keep at closing?</div>
-          </div>
-        </div>
-        <div class="sr-toggle-icon open">▾</div>
-      </div>
-      <div class="sr-card-body">
-      <div class="form-row-3">
-        <div class="form-group">
-          <label class="form-label">Attendance vs Expected</label>
-          <input type="text" id="sr-attendance" placeholder="e.g. 85 / 100">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Leads Captured</label>
-          <input type="number" id="sr-event-leads" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Deals Closed via Event</label>
-          <input type="number" id="sr-event-closed" min="0" placeholder="0">
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:12px;">
-        <div class="form-group">
-          <label class="form-label">What's Working in the Room</label>
-          <textarea id="sr-ev-working"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">What's Falling Flat</label>
-          <textarea id="sr-ev-flat"></textarea>
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Cost vs Return</label>
-        <select id="sr-ev-cost" style="max-width:240px;">
-          <option value="">— select —</option>
-          <option>Earning its keep</option>
-          <option>Breaking even</option>
-          <option>Not worth it yet</option>
-        </select>
-      </div>
-      </div><!-- /.sr-card-body -->
-    </div>
-
-    <!-- 4. PACKAGE APPEAL -->
-    <div class="card">
-      <div class="sr-card-toggle" onclick="srToggle(this)">
-        <div class="sr-sec-head">
-          <div class="sr-sec-num">4</div>
-          <div>
-            <div class="sr-sec-title">Package Appeal</div>
-            <div class="sr-sec-hint">What customers gravitate to — and what makes them hesitate.</div>
-          </div>
-        </div>
-        <div class="sr-toggle-icon open">▾</div>
-      </div>
-      <div class="sr-card-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Most Popular Tier &amp; Why</label>
-          <textarea id="sr-pkg-popular"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Most Common Objection</label>
-          <textarea id="sr-pkg-objection"></textarea>
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:12px;">
-        <div class="form-group">
-          <label class="form-label">What Customers Ask to Add / Remove / Change</label>
-          <textarea id="sr-pkg-change"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pricing or Term That's a Sticking Point</label>
-          <textarea id="sr-pkg-sticking"></textarea>
-        </div>
-      </div>
-      </div><!-- /.sr-card-body -->
-    </div>
-
-    <!-- 5. SHOW UNIT -->
-    <div class="card">
-      <div class="sr-card-toggle" onclick="srToggle(this)">
-        <div class="sr-sec-head">
-          <div class="sr-sec-num">5</div>
           <div>
             <div class="sr-sec-title">Show Unit Status</div>
             <div class="sr-sec-hint">Renovation progress and whether it's helping close.</div>
@@ -2644,6 +2514,91 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div><!-- /.sr-card-body -->
     </div>
 
+    <!-- 4. EVENT -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">4</div>
+          <div>
+            <div class="sr-sec-title">Event Performance</div>
+            <div class="sr-sec-hint">Is the event actually earning its keep at closing?</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="form-label">Attendance vs Target RSVPs <span class="sr-sync-badge">↻ Step 4</span></label>
+          <div class="sr-sync-val" id="sr-attendance">—</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hot Leads <span class="sr-sync-badge">↻ Step 4</span></label>
+          <div class="sr-sync-val" id="sr-event-leads">—</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deals Closed via Event <span class="sr-sync-badge">↻ Step 4</span></label>
+          <div class="sr-sync-val" id="sr-event-closed">—</div>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">What's Working in the Room</label>
+          <textarea id="sr-ev-working"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">What's Falling Flat</label>
+          <textarea id="sr-ev-flat"></textarea>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Cost vs Return</label>
+        <select id="sr-ev-cost" style="max-width:240px;">
+          <option value="">— select —</option>
+          <option>Earning its keep</option>
+          <option>Breaking even</option>
+          <option>Not worth it yet</option>
+        </select>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
+    <!-- 5. PACKAGE APPEAL -->
+    <div class="card">
+      <div class="sr-card-toggle" onclick="srToggle(this)">
+        <div class="sr-sec-head">
+          <div class="sr-sec-num">5</div>
+          <div>
+            <div class="sr-sec-title">Package Appeal</div>
+            <div class="sr-sec-hint">What customers gravitate to — and what makes them hesitate.</div>
+          </div>
+        </div>
+        <div class="sr-toggle-icon open">▾</div>
+      </div>
+      <div class="sr-card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Most Popular Tier &amp; Why</label>
+          <textarea id="sr-pkg-popular"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Most Common Objection</label>
+          <textarea id="sr-pkg-objection"></textarea>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">What Customers Ask to Add / Remove / Change</label>
+          <textarea id="sr-pkg-change"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pricing or Term That's a Sticking Point</label>
+          <textarea id="sr-pkg-sticking"></textarea>
+        </div>
+      </div>
+      </div><!-- /.sr-card-body -->
+    </div>
+
     <!-- 6. VP WINDOW -->
     <div class="card">
       <div class="sr-card-toggle" onclick="srToggle(this)">
@@ -2676,10 +2631,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <label class="form-label">What Must Happen Before It Shuts</label>
           <textarea id="sr-vp-must"></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Risk If We Miss It + Plan to Avoid</label>
-          <textarea id="sr-vp-risk"></textarea>
-        </div>
       </div>
       </div><!-- /.sr-card-body -->
     </div>
@@ -2708,15 +2659,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div><!-- /.sr-card-body -->
     </div>
 
-    <!-- HOW TO RUN IT -->
-    <div class="sr-how-to">
-      <div class="sr-how-to-title">How to Run It in the Room</div>
-      <ol>
-        <li><b>Number first.</b> State your figure before the story — keeps it comparable across everyone.</li>
-        <li><b>One sentence on the why.</b> What's behind the number, good or bad.</li>
-        <li><b>One blocker.</b> The single biggest thing in your way, plus what you need.</li>
-      </ol>
-    </div>
 
   </div>
   </div>
@@ -2762,10 +2704,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <textarea id="pm-r-channel" placeholder="Which channel drove the most quality leads?"></textarea>
         </div>
         <div class="pm-field">
-          <div class="pm-field-label">Best Message</div>
-          <textarea id="pm-r-msg" placeholder="Which message / hook resonated most strongly?"></textarea>
-        </div>
-        <div class="pm-field">
           <div class="pm-field-label">Best Package</div>
           <textarea id="pm-r-pkg" placeholder="Which tier / offer drove the most conversions?"></textarea>
         </div>
@@ -2783,10 +2721,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="pm-field">
           <div class="pm-field-label">Weakest Channel</div>
           <textarea id="pm-w-channel" placeholder="Which channel underperformed or wasted resources?"></textarea>
-        </div>
-        <div class="pm-field">
-          <div class="pm-field-label">Weakest Message</div>
-          <textarea id="pm-w-msg" placeholder="Which message fell flat or caused confusion?"></textarea>
         </div>
         <div class="pm-field">
           <div class="pm-field-label">Biggest Bottleneck</div>
@@ -3178,6 +3112,7 @@ function init() {
   // re-sync gate checklist whenever any field changes (covers diagnosis fields not hooked to updateScorecard)
   document.addEventListener('input', syncGateChecklist);
   document.addEventListener('change', syncGateChecklist);
+  document.getElementById('events-container')?.addEventListener('input', calcEventPerformance);
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.event-multichannel')) {
       document.querySelectorAll('.mc-dropdown.open').forEach(d => d.classList.remove('open'));
@@ -3602,7 +3537,7 @@ function calcSU() {
   const vpDate = new Date(vpDateStr);
   const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
   const readyDate = new Date(vpDate.getTime() + renoWeeks * MS_PER_WEEK);
-  const windowClose = new Date(vpDate.getTime() + windowWeeks * MS_PER_WEEK);
+  const windowClose = new Date(readyDate.getTime() + windowWeeks * MS_PER_WEEK);
 
   const fmtDate = d => d.toLocaleDateString('en-MY', {day:'numeric', month:'short', year:'numeric'});
   document.getElementById('o-su-ready-date').textContent = renoWeeks > 0 ? fmtDate(readyDate) : '—';
@@ -3668,6 +3603,7 @@ function goTo(step) {
     isEditMode = false;
     loadDevelopments();
   }
+  if (step === 8) calcEventPerformance();
   updateNavUI();
   document.getElementById('mainArea').scrollTop = 0;
 }
@@ -4036,6 +3972,26 @@ function srToggle(toggleEl) {
   icon.classList.toggle('open', !isOpen);
 }
 
+function calcEventPerformance() {
+  let targetRSVP = 0, attendance = 0, hotLeads = 0, closed = 0;
+  EVENT_PHASES.forEach(phase => {
+    const tbody = document.getElementById(`events-body-${phase.id}`);
+    if (!tbody) return;
+    [...tbody.querySelectorAll('tr')].forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const num = idx => parseFloat(cells[idx]?.querySelector('input')?.value || 0) || 0;
+      targetRSVP += num(4);
+      attendance += num(6);
+      hotLeads   += num(7);
+      closed     += num(8);
+    });
+  });
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('sr-attendance',  (attendance || targetRSVP) ? `${attendance} / ${targetRSVP}` : '—');
+  set('sr-event-leads', hotLeads  || '—');
+  set('sr-event-closed', closed   || '—');
+}
+
 // ─────────────────────────────────────────────────────────────
 //  SUPABASE CONFIG
 // ─────────────────────────────────────────────────────────────
@@ -4107,8 +4063,22 @@ function renderDevCard(dev) {
         ${badge}
       </div>
       <div class="dev-card-score">Scorecard: <strong>${pct}</strong></div>
-      <div class="dev-card-footer">${updated}</div>
+      <div class="dev-card-footer">
+        <span>${updated}</span>
+        <button class="dev-card-del" title="Delete development" onclick="deleteDevelopment('${escHtml(dev.id)}','${escHtml(name)}',event)">🗑</button>
+      </div>
     </div>`;
+}
+
+async function deleteDevelopment(id, name, event) {
+  event.stopPropagation();
+  if (!confirm(`Delete "${name}"?\n\nThis cannot be undone.`)) return;
+  try {
+    await supaFetch(`developments?id=eq.${id}`, { method: 'DELETE', prefer: 'return=minimal' });
+    loadDevelopments();
+  } catch(e) {
+    alert('Delete failed — check your connection and try again.\n\n' + e.message);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
