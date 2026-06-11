@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TMG Playbook">
+<meta name="apple-mobile-web-app-title" content="TMG TargDev Playbook">
 <meta name="theme-color" content="#FFC200">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4425,10 +4425,10 @@ function setupPWA() {
     ctx.fillStyle = '#FFC200';
     ctx.fill();
     ctx.fillStyle = '#000000';
-    ctx.font = `bold ${Math.round(size * 0.36)}px sans-serif`;
+    ctx.font = `bold ${Math.round(size * 0.28)}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('TM', size / 2, size / 2);
+    ctx.fillText('TMG', size / 2, size / 2);
     return c.toDataURL('image/png');
   }
 
@@ -4444,7 +4444,7 @@ function setupPWA() {
   // Manifest
   const manifest = {
     name: 'TMG Targeted Development Playbook',
-    short_name: 'TMG Playbook',
+    short_name: 'TMG TargDev Playbook',
     description: 'Targeted Development Operating System by The Makeover Guys',
     start_url: '/tmg-playbook/',
     scope: '/tmg-playbook/',
