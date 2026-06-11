@@ -824,21 +824,29 @@ input[type="number"] { -moz-appearance: textfield; }
 .attack-btn-desc { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
 
 /* ─── EVENT PLAN ─── */
-.phase-section { margin-bottom: 28px; }
+.phase-section {
+  margin-bottom: 48px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 16px 16px;
+}
 .phase-header-bar {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
 .phase-dot {
-  width: 8px; height: 8px;
+  width: 10px; height: 10px;
   border-radius: 50%;
   background: var(--yellow);
   flex-shrink: 0;
 }
-.phase-title-text { font-size: 14px; font-weight: 700; }
-.phase-sub { font-size: 12px; color: var(--text-3); }
+.phase-title-text { font-size: 15px; font-weight: 700; }
+.phase-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
 
 .event-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 .event-table th {
@@ -853,7 +861,7 @@ input[type="number"] { -moz-appearance: textfield; }
   white-space: nowrap;
 }
 .event-table td {
-  padding: 6px 8px;
+  padding: 10px 8px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
 }
@@ -2162,18 +2170,19 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="calc-section-title" style="margin-top:24px;">3 — Timing Check</div>
         <div class="form-hint" style="margin-bottom:14px;">The show unit uses a client's unit after VP. If renovation runs past the active selling window, no owners will visit — the investment is wasted.</div>
         <div class="form-group">
-          <label class="form-label">VP / Handover Date</label>
+          <label class="form-label">Renovation Start Date</label>
           <input type="date" id="c-su-vp-date" oninput="calcSU()">
+          <div class="form-hint">When the show unit fit-out begins (typically VP / handover date)</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Estimated Renovation Lead Time (weeks)</label>
+          <label class="form-label">Renovation Lead Time (weeks)</label>
           <input type="text" inputmode="numeric" id="c-su-reno-weeks" placeholder="6" oninput="fmtNumInput(this)">
-          <div class="form-hint">How long to complete the show unit fit-out from VP date</div>
+          <div class="form-hint">How many weeks to complete the fit-out from start date</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Active Selling Window (months from VP)</label>
-          <input type="text" inputmode="numeric" id="c-su-window-months" placeholder="4" oninput="fmtNumInput(this)">
-          <div class="form-hint">Owners typically decide within 3–6 months of VP</div>
+          <label class="form-label">Active Selling Window (weeks)</label>
+          <input type="text" inputmode="numeric" id="c-su-window-months" placeholder="16" oninput="fmtNumInput(this)">
+          <div class="form-hint">Owners typically decide within 12–24 weeks of VP</div>
         </div>
       </div>
 
@@ -3580,7 +3589,7 @@ function calcSU() {
   // Timing check
   const vpDateStr = document.getElementById('c-su-vp-date')?.value;
   const renoWeeks = parseSUNum('c-su-reno-weeks');
-  const windowMonths = parseSUNum('c-su-window-months');
+  const windowWeeks = parseSUNum('c-su-window-months');
   const timingBanner = document.getElementById('o-su-timing-banner');
 
   if (!vpDateStr) {
@@ -3591,15 +3600,15 @@ function calcSU() {
   }
 
   const vpDate = new Date(vpDateStr);
-  const readyDate = new Date(vpDate.getTime() + renoWeeks * 7 * 24 * 60 * 60 * 1000);
-  const windowClose = new Date(vpDate);
-  if (windowMonths > 0) windowClose.setMonth(windowClose.getMonth() + windowMonths);
+  const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
+  const readyDate = new Date(vpDate.getTime() + renoWeeks * MS_PER_WEEK);
+  const windowClose = new Date(vpDate.getTime() + windowWeeks * MS_PER_WEEK);
 
   const fmtDate = d => d.toLocaleDateString('en-MY', {day:'numeric', month:'short', year:'numeric'});
   document.getElementById('o-su-ready-date').textContent = renoWeeks > 0 ? fmtDate(readyDate) : '—';
-  document.getElementById('o-su-window-close').textContent = windowMonths > 0 ? fmtDate(windowClose) : '—';
+  document.getElementById('o-su-window-close').textContent = windowWeeks > 0 ? fmtDate(windowClose) : '—';
 
-  if (renoWeeks > 0 && windowMonths > 0) {
+  if (renoWeeks > 0 && windowWeeks > 0) {
     const daysAvailable = Math.round((windowClose - readyDate) / (24 * 60 * 60 * 1000));
     const weeksAvailable = Math.round(daysAvailable / 7);
     if (daysAvailable <= 0) {
