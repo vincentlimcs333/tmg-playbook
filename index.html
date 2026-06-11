@@ -1538,6 +1538,57 @@ body.read-mode .btn-nav     { pointer-events: auto !important; }
 body.read-mode .decision-gate-nav { pointer-events: auto !important; }
 body.read-mode .home-nav-item     { pointer-events: auto !important; }
 body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
+/* ─── EDITOR NAME MODAL ─── */
+#editor-name-modal {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+#editor-name-modal.hidden { display: none; }
+.enm-card {
+  background: var(--surface);
+  border: 1px solid var(--yellow);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  width: 100%; max-width: 400px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+}
+.enm-logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--yellow); color: #000;
+  font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.enm-title {
+  font-size: 18px; font-weight: 700; color: var(--text);
+  margin-bottom: 6px;
+}
+.enm-sub {
+  font-size: 13px; color: var(--text-2); margin-bottom: 24px; line-height: 1.5;
+}
+.enm-input {
+  width: 100%; margin-bottom: 16px;
+}
+.enm-btn {
+  width: 100%; padding: 12px;
+  background: var(--yellow); color: #000;
+  border: none; border-radius: var(--radius);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: opacity 0.15s;
+}
+.enm-btn:hover { opacity: 0.88; }
+.enm-change {
+  font-size: 12px; color: var(--text-3); text-align: right;
+  margin-top: 8px; cursor: pointer; text-decoration: underline;
+  background: none; border: none; display: block; margin-left: auto;
+}
+.enm-change:hover { color: var(--text-2); }
+.editor-byline {
+  font-size: 12px; color: var(--text-3);
+}
+.editor-byline strong { color: var(--text-2); }
 </style>
 </head>
 <body>
@@ -1562,6 +1613,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <button class="btn-banner btn-banner-back" onclick="goTo('all')">← All Developments</button>
     <span>Viewing: <strong id="view-banner-name"></strong></span>
     <span id="view-banner-updated"></span>
+    <span id="view-banner-editor" class="editor-byline" style="display:none;"></span>
   </div>
   <div class="view-banner-right">
     <button class="btn-banner btn-banner-edit"    id="btn-edit-mode"  onclick="enterEditMode()">✎ Edit</button>
@@ -1789,7 +1841,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <tr>
             <td colspan="4" style="padding:14px 12px;"><strong style="font-size:13px;">Total Weighted Score</strong></td>
             <td><div class="weighted-score" id="total-score" style="font-size:18px;">0</div></td>
-            <td><span id="score-note" style="font-size:12px;color:var(--text-3);">Score updates automatically</span></td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
@@ -2328,7 +2380,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   <div class="step-header">
     <div class="step-tag">Phase 3 · Step 8 of 9</div>
     <div class="step-title">Status Report</div>
-    <div class="step-desc">Where the numbers stand right now. Number first, story second, one blocker. Run it in the room in 5 minutes.</div>
+    <div class="step-desc">Track live pipeline, conversion, show unit progress, event performance, package appeal, VP runway, and blockers in one place.</div>
   </div>
   <div class="step-scroll">
   <div class="step-content">
@@ -2626,11 +2678,9 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <input type="number" id="sr-vp-deals" min="0" placeholder="0">
         </div>
       </div>
-      <div class="form-row" style="margin-top:12px;">
-        <div class="form-group">
-          <label class="form-label">What Must Happen Before It Shuts</label>
-          <textarea id="sr-vp-must"></textarea>
-        </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">What Must Happen Before It Shuts</label>
+        <textarea id="sr-vp-must"></textarea>
       </div>
       </div><!-- /.sr-card-body -->
     </div>
@@ -2757,6 +2807,17 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 </div>
 
 </main>
+
+<!-- ─── EDITOR NAME MODAL ─── -->
+<div id="editor-name-modal" class="hidden">
+  <div class="enm-card">
+    <div class="enm-logo">T</div>
+    <div class="enm-title">Who's editing?</div>
+    <div class="enm-sub">Your name will be saved alongside every update so the team knows who last touched each development.</div>
+    <input class="enm-input" id="enm-input" type="text" placeholder="Your name" maxlength="60" onkeydown="if(event.key==='Enter')submitEditorName()">
+    <button class="enm-btn" onclick="submitEditorName()">Start editing →</button>
+  </div>
+</div>
 </div>
 
 <!-- ─── BOTTOM NAV ─── -->
@@ -2778,6 +2839,7 @@ let currentStep = 'all';
 let decisionMade = null; // 'attack' | 'secondary' | 'pass' | null
 let state = {};
 let currentDevId = null;       // UUID of open development, null if new
+let currentDevEditor = null;   // last_edited_by for the open development
 let isEditMode = false;
 let currentDevUpdatedAt = null;
 
@@ -4032,7 +4094,7 @@ async function loadDevelopments() {
   gridEl.style.display   = 'none';
   try {
     const devs = await supaFetch(
-      'developments?select=id,development_name,decision,scorecard_pct,updated_at,created_at&order=updated_at.desc'
+      'developments?select=id,development_name,decision,scorecard_pct,updated_at,created_at,last_edited_by&order=updated_at.desc'
     );
     statusEl.style.display = 'none';
     if (!devs || devs.length === 0) {
@@ -4055,7 +4117,8 @@ function renderDevCard(dev) {
                 dec === 'secondary' ? `<span class="dec-badge secondary">SECONDARY</span>` :
                 dec === 'pass'      ? `<span class="dec-badge pass">PASS</span>` :
                                      `<span class="dec-badge pending">IN PROGRESS</span>`;
-  const updated = dev.updated_at ? 'Updated ' + timeAgo(new Date(dev.updated_at)) : '';
+  const updated  = dev.updated_at ? 'Updated ' + timeAgo(new Date(dev.updated_at)) : '';
+  const editor   = dev.last_edited_by ? ` by <strong>${escHtml(dev.last_edited_by)}</strong>` : '';
   return `
     <div class="dev-card" onclick="openDevelopment('${escHtml(dev.id)}')">
       <div class="dev-card-top">
@@ -4064,7 +4127,7 @@ function renderDevCard(dev) {
       </div>
       <div class="dev-card-score">Scorecard: <strong>${pct}</strong></div>
       <div class="dev-card-footer">
-        <span>${updated}</span>
+        <span class="editor-byline">${updated}${editor}</span>
         <button class="dev-card-del" title="Delete development" onclick="deleteDevelopment('${escHtml(dev.id)}','${escHtml(name)}',event)">🗑</button>
       </div>
     </div>`;
@@ -4097,6 +4160,7 @@ async function openDevelopment(id) {
     if (!dev) throw new Error('Not found');
     currentDevId        = dev.id;
     currentDevUpdatedAt = dev.updated_at ? new Date(dev.updated_at) : null;
+    currentDevEditor    = dev.last_edited_by || null;
     isEditMode          = false;
     clearFormState();
     applyFormState(dev.state || {});
@@ -4116,6 +4180,7 @@ async function openDevelopment(id) {
 function newDevelopment() {
   currentDevId        = null;
   currentDevUpdatedAt = null;
+  currentDevEditor    = null;
   isEditMode          = true;
   clearFormState();
   omCurrentFiles = []; omRender();
@@ -4147,27 +4212,35 @@ function enterEditMode() {
 }
 
 function updateViewBanner() {
-  const banner   = document.getElementById('view-banner');
-  const nameEl   = document.getElementById('view-banner-name');
-  const updatedEl= document.getElementById('view-banner-updated');
-  const btnEdit  = document.getElementById('btn-edit-mode');
-  const btnSave  = document.getElementById('btn-save-cloud');
-  const btnDisc  = document.getElementById('btn-discard');
+  const banner    = document.getElementById('view-banner');
+  const nameEl    = document.getElementById('view-banner-name');
+  const updatedEl = document.getElementById('view-banner-updated');
+  const editorEl  = document.getElementById('view-banner-editor');
+  const btnEdit   = document.getElementById('btn-edit-mode');
+  const btnSave   = document.getElementById('btn-save-cloud');
+  const btnDisc   = document.getElementById('btn-discard');
   if (!currentDevId) return;
   banner.style.display = 'flex';
   nameEl.textContent   = document.getElementById('devNameGlobal')?.value || 'Untitled';
   if (isEditMode) {
-    banner.dataset.mode         = 'edit';
-    btnEdit.style.display       = 'none';
-    btnSave.style.display       = 'inline-flex';
-    btnDisc.style.display       = 'inline-flex';
-    updatedEl.textContent       = '';
+    banner.dataset.mode        = 'edit';
+    btnEdit.style.display      = 'none';
+    btnSave.style.display      = 'inline-flex';
+    btnDisc.style.display      = 'inline-flex';
+    updatedEl.textContent      = '';
+    editorEl.style.display     = 'none';
   } else {
-    banner.dataset.mode         = 'view';
-    btnEdit.style.display       = 'inline-flex';
-    btnSave.style.display       = 'none';
-    btnDisc.style.display       = 'none';
-    updatedEl.textContent       = currentDevUpdatedAt ? 'Updated ' + timeAgo(currentDevUpdatedAt) : '';
+    banner.dataset.mode        = 'view';
+    btnEdit.style.display      = 'inline-flex';
+    btnSave.style.display      = 'none';
+    btnDisc.style.display      = 'none';
+    updatedEl.textContent      = currentDevUpdatedAt ? 'Updated ' + timeAgo(currentDevUpdatedAt) : '';
+    if (currentDevEditor) {
+      editorEl.innerHTML       = `by <strong>${escHtml(currentDevEditor)}</strong>`;
+      editorEl.style.display   = 'inline';
+    } else {
+      editorEl.style.display   = 'none';
+    }
   }
 }
 
@@ -4183,6 +4256,7 @@ async function discardChanges() {
 //  SAVE TO CLOUD
 // ─────────────────────────────────────────────────────────────
 async function saveToCloud() {
+  if (!getEditorName()) { showEditorNameModal(); return; }
   const btnSave = document.getElementById('btn-save-cloud');
   btnSave.textContent = 'Saving…';
   btnSave.disabled    = true;
@@ -4196,6 +4270,7 @@ async function saveToCloud() {
     scorecard_pct:    scorePct,
     state:            s,
     updated_at:       new Date().toISOString(),
+    last_edited_by:   getEditorName(),
   };
   try {
     if (currentDevId) {
@@ -4212,6 +4287,7 @@ async function saveToCloud() {
       currentDevId = result?.[0]?.id || null;
     }
     currentDevUpdatedAt = new Date();
+    currentDevEditor    = getEditorName();
     btnSave.textContent = '✓ Saved';
     setTimeout(() => {
       btnSave.textContent = 'Save';
@@ -4285,9 +4361,42 @@ function escHtml(s) {
 setInterval(saveAll, 60000);
 
 // ─────────────────────────────────────────────────────────────
+//  EDITOR NAME
+// ─────────────────────────────────────────────────────────────
+function getEditorName() {
+  return localStorage.getItem('tmg-editor-name') || null;
+}
+
+function showEditorNameModal() {
+  const modal = document.getElementById('editor-name-modal');
+  const input = document.getElementById('enm-input');
+  modal.classList.remove('hidden');
+  setTimeout(() => input.focus(), 80);
+}
+
+function submitEditorName() {
+  const input = document.getElementById('enm-input');
+  const name  = input.value.trim();
+  if (!name) { input.focus(); return; }
+  localStorage.setItem('tmg-editor-name', name);
+  document.getElementById('editor-name-modal').classList.add('hidden');
+}
+
+function changeEditorName() {
+  const modal = document.getElementById('editor-name-modal');
+  const input = document.getElementById('enm-input');
+  input.value = getEditorName() || '';
+  modal.classList.remove('hidden');
+  setTimeout(() => input.focus(), 80);
+}
+
+// ─────────────────────────────────────────────────────────────
 //  KICK OFF
 // ─────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', () => {
+  init();
+  if (!getEditorName()) showEditorNameModal();
+});
 </script>
 </body>
 </html>
