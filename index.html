@@ -1428,6 +1428,7 @@ input[type="number"] { -moz-appearance: textfield; }
 .home-sheet-status.phase1 { background: rgba(255,194,0,0.12); color: var(--yellow); }
 .home-sheet-status.phase2 { background: rgba(63,167,224,0.12); color: #3FA7E0; }
 .home-sheet-status.phase3 { background: rgba(34,197,94,0.12); color: var(--green); }
+.home-sheet-status.phase4 { background: rgba(168,85,247,0.12); color: #A855F7; }
 
 .home-nav-item {
   font-size: 13px;
@@ -1715,12 +1716,15 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <div class="phase-label">Phase 3 — Review</div>
     <div class="step-item" onclick="goTo(7)" id="nav-7">
       <div class="step-num"><span>7</span></div>
-      <div class="step-text">Event Procurement</div>
+      <div class="step-text">Procurement</div>
     </div>
     <div class="step-item" onclick="goTo(8)" id="nav-8">
       <div class="step-num"><span>8</span></div>
       <div class="step-text">Status Report</div>
     </div>
+  </div>
+  <div class="phase-group">
+    <div class="phase-label">Phase 4 — Close</div>
     <div class="step-item" onclick="goTo(9)" id="nav-9">
       <div class="step-num"><span>9</span></div>
       <div class="step-text">Post-Mortem</div>
@@ -1788,9 +1792,10 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Channel &amp; Events</td><td>Plan owner access, events, and follow-up <span class="home-sheet-status phase2">Plan</span></td></tr>
           <tr onclick="goTo(5)" style="cursor:pointer"><td><span class="home-sheet-num">5</span>Show Unit Calculator</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
           <tr class="home-phase-row"><td colspan="2">Phase 3 — Review</td></tr>
-          <tr onclick="goTo(7)" style="cursor:pointer"><td><span class="home-sheet-num">7</span>Event Procurement</td><td>Condo-specific items &amp; GWP accountability <span class="home-sheet-status phase3">Review</span></td></tr>
+          <tr onclick="goTo(7)" style="cursor:pointer"><td><span class="home-sheet-num">7</span>Procurement</td><td>Condo-specific items &amp; GWP accountability <span class="home-sheet-status phase3">Review</span></td></tr>
           <tr onclick="goTo(8)" style="cursor:pointer"><td><span class="home-sheet-num">8</span>Status Report</td><td>Live numbers, pipeline read, blockers &amp; asks <span class="home-sheet-status phase3">Review</span></td></tr>
-          <tr onclick="goTo(9)" style="cursor:pointer"><td><span class="home-sheet-num">9</span>Post-Mortem</td><td>Capture learning <span class="home-sheet-status phase3">Review</span></td></tr>
+          <tr class="home-phase-row"><td colspan="2">Phase 4 — Close</td></tr>
+          <tr onclick="goTo(9)" style="cursor:pointer"><td><span class="home-sheet-num">9</span>Post-Mortem</td><td>Capture learning <span class="home-sheet-status phase4">Close</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1939,7 +1944,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Unit count</label>
-          <input type="text" id="m-units" placeholder="Or type your own..." data-chips="Below 200 units|200–500 units|500–1,000 units|1,000+ units|Multi-phase">
+          <input type="text" id="m-units" placeholder="Or type your own..." data-chips="Below 200 units|200–500 units|500–1,000 units|1,000+ units|Multi-phase" oninput="calcSR()">
         </div>
         <div class="form-group">
           <label class="form-label">Main layouts</label>
@@ -2187,11 +2192,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row" style="margin-bottom:20px;">
         <div class="form-group">
           <label class="form-label">Campaign Revenue Target (RM)</label>
-          <input type="number" id="e-rev-target" placeholder="e.g. 1,000,000" oninput="syncCalcFromEvents()">
+          <input type="text" inputmode="numeric" id="e-rev-target" placeholder="e.g. 1,000,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
         </div>
         <div class="form-group">
           <label class="form-label">Average Ticket Size (RM)</label>
-          <input type="number" id="e-avg-ticket" placeholder="e.g. 20,000" oninput="syncCalcFromEvents()">
+          <input type="text" inputmode="numeric" id="e-avg-ticket" placeholder="e.g. 20,000" oninput="fmtCommaInput(this);syncCalcFromEvents()">
         </div>
         <div class="form-group">
           <label class="form-label">Target Units to Close</label>
@@ -2324,7 +2329,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 <div class="step-panel" id="panel-7">
   <div class="step-header">
     <div class="step-tag">Phase 3 · Step 7 of 9</div>
-    <div class="step-title">Event Procurement Planner</div>
+    <div class="step-title">Procurement Planner</div>
     <div class="step-desc">One development, many events. Condo-specific items are ordered once at the development level. GWP is planned per event since each event has its own closing target.</div>
   </div>
   <div class="step-scroll">
@@ -2465,11 +2470,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
           <label class="form-label">Offline</label>
-          <input type="number" id="sr-sources-offline" min="0" placeholder="0" oninput="updateTotalLDL()">
+          <input type="text" inputmode="numeric" id="sr-sources-offline" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
         </div>
         <div class="form-group">
           <label class="form-label">Online</label>
-          <input type="number" id="sr-sources-online" min="0" placeholder="0" oninput="updateTotalLDL()">
+          <input type="text" inputmode="numeric" id="sr-sources-online" placeholder="0" oninput="fmtCommaInput(this);updateTotalLDL()">
         </div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
@@ -2511,13 +2516,13 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
           <label class="form-label">Target Revenue (RM)</label>
-          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcTargetUnits()">
+          <input type="text" inputmode="numeric" id="sr-rev-target" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
         </div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
           <label class="form-label">Actual Avg Ticket Size (RM)</label>
-          <input type="number" id="sr-avg-pkg" min="0" placeholder="0" oninput="calcTargetUnits()">
+          <input type="text" inputmode="numeric" id="sr-avg-pkg" placeholder="0" oninput="fmtCommaInput(this);calcTargetUnits()">
         </div>
         <div class="form-group">
           <label class="form-label">Target Units</label>
@@ -2527,11 +2532,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Revenue Closed (RM)</label>
-          <input type="number" id="sr-rev-actual" min="0" placeholder="0" oninput="calcSR()">
+          <input type="text" inputmode="numeric" id="sr-rev-actual" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
         </div>
         <div class="form-group">
           <label class="form-label">Units Closed</label>
-          <input type="number" id="sr-conv-units" min="0" placeholder="0" oninput="calcSR()">
+          <input type="text" inputmode="numeric" id="sr-conv-units" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
         </div>
       </div>
       </div><!-- /.sr-card-body -->
@@ -2669,11 +2674,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         </div>
         <div class="form-group">
           <label class="form-label">Days of Runway Left</label>
-          <input type="text" id="sr-vp-manual" placeholder="auto / override" oninput="calcSR()">
+          <input type="text" id="sr-vp-manual" placeholder="—" readonly style="opacity:0.6;cursor:default;">
         </div>
         <div class="form-group">
           <label class="form-label">Deals That Must Close in Window</label>
-          <input type="number" id="sr-vp-deals" min="0" placeholder="0">
+          <input type="text" id="sr-vp-deals" placeholder="—" readonly style="opacity:0.6;cursor:default;">
         </div>
       </div>
       <div class="form-group" style="margin-top:12px;">
@@ -2714,7 +2719,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 
 <div class="step-panel" id="panel-9">
   <div class="step-header">
-    <div class="step-tag">Phase 3 · Step 9 of 9</div>
+    <div class="step-tag">Phase 4 · Step 9 of 9</div>
     <div class="step-title">Post-Mortem</div>
     <div class="step-desc">Campaign closes only after post-mortem. Capture what happened honestly. Build the institutional memory that makes the next campaign smarter.</div>
   </div>
@@ -2728,11 +2733,11 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
       <div class="form-group">
         <label class="form-label">Final Revenue Achieved (RM)</label>
-        <input type="number" id="pm-revenue" placeholder="0">
+        <input type="text" inputmode="numeric" id="pm-revenue" placeholder="0" oninput="fmtCommaInput(this)">
       </div>
       <div class="form-group">
         <label class="form-label">Final Units Closed</label>
-        <input type="number" id="pm-units" placeholder="0">
+        <input type="text" inputmode="numeric" id="pm-units" placeholder="0" oninput="fmtCommaInput(this)">
       </div>
     </div>
 
@@ -3633,8 +3638,8 @@ function calcSU() {
 }
 
 function syncCalcFromEvents() {
-  const rev = parseFloat(document.getElementById('e-rev-target')?.value) || 0;
-  const ticket = parseFloat(document.getElementById('e-avg-ticket')?.value) || 0;
+  const rev = parseComma(document.getElementById('e-rev-target')?.value);
+  const ticket = parseComma(document.getElementById('e-avg-ticket')?.value);
   const targetUnits = ticket > 0 ? Math.ceil(rev / ticket) : '—';
   document.getElementById('e-target-units').textContent = typeof targetUnits === 'number' ? `${targetUnits} units` : '—';
 }
@@ -3975,27 +3980,42 @@ function srPopVal(elId) {
   void el.offsetWidth;
   el.classList.add('popping');
 }
+function parseComma(v) {
+  return parseFloat(String(v || '').replace(/,/g, '')) || 0;
+}
+
+function fmtCommaInput(el) {
+  const raw = el.value.replace(/[^0-9]/g, '');
+  el.value = raw ? parseInt(raw, 10).toLocaleString('en-MY') : '';
+}
+
+function fmtCommaReadonly(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val ? val.toLocaleString('en-MY') : '';
+}
+
 function calcTargetUnits() {
-  const revTarget = +document.getElementById('sr-rev-target').value || 0;
-  const avgTicket = +document.getElementById('sr-avg-pkg').value    || 0;
-  const el = document.getElementById('sr-target-units');
-  el.value = (revTarget && avgTicket) ? Math.round(revTarget / avgTicket) : '';
+  const revTarget = parseComma(document.getElementById('sr-rev-target').value);
+  const avgTicket = parseComma(document.getElementById('sr-avg-pkg').value);
+  const units = (revTarget && avgTicket) ? Math.round(revTarget / avgTicket) : 0;
+  fmtCommaReadonly('sr-target-units', units || null);
   calcSR();
 }
 
 function updateTotalLDL() {
-  const offline = +document.getElementById('sr-sources-offline').value || 0;
-  const online  = +document.getElementById('sr-sources-online').value  || 0;
-  document.getElementById('sr-leads').value = offline + online || '';
+  const offline = parseComma(document.getElementById('sr-sources-offline').value);
+  const online  = parseComma(document.getElementById('sr-sources-online').value);
+  const total = offline + online;
+  fmtCommaReadonly('sr-leads', total || null);
   calcSR();
 }
 
 function calcSR() {
-  const leads       = +document.getElementById('sr-leads').value       || 0;
-  const convUnits   = +document.getElementById('sr-conv-units').value   || 0;
-  const targetUnits = +document.getElementById('sr-target-units').value || 0;
-  const revActual   = +document.getElementById('sr-rev-actual').value   || 0;
-  const revTarget   = +document.getElementById('sr-rev-target').value   || 0;
+  const leads       = parseComma(document.getElementById('sr-leads').value);
+  const convUnits   = parseComma(document.getElementById('sr-conv-units').value);
+  const targetUnits = parseComma(document.getElementById('sr-target-units').value);
+  const revActual   = parseComma(document.getElementById('sr-rev-actual').value);
+  const revTarget   = parseComma(document.getElementById('sr-rev-target').value);
 
   const leadsEl = document.getElementById('sr-sb-leads');
   if (leadsEl) leadsEl.textContent = leads;
@@ -4030,16 +4050,35 @@ function calcSR() {
   }
   srSetTile('sr-tile-rev', rp);
 
-  const manual = document.getElementById('sr-vp-manual').value.trim();
   const vpDate = document.getElementById('sr-vp-date').value;
-  let vpText = '—', vpDays = null;
-  if (manual) { vpText = manual; vpDays = parseInt(manual); }
-  else if (vpDate) {
-    const diff = Math.ceil((new Date(vpDate) - new Date()) / (1000 * 60 * 60 * 24));
-    vpText = diff; vpDays = diff;
+
+  // defect period based on unit count from step 1
+  const unitVal = (document.getElementById('m-units')?.value || '').toLowerCase();
+  let defectDays = null;
+  if (unitVal.includes('below 200') || (parseInt(unitVal) > 0 && parseInt(unitVal) < 200)) {
+    defectDays = 30;
+  } else if (unitVal.includes('200') || (parseInt(unitVal) >= 200 && parseInt(unitVal) <= 500)) {
+    defectDays = 60;
+  } else if (unitVal.includes('500') || unitVal.includes('1,000') || unitVal.includes('1000') || unitVal.includes('multi') || parseInt(unitVal) > 500) {
+    defectDays = 90;
   }
+
+  let vpDays = null;
+  if (vpDate && defectDays !== null) {
+    const windowEnd = new Date(vpDate);
+    windowEnd.setDate(windowEnd.getDate() + defectDays);
+    vpDays = Math.max(0, Math.ceil((windowEnd - new Date()) / (1000 * 60 * 60 * 24)));
+  }
+  const runwayEl = document.getElementById('sr-vp-manual');
+  if (runwayEl) runwayEl.value = vpDays !== null ? vpDays : '';
+
+  // deals remaining = target units - actual units closed
+  const dealsRemaining = Math.max(0, targetUnits - convUnits);
+  const dealsEl = document.getElementById('sr-vp-deals');
+  if (dealsEl) dealsEl.value = dealsRemaining || '';
+
   const vpEl = document.getElementById('sr-sb-vp');
-  if (vpEl) vpEl.textContent = vpText;
+  if (vpEl) vpEl.textContent = vpDays !== null ? vpDays : '—';
   const vpTile = document.getElementById('sr-tile-vp');
   if (vpTile && vpDays !== null) {
     vpTile.classList.remove('green', 'amber', 'red');
@@ -4149,11 +4188,11 @@ function renderDevCard(dev) {
   const editor   = dev.last_edited_by ? ` by <strong>${escHtml(dev.last_edited_by)}</strong>` : '';
 
   const st          = dev.state || {};
-  const revTarget   = parseFloat(st['sr-rev-target'])   || 0;
-  const revActual   = parseFloat(st['sr-rev-actual'])   || 0;
-  const unitsTarget = parseFloat(st['sr-target-units']) || 0;
-  const unitsDone   = parseFloat(st['sr-conv-units'])   || 0;
-  const leads       = parseFloat(st['sr-leads'])        || 0;
+  const revTarget   = parseComma(st['sr-rev-target']);
+  const revActual   = parseComma(st['sr-rev-actual']);
+  const unitsTarget = parseComma(st['sr-target-units']);
+  const unitsDone   = parseComma(st['sr-conv-units']);
+  const leads       = parseComma(st['sr-leads']);
   const hasMetrics  = revTarget || revActual || unitsTarget || unitsDone || leads;
 
   let metricsHtml = '';
@@ -4389,6 +4428,13 @@ function clearFormState() {
   calcSU();
 }
 
+const COMMA_FIELD_IDS = [
+  'sr-rev-target','sr-avg-pkg','sr-rev-actual','sr-conv-units',
+  'sr-sources-offline','sr-sources-online',
+  'pm-revenue','pm-units',
+  'e-rev-target','e-avg-ticket'
+];
+
 function applyFormState(s) {
   Object.entries(s).forEach(([id, val]) => {
     if (id.startsWith('__')) return;
@@ -4396,6 +4442,14 @@ function applyFormState(s) {
     if (!el) return;
     if (el.type === 'checkbox') el.checked = val;
     else el.value = val;
+  });
+  // reformat comma fields after restore
+  COMMA_FIELD_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value) {
+      const n = parseComma(el.value);
+      if (n) el.value = n.toLocaleString('en-MY');
+    }
   });
   decisionMade = null;
   updateScorecard();
