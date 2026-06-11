@@ -2464,18 +2464,18 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="sr-card-body">
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label">Total LDL</label>
-          <input type="number" id="sr-leads" min="0" placeholder="0" oninput="calcSR()">
+          <label class="form-label">Offline</label>
+          <input type="number" id="sr-sources-offline" min="0" placeholder="0" oninput="updateTotalLDL()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Online</label>
+          <input type="number" id="sr-sources-online" min="0" placeholder="0" oninput="updateTotalLDL()">
         </div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
-          <label class="form-label">Offline</label>
-          <input type="number" id="sr-sources-offline" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Online</label>
-          <input type="number" id="sr-sources-online" min="0" placeholder="0">
+          <label class="form-label">Total LDL</label>
+          <input type="number" id="sr-leads" min="0" placeholder="0" readonly style="opacity:0.6;cursor:default;">
         </div>
       </div>
       <div class="sr-chips">
@@ -2511,17 +2511,17 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
           <label class="form-label">Target Revenue (RM)</label>
-          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcSR()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Target Units</label>
-          <input type="number" id="sr-target-units" min="0" placeholder="0" oninput="calcSR()">
+          <input type="number" id="sr-rev-target" min="0" placeholder="0" oninput="calcTargetUnits()">
         </div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
         <div class="form-group">
           <label class="form-label">Actual Avg Ticket Size (RM)</label>
-          <input type="number" id="sr-avg-pkg" min="0" placeholder="0">
+          <input type="number" id="sr-avg-pkg" min="0" placeholder="0" oninput="calcTargetUnits()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Target Units</label>
+          <input type="number" id="sr-target-units" placeholder="—" readonly style="opacity:0.6;cursor:default;">
         </div>
       </div>
       <div class="form-row">
@@ -2578,10 +2578,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <option>Not yet a factor</option>
         </select>
       </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Customer Feedback on the Walk-Through</label>
-        <textarea id="sr-su-feedback"></textarea>
-      </div>
+
       </div><!-- /.sr-card-body -->
     </div>
 
@@ -2612,25 +2609,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <div class="sr-sync-val" id="sr-event-closed">—</div>
         </div>
       </div>
-      <div class="form-row" style="margin-top:12px;">
-        <div class="form-group">
-          <label class="form-label">What's Working in the Room</label>
-          <textarea id="sr-ev-working"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">What's Falling Flat</label>
-          <textarea id="sr-ev-flat"></textarea>
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:12px;">
-        <label class="form-label">Cost vs Return</label>
-        <select id="sr-ev-cost" style="max-width:240px;">
-          <option value="">— select —</option>
-          <option>Earning its keep</option>
-          <option>Breaking even</option>
-          <option>Not worth it yet</option>
-        </select>
-      </div>
+
       </div><!-- /.sr-card-body -->
     </div>
 
@@ -3996,6 +3975,21 @@ function srPopVal(elId) {
   void el.offsetWidth;
   el.classList.add('popping');
 }
+function calcTargetUnits() {
+  const revTarget = +document.getElementById('sr-rev-target').value || 0;
+  const avgTicket = +document.getElementById('sr-avg-pkg').value    || 0;
+  const el = document.getElementById('sr-target-units');
+  el.value = (revTarget && avgTicket) ? Math.round(revTarget / avgTicket) : '';
+  calcSR();
+}
+
+function updateTotalLDL() {
+  const offline = +document.getElementById('sr-sources-offline').value || 0;
+  const online  = +document.getElementById('sr-sources-online').value  || 0;
+  document.getElementById('sr-leads').value = offline + online || '';
+  calcSR();
+}
+
 function calcSR() {
   const leads       = +document.getElementById('sr-leads').value       || 0;
   const convUnits   = +document.getElementById('sr-conv-units').value   || 0;
@@ -4407,6 +4401,14 @@ function applyFormState(s) {
   updateScorecard();
   calcSU();
   updatePhaseAccess();
+  // recompute target units from revenue + avg ticket if either is set
+  const revEl = document.getElementById('sr-rev-target');
+  const avgEl = document.getElementById('sr-avg-pkg');
+  if (revEl && avgEl && (revEl.value || avgEl.value)) calcTargetUnits();
+  // recompute total LDL from offline+online if either is set
+  const offEl = document.getElementById('sr-sources-offline');
+  const onEl  = document.getElementById('sr-sources-online');
+  if (offEl && onEl && (offEl.value || onEl.value)) updateTotalLDL();
 }
 
 // ─────────────────────────────────────────────────────────────
