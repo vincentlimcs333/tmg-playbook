@@ -1509,7 +1509,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   </div>
   <div class="view-banner-right">
     <button class="btn-banner btn-banner-edit"    id="btn-edit-mode"  onclick="enterEditMode()">✎ Edit</button>
-    <button class="btn-banner btn-banner-save"    id="btn-save-cloud" onclick="saveToCloud()"  style="display:none;">Save to Cloud</button>
+    <button class="btn-banner btn-banner-save"    id="btn-save-cloud" onclick="saveToCloud()"  style="display:none;">Save</button>
     <button class="btn-banner btn-banner-discard" id="btn-discard"    onclick="discardChanges()" style="display:none;">Discard</button>
   </div>
 </div>
@@ -1647,12 +1647,15 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <div class="card home-section">
       <div class="home-section-label">Operating Rules</div>
       <ul class="home-rules">
-        <li>Complete Scorecard before committing resources</li>
-        <li>Classify segment before building package</li>
-        <li>Lock target math before launch</li>
-        <li>No event without CTA and follow-up owner</li>
-        <li>No oversell beyond delivery capacity</li>
-        <li>Campaign closes only after post-mortem</li>
+        <li>Score the development before committing any resources</li>
+        <li>Diagnose the owner before building the offer package</li>
+        <li>Gate must resolve before Phase 2 unlocks</li>
+        <li>Offer package uploaded before any event goes live</li>
+        <li>Every event tracked to hot leads, not just attendance</li>
+        <li>No show unit without a Go from the ROI calculator</li>
+        <li>Every procurement item signed off before distribution</li>
+        <li>Status report runs on real numbers — no rounding</li>
+        <li>Campaign closes only after post-mortem is complete</li>
       </ul>
     </div>
 
@@ -4176,13 +4179,13 @@ async function saveToCloud() {
     currentDevUpdatedAt = new Date();
     btnSave.textContent = '✓ Saved';
     setTimeout(() => {
-      btnSave.textContent = 'Save to Cloud';
+      btnSave.textContent = 'Save';
       btnSave.disabled    = false;
       setReadMode(true);
       updateViewBanner();
     }, 1400);
   } catch(e) {
-    btnSave.textContent = 'Save to Cloud';
+    btnSave.textContent = 'Save';
     btnSave.disabled    = false;
     alert('Save failed — check your internet connection and try again.\n\n' + e.message);
     console.error(e);
