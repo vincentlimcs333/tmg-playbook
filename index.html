@@ -1654,8 +1654,8 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <li>Every event tracked to hot leads, not just attendance</li>
         <li>No show unit without a Go from the ROI calculator</li>
         <li>Every procurement item signed off before distribution</li>
-        <li>Status report runs on real numbers — no rounding</li>
-        <li>Campaign closes only after post-mortem is complete</li>
+        <li>Status report runs on real numbers only</li>
+        <li>Campaign closes only after the post mortem is complete</li>
       </ul>
     </div>
 
@@ -3137,7 +3137,7 @@ function buildScorecardTable() {
       </td>
       <td class="factor-weight">2</td>
       <td>
-        <input type="number" class="score-input" id="sc-score-${i}" min="1" max="5" placeholder="—" oninput="updateScorecard()">
+        <input type="number" class="score-input" id="sc-score-${i}" min="1" max="5" placeholder="—" oninput="if(this.value>5)this.value=5;if(this.value<1&&this.value!=='')this.value=1;updateScorecard()">
       </td>
       <td>
         <div class="weighted-score" id="sc-weighted-${i}">—</div>
