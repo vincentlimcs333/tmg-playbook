@@ -1,4 +1,4 @@
-const CACHE = 'tmg-playbook-v1';
+const CACHE = 'tmg-playbook-v3';
 const SHELL = [
   '/tmg-playbook/',
   '/tmg-playbook/index.html',
