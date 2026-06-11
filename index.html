@@ -4261,10 +4261,18 @@ function renderDevCard(dev) {
 async function deleteDevelopment(id, name, event) {
   event.stopPropagation();
   if (!confirm(`Delete "${name}"?\n\nThis cannot be undone.`)) return;
+  const card = event.target.closest('.dev-card');
+  if (card) card.remove();
   try {
-    await supaFetch(`developments?id=eq.${id}`, { method: 'DELETE', prefer: 'return=minimal' });
+    const result = await supaFetch(`developments?id=eq.${id}`, { method: 'DELETE' });
+    if (!result || result.length === 0) {
+      loadDevelopments();
+      alert('Delete failed — the record was not removed. The database may be missing a DELETE permission policy.');
+      return;
+    }
     loadDevelopments();
   } catch(e) {
+    loadDevelopments();
     alert('Delete failed — check your connection and try again.\n\n' + e.message);
   }
 }
