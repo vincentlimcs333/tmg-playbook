@@ -402,6 +402,7 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; }
 input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+input[type="date"] { max-width: 100%; }
 
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
@@ -2354,10 +2355,10 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <!-- SECTION 1: CONDO-SPECIFIC ITEMS (development-level) -->
     <div class="card" style="padding:0;overflow:hidden;">
       <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
-          <span style="font-size:13px;font-weight:600;">Condo-Specific Item Requirements</span>
-          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">DEVELOPMENT LEVEL</span>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:3px;flex-wrap:wrap;">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;margin-top:4px;"></div>
+          <span style="font-size:13px;font-weight:600;flex:1;min-width:0;">Condo-Specific Item Requirements</span>
+          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;flex-shrink:0;">DEVELOPMENT LEVEL</span>
         </div>
         <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Items pre-ordered because this condo has special constraints — specific fridge dimensions, hood/hob specs, clearance requirements, etc. Ordered once per campaign, not per event.</div>
       </div>
@@ -2392,10 +2393,10 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
     <!-- SECTION 2: GWP PER EVENT -->
     <div class="card" style="padding:0;overflow:hidden;">
       <div style="padding:14px 20px 12px;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
-          <span style="font-size:13px;font-weight:600;">GWP by Event</span>
-          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;">PER EVENT</span>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:3px;flex-wrap:wrap;">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;margin-top:4px;"></div>
+          <span style="font-size:13px;font-weight:600;flex:1;min-width:0;">GWP by Event</span>
+          <span style="font-size:10px;font-weight:600;background:var(--surface-3);border:1px solid var(--border);border-radius:3px;padding:1px 6px;color:var(--text-3);letter-spacing:0.04em;flex-shrink:0;">PER EVENT</span>
         </div>
         <div style="font-size:11px;color:var(--text-3);padding-left:14px;">Each event has its own GWP order — different closing targets, different quantities. Add one block per event.</div>
       </div>
