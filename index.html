@@ -1983,16 +1983,8 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <label class="form-label">What builds trust</label>
         <textarea id="o-trust" placeholder="Or type your own..." data-chips="Clear pricing|Real past projects|Client reviews|Strong brand reputation|Designer credibility|Clear process & timeline|End-to-end convenience"></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">What delays action</label>
-        <textarea id="o-delay" placeholder="Or type your own..." data-chips="Still comparing options|Waiting for key handover|Discussing with spouse / family|Budget not confirmed|Package not clear|Afraid to commit too early|Busy with other priorities"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What triggers commitment</label>
-        <textarea id="o-trigger" placeholder="Or type your own..." data-chips="Clear package fit|Designer confidence|Show unit conviction|Decision-maker alignment|Budget confidence|ROI confidence|Limited-time advantage"></textarea>
-      </div>
       <div style="margin-top:16px;padding:12px 16px;background:var(--surface-2);border-radius:8px;font-size:0.85em;color:var(--text-2);font-style:italic;">
-        This section is basically thinking : Why would this owner buy, why would they hesitate, and what finally makes them move?
+        This section is basically thinking : Who is this owner, what do they want, what do they fear, and what makes them trust you?
       </div>
     </div>
 
@@ -2004,18 +1996,8 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <textarea id="c-who" placeholder="Or type your own..." data-chips="Interior design firms|Renovation contractors|Freelance designers|Developer panel vendors|Furniture package players|Online package providers"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Offer style</label>
-          <textarea id="c-offer" placeholder="Or type your own..." data-chips="Cheap fixed package|Custom design pitch|Promo-led closing|Furnishing bundle|One-stop renovation solution|Contractor-led execution|Rental ROI package"></textarea>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
           <label class="form-label">Price level</label>
           <textarea id="c-price" placeholder="Or type your own..." data-chips="Much cheaper than TMG|Slightly cheaper than TMG|Same market price|Premium above TMG|Low entry, many add-ons"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Weakness</label>
-          <textarea id="c-weak" placeholder="Or type your own..." data-chips="Too generic|Weak design quality|Hidden cost|Weak project management|Slow response|Weak brand trust|Cheap but low confidence|Nice design, weak practicality"></textarea>
         </div>
       </div>
       <div class="form-row">
@@ -2036,16 +2018,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 
     <!-- Psychographic Map Tab -->
     <div class="tab-panel" id="tab-psychographic">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Main aspiration</label>
-          <textarea id="p-aspiration" placeholder="Or type your own..." data-chips="Maximize rental yield|Get tenants quickly|Create a beautiful first home|Upgrade family lifestyle|Hassle-free ownership|Home that reflects identity"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Main pain point</label>
-          <textarea id="p-pain" placeholder="Or type your own..." data-chips="No time to manage renovation|Afraid of wrong decisions|Worried about overspending|Too many choices|Don't trust contractors|Need to rent out fast"></textarea>
-        </div>
-      </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Price sensitivity</label>
@@ -2943,8 +2915,6 @@ function generateTrustTriggers() {
     oWant:       v('o-want'),
     oFear:       v('o-fear'),
     oTrust:      v('o-trust'),
-    pAspiration: v('p-aspiration'),
-    pPain:       v('p-pain'),
     pPrice:      v('p-price'),
     pObjections: v('p-objections'),
     pStrategy:   v('p-strategy'),
@@ -3142,8 +3112,8 @@ function appendDiagNudge() {
   const hasData = id => (document.getElementById(id)?.value || '').trim().length > 0;
   const tabs = [
     { id: 'owner',         label: '👤 Owner',            fields: ['o-who', 'o-want'] },
-    { id: 'competition',   label: '⚔️ Competition',      fields: ['c-who', 'c-offer'] },
-    { id: 'psychographic', label: '🧠 Psychographic map', fields: ['p-aspiration', 'p-pain'] },
+    { id: 'competition',   label: '⚔️ Competition',      fields: ['c-who', 'c-adv'] },
+    { id: 'psychographic', label: '🧠 Psychographic map', fields: ['p-price', 'p-objections'] },
   ];
   const missing = tabs.filter(t => !t.fields.some(f => hasData(f)));
   if (missing.length === 0) return;
@@ -3382,8 +3352,8 @@ function syncGateChecklist() {
   // chk7: at least one field filled in each of the 4 diagnosis tabs
   const marketDone = ['m-units','m-price','m-mkt-pos'].some(id => val(id));
   const ownerDone  = ['o-who','o-want'].some(id => val(id));
-  const compDone   = ['c-who','c-offer'].some(id => val(id));
-  const psychoDone = ['p-aspiration','p-pain'].some(id => val(id));
+  const compDone   = ['c-who','c-adv'].some(id => val(id));
+  const psychoDone = ['p-price','p-objections'].some(id => val(id));
   setChk('chk7', marketDone && ownerDone && compDone && psychoDone);
 }
 
