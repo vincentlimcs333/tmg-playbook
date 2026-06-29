@@ -4395,16 +4395,24 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 
 async function supaFetch(path, opts = {}) {
   const { prefer, ...rest } = opts;
-  const res = await fetch(`${SUPA_URL}/rest/v1/${path}`, {
-    ...rest,
-    headers: {
-      'apikey': SUPA_KEY,
-      'Authorization': `Bearer ${SUPA_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': prefer || 'return=representation',
-      ...(rest.headers || {}),
-    },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  let res;
+  try {
+    res = await fetch(`${SUPA_URL}/rest/v1/${path}`, {
+      ...rest,
+      signal: controller.signal,
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': prefer || 'return=representation',
+        ...(rest.headers || {}),
+      },
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!res.ok) {
     const txt = await res.text();
     throw new Error(`Supabase ${res.status}: ${txt}`);
@@ -4437,7 +4445,9 @@ async function loadDevelopments() {
     gridEl.style.display = 'grid';
     gridEl.innerHTML = devs.map(renderDevCard).join('');
   } catch(e) {
-    statusEl.textContent = '⚠ Could not load developments. Check your internet connection.';
+    statusEl.textContent = e.name === 'AbortError'
+      ? '⚠ Request timed out — the database may be unreachable. Check your Supabase project is active.'
+      : '⚠ Could not load developments. ' + e.message;
     console.error(e);
   }
 }
