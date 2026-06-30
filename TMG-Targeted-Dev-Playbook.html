@@ -3257,6 +3257,101 @@ function syncFromField(el, key) {
 }
 
 // ─────────────────────────────────────────────────────────────
+//  DYNAMIC ROW SERIALIZATION (rows without id attributes)
+// ─────────────────────────────────────────────────────────────
+function collectEventRows() {
+  const data = {};
+  EVENT_PHASES.forEach(phase => {
+    const tbody = document.getElementById(`events-body-${phase.id}`);
+    if (!tbody) return;
+    data[phase.id] = Array.from(tbody.querySelectorAll('tr')).map(row =>
+      Array.from(row.querySelectorAll('input, select')).map(el => el.value)
+    );
+  });
+  return data;
+}
+
+function collectCondoRows() {
+  const tbody = document.getElementById('condo-item-body');
+  if (!tbody) return [];
+  return Array.from(tbody.querySelectorAll('tr')).map(row =>
+    Array.from(row.querySelectorAll('input, select')).map(el => el.value)
+  );
+}
+
+function collectEpEvents() {
+  const container = document.getElementById('ep-events-container');
+  if (!container) return [];
+  return Array.from(container.querySelectorAll('.ep-event-block')).map(block => {
+    const headerInputs = Array.from(block.querySelectorAll('.form-row input')).map(el => el.value);
+    const gwpTbody = block.querySelector('tbody');
+    const gwpRows = gwpTbody
+      ? Array.from(gwpTbody.querySelectorAll('tr')).map(row =>
+          Array.from(row.querySelectorAll('input, select')).map(el => el.value)
+        )
+      : [];
+    return { headerFields: headerInputs, gwpRows };
+  });
+}
+
+function restoreEventRows(data) {
+  EVENT_PHASES.forEach(phase => {
+    const tbody = document.getElementById(`events-body-${phase.id}`);
+    if (!tbody || !data[phase.id]) return;
+    tbody.innerHTML = '';
+    if (data[phase.id].length === 0) { addEventRow(phase.id); return; }
+    data[phase.id].forEach(rowData => {
+      addEventRow(phase.id);
+      const inputs = tbody.querySelector('tr:last-child').querySelectorAll('input, select');
+      rowData.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
+    });
+  });
+}
+
+function restoreCondoRows(data) {
+  if (!data || !data.length) return;
+  const tbody = document.getElementById('condo-item-body');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  data.forEach(rowData => {
+    addCondoItemRow();
+    const inputs = tbody.querySelector('tr:last-child').querySelectorAll('input, select');
+    rowData.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
+    const unitsEl = tbody.querySelector('tr:last-child .ci-units');
+    if (unitsEl) calcCondoItemRow(unitsEl);
+  });
+}
+
+function restoreEpEvents(data) {
+  if (!data || !data.length) return;
+  const container = document.getElementById('ep-events-container');
+  if (!container) return;
+  container.innerHTML = '';
+  epEventCounter = 0;
+  data.forEach(blockData => {
+    addEventBlock();
+    const n = epEventCounter;
+    const block = document.getElementById(`ep-event-${n}`);
+    if (!block) return;
+    const headerInputs = block.querySelectorAll('.form-row input');
+    (blockData.headerFields || []).forEach((val, i) => { if (headerInputs[i]) headerInputs[i].value = val; });
+    const gwpTbody = document.getElementById(`ep-gwp-body-${n}`);
+    if (gwpTbody) {
+      gwpTbody.innerHTML = '';
+      const rows = blockData.gwpRows || [];
+      if (rows.length === 0) { addGWPRowToEvent(`ep-gwp-body-${n}`); return; }
+      rows.forEach(rowData => {
+        addGWPRowToEvent(`ep-gwp-body-${n}`);
+        const inputs = gwpTbody.querySelector('tr:last-child').querySelectorAll('input, select');
+        rowData.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
+        const reqEl = gwpTbody.querySelector('tr:last-child .gwp-units-req');
+        if (reqEl) calcGWPRow(reqEl);
+      });
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
 //  SAVE / LOAD
 // ─────────────────────────────────────────────────────────────
 function collectState() {
@@ -3267,6 +3362,9 @@ function collectState() {
   });
   s['__decision__'] = decisionMade;
   s['__step__'] = currentStep;
+  s['__event_rows__'] = collectEventRows();
+  s['__condo_rows__'] = collectCondoRows();
+  s['__ep_events__'] = collectEpEvents();
   return s;
 }
 
@@ -3298,6 +3396,9 @@ function loadAll() {
         if (d === decisionMade && btn) btn.className += ` selected-${d}`;
       });
     }
+    if (s['__event_rows__']) restoreEventRows(s['__event_rows__']);
+    if (s['__condo_rows__']) restoreCondoRows(s['__condo_rows__']);
+    if (s['__ep_events__']) restoreEpEvents(s['__ep_events__']);
     const savedStep = s['__step__'];
     if (savedStep) {
       const stepVal = isNaN(savedStep) ? savedStep : Number(savedStep);
