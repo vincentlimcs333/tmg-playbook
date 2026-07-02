@@ -2867,8 +2867,14 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <input type="text" inputmode="numeric" id="sr-rev-actual" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
         </div>
         <div class="form-group">
-          <label class="form-label">Units Closed <span class="sr-sync-badge">↻ auto</span></label>
-          <input type="number" id="sr-conv-units" placeholder="—" readonly style="opacity:0.6;cursor:default;">
+          <label class="form-label">Units Closed</label>
+          <input type="text" inputmode="numeric" id="sr-conv-units" placeholder="0" oninput="fmtCommaInput(this);calcSR()">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label class="form-label">Projected Total Revenue (RM) <span class="sr-sync-badge">↻ auto</span></label>
+          <input type="text" id="sr-rev-projected" placeholder="—" readonly style="opacity:0.6;cursor:default;">
         </div>
       </div>
       </div><!-- /.sr-card-body -->
@@ -4402,10 +4408,6 @@ function updatePipelineTally() {
   const dropout = parseInt(document.getElementById('sr-dropout').value) || 0;
   const pipeSum = hot + warm + cold + booking + fifty + dropout;
 
-  // Auto-set Units Closed from 50% Paid
-  const convEl = document.getElementById('sr-conv-units');
-  if (convEl) convEl.value = fifty || '';
-
   // Hard tally warning — show only when LDL is set and pipeline fields exist but don't match
   const hasAny = hot || warm || cold || booking || fifty || dropout;
   const warn = document.getElementById('sr-pipeline-tally-warning');
@@ -4443,11 +4445,13 @@ function calcSR() {
   }
   srSetTile('sr-tile-units', up);
 
-  const rp = revTarget ? Math.min(100, revActual / revTarget * 100) : 0;
+  const revProjected = revActual * 2;
+  fmtCommaReadonly('sr-rev-projected', revProjected || null);
+  const rp = revTarget ? Math.min(100, revProjected / revTarget * 100) : 0;
   const revEl = document.getElementById('sr-sb-rev');
   if (revEl) { revEl.textContent = Math.round(rp) + '%'; srPopVal('sr-sb-rev'); }
   const revSubEl = document.getElementById('sr-sb-rev-sub');
-  if (revSubEl) revSubEl.textContent = srMoney(revActual) + ' of ' + srMoney(revTarget);
+  if (revSubEl) revSubEl.textContent = 'Projected ' + srMoney(revProjected) + ' of ' + srMoney(revTarget);
   const revBar = document.getElementById('sr-sb-rev-bar');
   if (revBar) {
     revBar.style.width = rp + '%';
@@ -4865,7 +4869,7 @@ function clearFormState() {
 }
 
 const COMMA_FIELD_IDS = [
-  'sr-rev-target','sr-avg-pkg','sr-rev-actual',
+  'sr-rev-target','sr-avg-pkg','sr-rev-actual','sr-conv-units',
   'sr-sources-offline','sr-sources-online',
   'pm-revenue','pm-units',
   'e-rev-target','e-avg-ticket'
