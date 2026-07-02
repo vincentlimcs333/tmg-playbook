@@ -4631,11 +4631,12 @@ function renderDevCard(dev) {
   if (hasMetrics) {
     const stats = [];
     if (revTarget || revActual) {
-      const revPct = revTarget ? Math.round(revActual / revTarget * 100) : null;
+      const revProjected = revActual * 2;
+      const revPct = revTarget ? Math.round(revProjected / revTarget * 100) : null;
       stats.push(`<div class="dcm-stat">
         <div class="dcm-label">Revenue</div>
-        <div class="dcm-val">${fmtRMShort(revActual) || 'RM 0'}<span class="dcm-of">${revTarget ? ' / ' + fmtRMShort(revTarget) : ''}</span></div>
-        ${revPct !== null ? `<div class="dcm-sub">${revPct}% of target</div>` : ''}
+        <div class="dcm-val">${fmtRMShort(revProjected) || 'RM 0'}<span class="dcm-of">${revTarget ? ' / ' + fmtRMShort(revTarget) : ''}</span></div>
+        ${revPct !== null ? `<div class="dcm-sub">${revPct}% projected</div>` : ''}
       </div>`);
     }
     const unitPct = unitsTarget ? Math.round(unitsDone / unitsTarget * 100) : null;
