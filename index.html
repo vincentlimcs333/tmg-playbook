@@ -3656,60 +3656,71 @@ function setChk(id, checked) {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  OFFER MATRIX FILE UPLOAD
+//  OFFER MATRIX FILE UPLOAD  (files live in Supabase Storage, not
+//  the browser — this is what makes them visible on every device)
 // ─────────────────────────────────────────────────────────────
-let omDB = null;
+const OM_BUCKET = 'om-files';
 let omCurrentFiles = [];
 
-function omOpenDB() {
-  return new Promise((resolve, reject) => {
-    if (omDB) return resolve(omDB);
-    const req = indexedDB.open('tmg-om-files', 1);
-    req.onupgradeneeded = e => e.target.result.createObjectStore('files', { keyPath: 'key' });
-    req.onsuccess = e => { omDB = e.target.result; resolve(omDB); };
-    req.onerror = reject;
-  });
+function omPublicUrl(path) {
+  return `${SUPA_URL}/storage/v1/object/public/${OM_BUCKET}/${path}`;
 }
 
-async function omPersist(devId) {
-  if (!devId) return;
-  const db = await omOpenDB();
-  const tx = db.transaction('files', 'readwrite');
-  tx.objectStore('files').put({ key: `om_${devId}`, files: omCurrentFiles });
+async function omUploadToStorage(devId, file) {
+  const path = `${devId}/${Date.now()}_${encodeURIComponent(file.name)}`;
+  const res = await fetch(`${SUPA_URL}/storage/v1/object/${OM_BUCKET}/${path}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': `Bearer ${SUPA_KEY}`,
+      'Content-Type': file.type || 'application/octet-stream',
+    },
+    body: file,
+  });
+  if (!res.ok) throw new Error(`Upload failed (${res.status}): ${await res.text()}`);
+  return path;
 }
 
-async function omLoadForDev(devId) {
-  if (!devId) { omCurrentFiles = []; omRender(); return; }
-  const db = await omOpenDB();
-  const rec = await new Promise(res => {
-    const req = db.transaction('files').objectStore('files').get(`om_${devId}`);
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => res(null);
-  });
-  omCurrentFiles = rec?.files || [];
-  omRender();
+async function omDeleteFromStorage(path) {
+  try {
+    await fetch(`${SUPA_URL}/storage/v1/object/${OM_BUCKET}/${path}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` },
+    });
+  } catch(e) { console.warn('Storage delete failed', e); }
 }
 
 async function omHandleFiles(fileList) {
-  for (const file of fileList) {
-    const dataUrl = await new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result);
-      reader.onerror = rej;
-      reader.readAsDataURL(file);
-    });
-    omCurrentFiles.push({ name: file.name, type: file.type, size: file.size, dataUrl });
+  if (!getEditorName()) { showEditorNameModal(); return; }
+  // files need a development record to attach to — save one first if this is a brand-new dev
+  if (!currentDevId) await saveToCloud();
+  if (!currentDevId) return;
+
+  const zoneLabel = document.querySelector('#om-upload-zone .om-upload-label');
+  const originalLabel = zoneLabel ? zoneLabel.textContent : '';
+  if (zoneLabel) zoneLabel.textContent = 'Uploading…';
+  try {
+    for (const file of fileList) {
+      const path = await omUploadToStorage(currentDevId, file);
+      omCurrentFiles.push({ name: file.name, type: file.type, size: file.size, path });
+    }
+    omRender();
+    await saveToCloud();
+  } catch(e) {
+    alert('Upload failed — check your internet connection and try again.\n\n' + e.message);
+    console.error(e);
+  } finally {
+    if (zoneLabel) zoneLabel.textContent = originalLabel;
+    document.getElementById('om-file-input').value = '';
   }
-  omRender();
-  omPersist(currentDevId);
-  // reset input so the same file can be re-selected
-  document.getElementById('om-file-input').value = '';
 }
 
-function omRemove(index) {
+async function omRemove(index) {
+  const f = omCurrentFiles[index];
   omCurrentFiles.splice(index, 1);
   omRender();
-  omPersist(currentDevId);
+  if (f?.path) omDeleteFromStorage(f.path);
+  await saveToCloud();
 }
 
 function omDragOver(e) {
@@ -3733,21 +3744,22 @@ function omRender() {
     const sizeStr = f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' MB' : Math.round(f.size / 1024) + ' KB';
     const isImage = f.type.startsWith('image/');
     const isPdf   = f.type === 'application/pdf';
+    const url     = f.dataUrl || omPublicUrl(f.path);
     const header  = `<div class="om-file-header">
       <span class="om-file-name">${f.name}</span>
       <span class="om-file-size">${sizeStr}</span>
       <button class="om-file-remove" onclick="omRemove(${i})">✕</button>
     </div>`;
     if (isImage) {
-      return `<div class="om-file-card">${header}<img src="${f.dataUrl}" class="om-file-preview-img"></div>`;
+      return `<div class="om-file-card">${header}<img src="${url}" class="om-file-preview-img"></div>`;
     } else if (isPdf) {
-      return `<div class="om-file-card">${header}<embed src="${f.dataUrl}" type="application/pdf" class="om-file-preview-pdf"></div>`;
+      return `<div class="om-file-card">${header}<embed src="${url}" type="application/pdf" class="om-file-preview-pdf"></div>`;
     } else {
       const ext = f.name.split('.').pop().toUpperCase();
       return `<div class="om-file-card om-file-card-doc">
         <div class="om-file-icon">${ext}</div>
         <div class="om-file-info"><span class="om-file-name">${f.name}</span><span class="om-file-size">${sizeStr}</span></div>
-        <a href="${f.dataUrl}" download="${f.name}" class="om-file-download">↓ Download</a>
+        <a href="${url}" download="${f.name}" class="om-file-download">↓ Download</a>
         <button class="om-file-remove" onclick="omRemove(${i})">✕</button>
       </div>`;
     }
@@ -4178,6 +4190,7 @@ function collectState() {
   s['__event_rows__'] = collectEventRows();
   s['__condo_rows__'] = collectCondoRows();
   s['__ep_events__'] = collectEpEvents();
+  s['__om_files__'] = omCurrentFiles;
   return s;
 }
 
@@ -4719,7 +4732,6 @@ async function openDevelopment(id) {
     applyFormState(dev.state || {});
     setReadMode(true);
     updateViewBanner();
-    omLoadForDev(dev.id);
     goTo('home');
   } catch(e) {
     if (statusEl) statusEl.textContent = '⚠ Could not load this development.';
@@ -4892,7 +4904,19 @@ function applyFormState(s) {
       if (n) el.value = n.toLocaleString('en-MY');
     }
   });
-  decisionMade = null;
+  decisionMade = s['__decision__'] || null;
+  if (decisionMade) {
+    ['attack','secondary','pass'].forEach(d => {
+      const btn = document.getElementById(`btn-${d}`);
+      if (btn) btn.className = 'attack-btn';
+      if (d === decisionMade && btn) btn.className += ` selected-${d}`;
+    });
+  }
+  if (s['__event_rows__']) restoreEventRows(s['__event_rows__']);
+  if (s['__condo_rows__']) restoreCondoRows(s['__condo_rows__']);
+  if (s['__ep_events__']) restoreEpEvents(s['__ep_events__']);
+  omCurrentFiles = s['__om_files__'] || [];
+  omRender();
   updateScorecard();
   calcSU();
   updatePhaseAccess();
