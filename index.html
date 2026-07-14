@@ -927,6 +927,75 @@ input[type="date"] { max-width: 100%; }
 .mc-option { display: flex; align-items: center; gap: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--text); }
 .mc-option:hover { background: var(--surface-3); }
 .mc-option input[type="checkbox"] { accent-color: var(--yellow); cursor: pointer; }
+
+/* ─── CHANNEL + EVENT PLAN v2 ─── */
+.reach-panel { background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius-lg); padding: 18px 20px; margin: 4px 0 22px; }
+.reach-top { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px 30px; margin-bottom: 14px; }
+.reach-field label { display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+.reach-field input { width: 130px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 7px; padding: 9px 11px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.reach-field input:focus { outline: none; border-color: var(--yellow); }
+.reach-stat .n { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.reach-stat.cov .n { font-size: 28px; }
+.reach-stat .l { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-3); margin-top: 4px; line-height: 1.35; }
+.reach-why { font-size: 12.5px; color: var(--text-2); margin: 0 0 12px; max-width: 680px; }
+.reach-why b { color: var(--text); }
+.reach-bar { height: 10px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.reach-bar > div { height: 100%; border-radius: 999px; width: 0; transition: width 0.3s, background 0.3s; }
+.reach-scale { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); margin-top: 5px; }
+
+.evt-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 14px; }
+.evt-card[data-run="false"] { border-color: rgba(255,76,76,0.32); }
+.evt-head { display: flex; align-items: center; gap: 14px; padding: 16px 18px; }
+.evt-num { width: 26px; height: 26px; flex-shrink: 0; border-radius: 7px; background: var(--surface-3); color: var(--text-2); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.evt-card[data-run="true"] .evt-num { background: var(--yellow); color: #000; }
+.evt-name { font-size: 16px; font-weight: 600; flex: 1; }
+.evt-count { font-size: 11px; font-weight: 600; color: var(--text-2); background: var(--surface-3); border-radius: 999px; padding: 3px 9px; }
+.evt-toggle { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; flex-shrink: 0; }
+.evt-toggle button { border: none; background: transparent; color: var(--text-2); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 999px; cursor: pointer; }
+.evt-card[data-run="true"] .evt-toggle button.tg-run { background: var(--yellow); color: #000; }
+.evt-card[data-run="false"] .evt-toggle button.tg-skip { background: var(--red); color: #fff; }
+.evt-body { padding: 4px 18px 18px; border-top: 1px solid var(--border); }
+.evt-card[data-run="true"] .evt-justify { display: none; }
+.evt-card[data-run="false"] .evt-body-sessions { display: none; }
+.evt-session { padding: 16px 0; border-bottom: 1px dashed var(--border); }
+.evt-session:last-of-type { border-bottom: none; }
+.evt-session-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.evt-session-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--yellow); }
+.evt-session-del { background: transparent; border: none; color: var(--text-3); cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; }
+.evt-session-del:hover { color: var(--red); }
+.evt-metrics { display: grid; grid-template-columns: 150px minmax(110px, 1fr) repeat(5, 74px); gap: 12px 11px; }
+.evt-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.evt-mlabel { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-3); }
+.evt-field input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 9px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+.evt-field input.num { text-align: center; font-variant-numeric: tabular-nums; }
+.evt-field input.evt-actual { border-color: rgba(255,194,0,0.5); background: var(--yellow-dim); }
+.evt-field input:focus { outline: none; border-color: var(--yellow); }
+.evt-ch-wrap { margin-top: 16px; }
+.evt-ch-label { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-3); margin-bottom: 9px; }
+.evt-ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 7px; }
+.evt-ch { display: flex; align-items: center; gap: 9px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 11px; font-size: 12.5px; color: var(--text-2); cursor: pointer; user-select: none; }
+.evt-ch input { accent-color: var(--yellow); width: 15px; height: 15px; cursor: pointer; margin: 0; flex-shrink: 0; }
+.evt-ch.checked { border-color: var(--yellow); color: var(--text); background: var(--yellow-dim); }
+.evt-add-session { margin-top: 14px; background: transparent; border: 1px dashed var(--border-2); color: var(--text-2); font-family: 'DM Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 9px 14px; border-radius: 7px; cursor: pointer; width: 100%; }
+.evt-add-session:hover { border-color: var(--yellow); color: var(--yellow); }
+.evt-justify { padding: 16px 0 4px; }
+.evt-justify-label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+.evt-reason { width: 100%; min-height: 64px; resize: vertical; background: var(--red-dim); border: 1px solid rgba(255,76,76,0.35); border-radius: 7px; padding: 11px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13.5px; }
+.evt-reason:focus { outline: none; border-color: var(--red); }
+@media (max-width: 860px) {
+  .evt-metrics { grid-template-columns: 1fr 1fr 1fr; }
+  .evt-field.date, .evt-field.venue { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+  .evt-metrics { grid-template-columns: 1fr 1fr; }
+  .evt-ch-grid { grid-template-columns: 1fr 1fr; }
+  .evt-head { flex-wrap: wrap; gap: 10px 12px; }
+  .evt-toggle { margin-left: 38px; }
+}
+@media (max-width: 400px) {
+  .evt-ch-grid { grid-template-columns: 1fr; }
+}
+
 .btn-add-row {
   background: transparent;
   border: 1px dashed var(--border-2);
@@ -2516,7 +2585,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
   <div class="step-header">
     <div class="step-tag">Phase 2 · Step 5</div>
     <div class="step-title">Channel + Event Plan</div>
-    <div class="step-desc">Plan owner access, events, and follow-up by campaign phase. Every event closes on the spot — track RSVPs, attendance, and hot leads.</div>
+    <div class="step-desc">Run the full event playbook for every development. Fill in each event's dates, channels and results — or mark it skipped and say why. Your actual RSVPs should reach nearly every owner in the building.</div>
   </div>
   <div class="step-scroll" id="scroll-4">
   <div class="step-content">
@@ -3184,7 +3253,7 @@ const EVENT_TYPES = [
 const CHANNELS = [
   'Agent / Agency', 'VP insert', 'Management office', 'Coldcall list',
   'Referral database', 'WhatsApp blasting', 'Social ads', 'Partnership',
-  'Influencer', 'Ketua kampung',
+  'Influencer', 'Ketua kampung', 'Email marketing',
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -3474,10 +3543,11 @@ function init() {
   // re-sync gate checklist whenever any field changes (covers diagnosis fields not hooked to updateScorecard)
   document.addEventListener('input', syncGateChecklist);
   document.addEventListener('change', syncGateChecklist);
-  document.getElementById('events-container')?.addEventListener('input', calcEventPerformance);
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.event-multichannel')) {
-      document.querySelectorAll('.mc-dropdown.open').forEach(d => d.classList.remove('open'));
+  const evContainer = document.getElementById('events-container');
+  evContainer?.addEventListener('input', function() { calcEventPerformance(); calcCoverage(); });
+  evContainer?.addEventListener('change', function(e) {
+    if (e.target.matches('.evt-ch input')) {
+      e.target.closest('.evt-ch').classList.toggle('checked', e.target.checked);
     }
   });
 }
@@ -3767,92 +3837,141 @@ function omRender() {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  BUILD EVENTS
+//  CHANNEL + EVENT PLAN  (v2 — every event shown, multi-session,
+//  channel checklist, skip-with-justification, building reach)
 // ─────────────────────────────────────────────────────────────
-function buildEventsContainer() {
-  const container = document.getElementById('events-container');
-  container.innerHTML = EVENT_PHASES.map(phase => `
-    <div class="phase-section" id="events-phase-${phase.id}">
-      <div class="phase-header-bar">
-        <div class="phase-dot"></div>
-        <div>
-          <div class="phase-title-text">${phase.label}</div>
-          <div class="phase-sub">${phase.sub}</div>
-        </div>
-      </div>
-      <div style="overflow-x:auto;">
-        <table class="event-table">
-          <thead>
-            <tr>
-              <th>Event Type</th>
-              <th>Date</th>
-              <th>Venue</th>
-              <th>Channel</th>
-              <th>Target RSVPs</th>
-              <th>Actual RSVP</th>
-              <th>Attendance</th>
-              <th>Hot Leads</th>
-              <th>Closed</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="events-body-${phase.id}">
-          </tbody>
-        </table>
-      </div>
-      <button class="btn-add-row" onclick="addEventRow('${phase.id}')">+ Add Event</button>
+function evChannelGrid(checked) {
+  checked = checked || [];
+  return `<div class="evt-ch-wrap"><div class="evt-ch-label">Channels used</div><div class="evt-ch-grid">${
+    CHANNELS.map(c => `<label class="evt-ch${checked.includes(c) ? ' checked' : ''}"><input type="checkbox" value="${escHtml(c)}"${checked.includes(c) ? ' checked' : ''}> ${escHtml(c)}</label>`).join('')
+  }</div></div>`;
+}
+
+function evSessionBlock(s) {
+  s = s || {};
+  const nv = k => (s[k] || s[k] === 0 ? (s[k] === 0 ? '' : s[k]) : '');
+  return `<div class="evt-session">
+    <div class="evt-session-head"><span class="evt-session-tag">Session</span><button type="button" class="evt-session-del" onclick="delSession(this)">✕ remove</button></div>
+    <div class="evt-metrics">
+      <div class="evt-field date"><label class="evt-mlabel">Date</label><input type="date" class="evt-date" value="${nv('date')}"></div>
+      <div class="evt-field venue"><label class="evt-mlabel">Venue</label><input type="text" class="evt-venue" placeholder="Venue" value="${escHtml(nv('venue'))}"></div>
+      <div class="evt-field"><label class="evt-mlabel">Target RSVPs</label><input class="num evt-target" inputmode="numeric" placeholder="0" value="${nv('target')}"></div>
+      <div class="evt-field"><label class="evt-mlabel">Actual RSVP</label><input class="num evt-actual" inputmode="numeric" placeholder="0" value="${nv('actual')}"></div>
+      <div class="evt-field"><label class="evt-mlabel">Attendance</label><input class="num evt-att" inputmode="numeric" placeholder="0" value="${nv('att')}"></div>
+      <div class="evt-field"><label class="evt-mlabel">Hot Leads</label><input class="num evt-hot" inputmode="numeric" placeholder="0" value="${nv('hot')}"></div>
+      <div class="evt-field"><label class="evt-mlabel">Closed</label><input class="num evt-closed" inputmode="numeric" placeholder="0" value="${nv('closed')}"></div>
     </div>
-  `).join('');
-
-  // seed one row per phase
-  EVENT_PHASES.forEach(phase => addEventRow(phase.id));
+    ${evChannelGrid(s.channels)}
+  </div>`;
 }
 
-function addEventRow(phaseId) {
-  const tbody = document.getElementById(`events-body-${phaseId}`);
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>
-      <select class="event-input" style="min-width:160px;">
-        <option value="">Select type</option>
-        ${EVENT_TYPES.map(e => `<option>${e}</option>`).join('')}
-      </select>
-    </td>
-    <td><input type="date" class="event-input" style="min-width:130px;"></td>
-    <td><input type="text" class="event-input" placeholder="Venue" style="min-width:120px;"></td>
-    <td>
-      <div class="event-multichannel">
-        <div class="mc-tags"><span style="color:var(--text-3);font-size:11px;">Select…</span></div>
-        <button class="mc-trigger" onclick="toggleMC(this)" type="button">+ Add</button>
-        <div class="mc-dropdown">
-          ${CHANNELS.map(c => `<label class="mc-option"><input type="checkbox" onchange="mcChange(this)" value="${c}"> ${c}</label>`).join('')}
-        </div>
+function evCard(card, idx) {
+  const run = card.run !== false;
+  const sessions = (card.sessions && card.sessions.length) ? card.sessions : [{}];
+  return `<div class="evt-card" data-run="${run}" data-type="${escHtml(card.type)}">
+    <div class="evt-head">
+      <div class="evt-num">${idx + 1}</div>
+      <div class="evt-name">${escHtml(card.type)}</div>
+      <span class="evt-count"></span>
+      <div class="evt-toggle">
+        <button type="button" class="tg-run" onclick="setEventRun(this,true)">Running</button>
+        <button type="button" class="tg-skip" onclick="setEventRun(this,false)">Skip</button>
       </div>
-    </td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:80px;text-align:center;"></td>
-    <td><input type="number" class="event-input" placeholder="0" style="width:70px;text-align:center;"></td>
-    <td><button class="row-del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+    </div>
+    <div class="evt-body">
+      <div class="evt-body-sessions">
+        <div class="evt-sessions">${sessions.map(evSessionBlock).join('')}</div>
+        <button type="button" class="evt-add-session" onclick="addSession(this)">+ Add another “${escHtml(card.type)}”</button>
+      </div>
+      <div class="evt-justify">
+        <div class="evt-justify-label">⚠ Why is this event being skipped?</div>
+        <textarea class="evt-reason" placeholder="Required — explain why this event won't run for this development">${escHtml(card.reason || '')}</textarea>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderEvents(data) {
+  const container = document.getElementById('events-container');
+  if (!container) return;
+  data = data || {};
+  const units = data.units || '';
+  const byType = {};
+  (data.cards || []).forEach(c => { if (c && c.type) byType[c.type] = c; });
+  const cards = EVENT_TYPES.map(t => byType[t] || { type: t, run: true, sessions: [{}], reason: '' });
+
+  container.innerHTML = `
+    <div class="reach-panel">
+      <div class="reach-top">
+        <div class="reach-field">
+          <label>Total units in building</label>
+          <input class="num ev-units-input" inputmode="numeric" value="${units}" oninput="calcCoverage()">
+        </div>
+        <div class="reach-stat"><div class="n" id="ev-sum-actual">—</div><div class="l">Total actual RSVPs<br>(all events)</div></div>
+        <div class="reach-stat cov"><div class="n" id="ev-cov-pct">—</div><div class="l">Owner coverage</div></div>
+      </div>
+      <p class="reach-why">Every potential owner is one household we can convert. Your <b>actual RSVPs</b> across all events should add up to <b>near 100%</b> of the units — if real coverage is low, add sessions or channels until the whole building is reached.</p>
+      <div class="reach-bar"><div id="ev-cov-bar"></div></div>
+      <div class="reach-scale"><span>0%</span><span>50%</span><span>100% — full building reached</span></div>
+    </div>
+    <div id="evt-cards">${cards.map(evCard).join('')}</div>
   `;
-  tbody.appendChild(row);
+  document.querySelectorAll('.evt-card').forEach(renumberSessions);
+  calcCoverage();
 }
 
-function toggleMC(btn) {
-  const dd = btn.nextElementSibling;
-  const isOpen = dd.classList.contains('open');
-  document.querySelectorAll('.mc-dropdown.open').forEach(d => d.classList.remove('open'));
-  if (!isOpen) dd.classList.add('open');
+function buildEventsContainer() { renderEvents(null); }
+
+function renumberSessions(card) {
+  const sessions = card.querySelectorAll('.evt-session');
+  sessions.forEach((s, i) => {
+    const tag = s.querySelector('.evt-session-tag');
+    if (tag) tag.textContent = 'Session ' + (i + 1);
+    const del = s.querySelector('.evt-session-del');
+    if (del) del.style.display = sessions.length > 1 ? '' : 'none';
+  });
+  const badge = card.querySelector('.evt-count');
+  if (badge) badge.textContent = sessions.length > 1 ? sessions.length + ' sessions' : '';
 }
 
-function mcChange(cb) {
-  const mc = cb.closest('.event-multichannel');
-  const tags = mc.querySelector('.mc-tags');
-  const selected = [...mc.querySelectorAll('input[type="checkbox"]:checked')].map(c => c.value);
-  tags.innerHTML = selected.length
-    ? selected.map(s => `<span class="mc-tag">${s}</span>`).join('')
-    : '<span style="color:var(--text-3);font-size:11px;">Select…</span>';
+function addSession(btn) {
+  const card = btn.closest('.evt-card');
+  card.querySelector('.evt-sessions').insertAdjacentHTML('beforeend', evSessionBlock({}));
+  renumberSessions(card);
+}
+
+function delSession(btn) {
+  const card = btn.closest('.evt-card');
+  if (card.querySelectorAll('.evt-session').length <= 1) return; // keep at least one
+  btn.closest('.evt-session').remove();
+  renumberSessions(card);
+  calcCoverage();
+  if (currentStep === 8) calcEventPerformance();
+}
+
+function setEventRun(btn, isRun) {
+  btn.closest('.evt-card').dataset.run = isRun ? 'true' : 'false';
+  calcCoverage();
+  if (currentStep === 8) calcEventPerformance();
+}
+
+function calcCoverage() {
+  const unitsEl = document.querySelector('.ev-units-input');
+  const units = unitsEl ? (parseInt(String(unitsEl.value).replace(/[^0-9]/g, ''), 10) || 0) : 0;
+  let sum = 0;
+  document.querySelectorAll('.evt-card[data-run="true"] .evt-actual').forEach(i => { sum += parseInt(i.value, 10) || 0; });
+  const pct = units > 0 ? Math.round(sum / units * 100) : 0;
+  const sumEl = document.getElementById('ev-sum-actual');
+  const pctEl = document.getElementById('ev-cov-pct');
+  const bar   = document.getElementById('ev-cov-bar');
+  if (sumEl) sumEl.textContent = sum;
+  if (pctEl) pctEl.textContent = units > 0 ? pct + '%' : '—';
+  if (bar) {
+    bar.style.width = Math.min(pct, 100) + '%';
+    const col = pct >= 90 ? 'var(--green)' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+    bar.style.background = col;
+    if (pctEl) pctEl.style.color = units > 0 ? col : 'var(--text-2)';
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -4088,15 +4207,51 @@ function syncFromField(el, key) {}
 //  SAVE / LOAD
 // ─────────────────────────────────────────────────────────────
 function collectEventRows() {
-  const data = {};
-  EVENT_PHASES.forEach(phase => {
-    const tbody = document.getElementById(`events-body-${phase.id}`);
-    if (!tbody) return;
-    data[phase.id] = Array.from(tbody.querySelectorAll('tr')).map(row =>
-      Array.from(row.querySelectorAll('input, select')).map(el => el.value)
-    );
+  // v2 shape: { units, cards:[{ type, run, reason, sessions:[{date,venue,target,actual,att,hot,closed,channels[]}] }] }
+  const unitsRaw = (document.querySelector('.ev-units-input')?.value || '').replace(/[^0-9]/g, '');
+  const cards = [...document.querySelectorAll('.evt-card')].map(card => ({
+    type:   card.dataset.type || '',
+    run:    card.dataset.run !== 'false',
+    reason: card.querySelector('.evt-reason')?.value || '',
+    sessions: [...card.querySelectorAll('.evt-session')].map(s => ({
+      date:     s.querySelector('.evt-date')?.value || '',
+      venue:    s.querySelector('.evt-venue')?.value || '',
+      target:   s.querySelector('.evt-target')?.value || '',
+      actual:   s.querySelector('.evt-actual')?.value || '',
+      att:      s.querySelector('.evt-att')?.value || '',
+      hot:      s.querySelector('.evt-hot')?.value || '',
+      closed:   s.querySelector('.evt-closed')?.value || '',
+      channels: [...s.querySelectorAll('.evt-ch-grid input:checked')].map(c => c.value),
+    })),
+  }));
+  return { units: unitsRaw ? parseInt(unitsRaw, 10) : '', cards };
+}
+
+// Convert the legacy phase-based event data ({vp:[[...]], 'pre-vp':[...], ...})
+// into the v2 structure. Each old row becomes a session under its matching event card.
+// Note: channels were never actually persisted in the old format, so they migrate empty.
+function migrateOldEvents(old) {
+  const cards = {};
+  EVENT_TYPES.forEach(t => { cards[t] = { type: t, run: true, sessions: [], reason: '' }; });
+  const num = x => { const n = parseInt(String(x).replace(/[^0-9.-]/g, ''), 10); return (isNaN(n) || n === 0) ? '' : n; };
+  Object.values(old || {}).forEach(rows => {
+    (rows || []).forEach(row => {
+      if (!row || !row.length) return;
+      const type = row[0];
+      if (!EVENT_TYPES.includes(type)) return; // skip phantom / typeless seed rows
+      const tail = row.slice(-5); // [target, actual, attendance, hot, closed]
+      cards[type].sessions.push({
+        date: row[1] || '', venue: row[2] || '',
+        target: num(tail[0]), actual: num(tail[1]), att: num(tail[2]), hot: num(tail[3]), closed: num(tail[4]),
+        channels: [],
+      });
+    });
   });
-  return data;
+  EVENT_TYPES.forEach(t => {
+    cards[t].sessions.sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+    if (!cards[t].sessions.length) cards[t].sessions.push({});
+  });
+  return { units: '', cards: EVENT_TYPES.map(t => cards[t]) };
 }
 
 function collectCondoRows() {
@@ -4123,17 +4278,9 @@ function collectEpEvents() {
 }
 
 function restoreEventRows(data) {
-  EVENT_PHASES.forEach(phase => {
-    const tbody = document.getElementById(`events-body-${phase.id}`);
-    if (!tbody || !data[phase.id]) return;
-    tbody.innerHTML = '';
-    if (data[phase.id].length === 0) { addEventRow(phase.id); return; }
-    data[phase.id].forEach(rowData => {
-      addEventRow(phase.id);
-      const inputs = tbody.querySelector('tr:last-child').querySelectorAll('input, select');
-      rowData.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
-    });
-  });
+  // v2 payload has a `cards` array; legacy payload is a phase-keyed map of row arrays.
+  if (data && Array.isArray(data.cards)) { renderEvents(data); return; }
+  renderEvents(migrateOldEvents(data));
 }
 
 function restoreCondoRows(data) {
@@ -4523,18 +4670,15 @@ function srToggle(toggleEl) {
 }
 
 function calcEventPerformance() {
+  // Status Report is unchanged: still sums Target RSVP + Attendance + Hot Leads + Closed,
+  // now across sessions of every running event card (skipped events are excluded).
   let targetRSVP = 0, attendance = 0, hotLeads = 0, closed = 0;
-  EVENT_PHASES.forEach(phase => {
-    const tbody = document.getElementById(`events-body-${phase.id}`);
-    if (!tbody) return;
-    [...tbody.querySelectorAll('tr')].forEach(row => {
-      const cells = row.querySelectorAll('td');
-      const num = idx => parseFloat(cells[idx]?.querySelector('input')?.value || 0) || 0;
-      targetRSVP += num(4);
-      attendance += num(6);
-      hotLeads   += num(7);
-      closed     += num(8);
-    });
+  document.querySelectorAll('.evt-card[data-run="true"] .evt-session').forEach(session => {
+    const num = sel => parseFloat(session.querySelector(sel)?.value || 0) || 0;
+    targetRSVP += num('.evt-target');
+    attendance += num('.evt-att');
+    hotLeads   += num('.evt-hot');
+    closed     += num('.evt-closed');
   });
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('sr-attendance',  (attendance || targetRSVP) ? `${attendance} / ${targetRSVP}` : '—');
@@ -4877,6 +5021,7 @@ function clearFormState() {
     else el.value = '';
   });
   decisionMade = null;
+  renderEvents(null);
   updateScorecard();
   calcSU();
 }
