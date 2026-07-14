@@ -864,29 +864,6 @@ input[type="date"] { max-width: 100%; }
 .attack-btn-desc { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
 
 /* ─── EVENT PLAN ─── */
-.phase-section {
-  margin-bottom: 48px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 16px 16px;
-}
-.phase-header-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-.phase-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--yellow);
-  flex-shrink: 0;
-}
-.phase-title-text { font-size: 15px; font-weight: 700; }
-.phase-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
 
 .event-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 .event-table th {
@@ -917,17 +894,6 @@ input[type="date"] { max-width: 100%; }
   background: var(--surface-3) !important;
   border-radius: 4px !important;
 }
-.event-multichannel { position: relative; min-width: 160px; }
-.mc-tags { display: flex; flex-wrap: wrap; gap: 3px; min-height: 22px; align-items: center; padding: 2px 0; }
-.mc-tag { background: var(--yellow); color: #000; border-radius: 3px; padding: 1px 5px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-.mc-trigger { background: transparent; border: none; color: var(--text-3); font-size: 11px; cursor: pointer; padding: 1px 4px; font-family: 'DM Sans', sans-serif; }
-.mc-trigger:hover { color: var(--yellow); }
-.mc-dropdown { display: none; position: absolute; top: 100%; left: 0; z-index: 200; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius); padding: 4px 0; min-width: 190px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-.mc-dropdown.open { display: block; }
-.mc-option { display: flex; align-items: center; gap: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--text); }
-.mc-option:hover { background: var(--surface-3); }
-.mc-option input[type="checkbox"] { accent-color: var(--yellow); cursor: pointer; }
-
 /* ─── CHANNEL + EVENT PLAN v2 ─── */
 .reach-panel { background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius-lg); padding: 18px 20px; margin: 4px 0 22px; }
 .reach-top { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px 30px; margin-bottom: 14px; }
@@ -965,7 +931,7 @@ input[type="date"] { max-width: 100%; }
 .evt-session-del:hover { color: var(--red); }
 .evt-metrics { display: grid; grid-template-columns: 150px minmax(110px, 1fr) repeat(5, 74px); gap: 12px 11px; }
 .evt-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.evt-mlabel { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-3); }
+.evt-mlabel { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-3); line-height: 12px; min-height: 24px; }
 .evt-field input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 9px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; }
 .evt-field input.num { text-align: center; font-variant-numeric: tabular-nums; }
 .evt-field input.evt-actual { border-color: rgba(255,194,0,0.5); background: var(--yellow-dim); }
@@ -2083,7 +2049,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <tr onclick="goTo('gate')" style="cursor:pointer"><td colspan="2" style="font-weight:600;color:var(--yellow);padding:10px 12px;">⚡ Decision Gate — Attack or pass?</td></tr>
           <tr class="home-phase-row"><td colspan="2">Phase 2 — Plan (unlocked after Attack decision)</td></tr>
           <tr onclick="goTo(3)" style="cursor:pointer"><td><span class="home-sheet-num">3</span>Offer Matrix</td><td>Build the package and promo logic <span class="home-sheet-status phase2">Plan</span></td></tr>
-          <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Show Unit Calculator</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
+          <tr onclick="goTo(4)" style="cursor:pointer"><td><span class="home-sheet-num">4</span>Show Unit ROI</td><td>Set target math, investment required and decision <span class="home-sheet-status phase2">Plan</span></td></tr>
           <tr onclick="goTo(5)" style="cursor:pointer"><td><span class="home-sheet-num">5</span>Channel &amp; Events</td><td>Plan owner access, events, and follow-up <span class="home-sheet-status phase2">Plan</span></td></tr>
           <tr class="home-phase-row"><td colspan="2">Phase 3 — Review</td></tr>
           <tr onclick="goTo(7)" style="cursor:pointer"><td><span class="home-sheet-num">7</span>Procurement</td><td>Condo-specific items &amp; GWP accountability <span class="home-sheet-status phase3">Review</span></td></tr>
@@ -2122,7 +2088,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-1">
   <div class="step-header">
-    <div class="step-tag">Phase 1 · Step 1 of 2</div>
+    <div class="step-tag">Phase 1 · Step 1 of 9</div>
     <div class="step-title">Development Scorecard</div>
     <div class="step-desc">Score each factor from 1–5. The weighted total determines whether this development is worth pursuing. Complete this before committing any resources.</div>
   </div>
@@ -2219,7 +2185,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-2">
   <div class="step-header">
-    <div class="step-tag">Phase 1 · Step 2 of 2</div>
+    <div class="step-tag">Phase 1 · Step 2 of 9</div>
     <div class="step-title">Development Diagnosis</div>
     <div class="step-desc">Map the market reality, owner profile, competitive landscape, and your internal readiness. Think: what should we sell, to whom, through who, at what timing?</div>
   </div>
@@ -2365,7 +2331,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-3">
   <div class="step-header">
-    <div class="step-tag">Phase 2 · Step 3</div>
+    <div class="step-tag">Phase 2 · Step 3 of 9</div>
     <div class="step-title">Offer / Package Matrix</div>
     <div class="step-desc">Upload your offer matrix — PPT, PDF, image, or any file format.</div>
   </div>
@@ -2408,7 +2374,6 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
         <div class="gate-decision-auto" id="gate-auto-decision"></div>
       </div>
 
-      <!-- TODO: next up — build the Show Unit Calculator feature -->
       <div class="card">
         <div class="card-title"><div class="card-title-icon"></div>Gate 1 Checklist — before committing resources</div>
         <div class="gate-checklist">
@@ -2472,7 +2437,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-4">
   <div class="step-header">
-    <div class="step-tag">Phase 2 · Step 4</div>
+    <div class="step-tag">Phase 2 · Step 4 of 9</div>
     <div class="step-title">Show Unit ROI Calculator</div>
     <div class="step-desc">Establish projected revenue, investment required, and breakeven units. Go/No-Go rule: investment must be below projected units × RM 2,500 cost per sale (or below 4% × avg ticket × units if ticket size exceeds RM 120,000). Timing check: enter the estimated VP end date — the system adds a 2-month defect buffer and calculates how many active selling weeks remain after the show unit is ready. Minimum 8 weeks required.</div>
   </div>
@@ -2583,7 +2548,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
 ════════════════════════════════════════════════ -->
 <div class="step-panel" id="panel-5">
   <div class="step-header">
-    <div class="step-tag">Phase 2 · Step 5</div>
+    <div class="step-tag">Phase 2 · Step 5 of 9</div>
     <div class="step-title">Channel + Event Plan</div>
     <div class="step-desc">Run the full event playbook for every development. Fill in each event's dates, channels and results — or mark it skipped and say why. Your actual RSVPs should reach nearly every owner in the building.</div>
   </div>
@@ -3237,11 +3202,6 @@ const SCORECARD_FACTORS = [
 // ─────────────────────────────────────────────────────────────
 //  EVENT PHASES
 // ─────────────────────────────────────────────────────────────
-const EVENT_PHASES = [
-  { id: 'pre-vp', label: 'Pre-VP', sub: '2 months prior to handover' },
-  { id: 'vp', label: 'VP', sub: '1–3 months' },
-  { id: 'post-vp', label: 'Post-VP', sub: '3–6 months' },
-];
 const EVENT_TYPES = [
   'Educational physical talk',
   'Online Webinar',
@@ -4161,7 +4121,9 @@ function updateNavUI() {
   } else if (currentStep === 'gate') {
     infoText.textContent = 'Decision Gate';
   } else {
-    infoText.textContent = `Step ${idx - 1} of ${total - 2}`;
+    // currentStep is the actual step number (1–9, with 6 intentionally unused);
+    // show it directly so the footer matches the sidebar + step tags.
+    infoText.textContent = `Step ${currentStep} of 9`;
   }
 
   document.querySelectorAll('.nav-dot').forEach((dot, i) => {
