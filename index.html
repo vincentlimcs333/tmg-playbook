@@ -3696,8 +3696,23 @@ function omPublicUrl(path) {
   return `${SUPA_URL}/storage/v1/object/public/${OM_BUCKET}/${path}`;
 }
 
+// Storage object keys only accept a limited character set — spaces, colons and
+// other characters (e.g. from macOS screenshot names like "Screenshot 2026-07-15
+// at 9.29.57 AM.png") make Supabase reject the upload with "InvalidKey". Reduce
+// the name to safe characters for the KEY only; the original name is kept
+// separately in omCurrentFiles for display and download.
+function omSafeKeyName(name) {
+  const dot = name.lastIndexOf('.');
+  const ext = dot > 0 ? name.slice(dot + 1).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+  const base = (dot > 0 ? name.slice(0, dot) : name)
+    .replace(/[^a-zA-Z0-9._-]+/g, '-')  // any unsafe run -> single dash
+    .replace(/^[-.]+|[-.]+$/g, '')      // trim leading/trailing dashes & dots
+    .slice(0, 100) || 'file';
+  return ext ? `${base}.${ext}` : base;
+}
+
 async function omUploadToStorage(devId, file) {
-  const path = `${devId}/${Date.now()}_${encodeURIComponent(file.name)}`;
+  const path = `${devId}/${Date.now()}_${omSafeKeyName(file.name)}`;
   const res = await fetch(`${SUPA_URL}/storage/v1/object/${OM_BUCKET}/${path}`, {
     method: 'POST',
     headers: {
