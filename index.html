@@ -2812,7 +2812,7 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
           <div class="sr-sec-num">2</div>
           <div>
             <div class="sr-sec-title">Lead &amp; Pipeline Numbers</div>
-            <div class="sr-sec-hint">Key in offline and online leads — total LDL auto-sums. Pipeline must tally to LDL.</div>
+            <div class="sr-sec-hint">Key in offline and online leads — total LDL auto-sums.</div>
           </div>
         </div>
         <div class="sr-toggle-icon open">▾</div>
@@ -2836,32 +2836,9 @@ body.read-mode .all-devs-nav-item { pointer-events: auto !important; }
       </div>
       <div class="sr-chips">
         <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot hot"></span>Hot</div>
-          <input type="number" id="sr-hot" min="0" placeholder="0" oninput="updatePipelineTally()">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot warm"></span>Warm</div>
-          <input type="number" id="sr-warm" min="0" placeholder="0" oninput="updatePipelineTally()">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot cold"></span>Cold</div>
-          <input type="number" id="sr-cold" min="0" placeholder="0" oninput="updatePipelineTally()">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot booking"></span>Booking Paid</div>
-          <input type="number" id="sr-booking" min="0" placeholder="0" oninput="updatePipelineTally()">
-        </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot fifty-paid"></span>50% Paid</div>
+          <div class="sr-chip-label"><span class="sr-chip-dot fifty-paid"></span>50% Paid <span style="opacity:0.55;font-weight:400;">(converted)</span></div>
           <input type="number" id="sr-50paid" min="0" placeholder="0" oninput="updatePipelineTally()">
         </div>
-        <div class="sr-chip">
-          <div class="sr-chip-label"><span class="sr-chip-dot dropout"></span>Drop Outs</div>
-          <input type="number" id="sr-dropout" min="0" placeholder="0" oninput="updatePipelineTally()">
-        </div>
-      </div>
-      <div id="sr-pipeline-tally-warning" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(255,76,76,0.1);border:1.5px solid #FF4C4C;border-radius:8px;color:#FF4C4C;font-size:13px;font-weight:600;">
-        ⚠ Pipeline numbers don't add up to LDL — check your entries.
       </div>
       </div><!-- /.sr-card-body -->
     </div>
@@ -4537,20 +4514,6 @@ function updateTotalLDL() {
 }
 
 function updatePipelineTally() {
-  const ldl     = parseComma(document.getElementById('sr-leads').value);
-  const hot     = parseInt(document.getElementById('sr-hot').value)     || 0;
-  const warm    = parseInt(document.getElementById('sr-warm').value)    || 0;
-  const cold    = parseInt(document.getElementById('sr-cold').value)    || 0;
-  const booking = parseInt(document.getElementById('sr-booking').value) || 0;
-  const fifty   = parseInt(document.getElementById('sr-50paid').value)  || 0;
-  const dropout = parseInt(document.getElementById('sr-dropout').value) || 0;
-  const pipeSum = hot + warm + cold + booking + fifty + dropout;
-
-  // Hard tally warning — show only when LDL is set and pipeline fields exist but don't match
-  const hasAny = hot || warm || cold || booking || fifty || dropout;
-  const warn = document.getElementById('sr-pipeline-tally-warning');
-  if (warn) warn.style.display = (ldl > 0 && hasAny && pipeSum !== ldl) ? 'block' : 'none';
-
   calcSR();
 }
 
